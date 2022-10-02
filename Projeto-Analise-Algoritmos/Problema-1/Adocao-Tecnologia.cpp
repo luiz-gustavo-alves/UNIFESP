@@ -1,11 +1,9 @@
 /*
  *    Problema 1
- *    Adoção de tecnologia
+ *    AdoÃ§Ã£o de tecnologia
  *    Tempo Limite: 1,0 s (C/C++)
  *
- *    JUDGE: luizgustavo149115
- *    NOME: LUIZ GUSTAVO ALVES ASSIS DA SILVA
- *    RA: 149115    
+ *    NOME: LUIZ GUSTAVO ALVES ASSIS DA SILVA 
  *    
  */
  
@@ -36,8 +34,8 @@ void count_dias(int qtdIniUsuarios, int qtdFinalUsuarios, int count, int media, 
 bool flag_convergencia(int *qtdNovosUsuarios, int media)
 {
 	/*
-     * 	FUNÇÃO QUE VERIFICA SE TODOS OS NÚMEROS DO ARRAY SÃO IGUAIS
-     *	CASO VERDADEIRO, A FLAG DE CONVERGENCIA É ATIVADA.
+     * 	FUNÃ‡ÃƒO QUE VERIFICA SE TODOS OS NÃšMEROS DO ARRAY SÃƒO IGUAIS
+     *	CASO VERDADEIRO, A FLAG DE CONVERGENCIA Ã‰ ATIVADA.
      */
      
     bool convergencia = false;
@@ -64,7 +62,7 @@ bool flag_convergencia(int *qtdNovosUsuarios, int media)
  
 void verificar_convergencia(int *qtdNovosUsuarios, int qtdIniUsuarios, int qtdFinalUsuarios, float somatorioUsuarios)
 {
-	bool convergencia = false; // FLAG PARA VERIFICAR CONVERGÊNCIA NO SOMATÓRIO DA MÉDIA
+	bool convergencia = false; // FLAG PARA VERIFICAR CONVERGÃŠNCIA NO SOMATÃ“RIO DA MÃ‰DIA
 	
     int count = 0, dia = 1, somatorioParcial = 0, qtdUsuarios = qtdIniUsuarios, media;
     while (qtdUsuarios < qtdFinalUsuarios && !convergencia)
