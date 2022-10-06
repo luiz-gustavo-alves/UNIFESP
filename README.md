@@ -1,6 +1,3 @@
 # UNIFESP
 
-Programação Concorrente e Distribuída 
-
-Atividade de Programação 1
-Jogo da Vida / HighLife - PThreads e OpenMP
+Projetos e códigos desenvolvidos durante a graduação do curso de Bacharelado em Ciência da Computação do ICT/Unifesp.

@@ -18,7 +18,7 @@
 #define CIRC 1
 #define RETANGLE 2
 
-const int WIDTH = 1366, HEIGHT = 768;
+const int WIDTH = 800, HEIGHT = 800;
 
 float radius = 0;
 float espessura = 2;
@@ -65,13 +65,32 @@ void mouse(int button, int state, int x, int y);
 figLst* initFigure() {
 
     figLst *newFig = (figLst*) malloc(sizeof(figLst));
+    newFig->next = NULL;
     return newFig;
+}
+
+void addNode() {
+
+    figLst *newFig = initFigure();
+    figLst *temp = head;
+
+    if (head == NULL) {
+        head = newFig;
+    }
+
+    else
+    {
+        while (temp->next != NULL) {
+            temp = temp->next;
+        }
+        temp->next = newFig;
+    }
 }
 
 void deleteList() {
 
     figLst* current = head;
-    figLst* next = NULL;
+    figLst* next;
 
     while (current != NULL)
     {
@@ -158,19 +177,22 @@ void display() {
 void changeToLineFig() {
 
     figure = LINE;
-    head->pos1[0] = head->pos1[1] = head->pos2[0] = head->pos2[1] = numClick = 0;
+    if (head != NULL)
+        head->pos1[0] = head->pos1[1] = head->pos2[0] = head->pos2[1] = numClick = 0;
 }
 
 void changeToCircFig() {
 
     figure = CIRC;
-    head->pos1[0] = head->pos1[1] = head->pos2[0] = head->pos2[1] = radius = numClick = 0;
+    if (head != NULL)
+        head->pos1[0] = head->pos1[1] = head->pos2[0] = head->pos2[1] = radius = numClick = 0;
 }
 
 void changeToRetangleFig() {
 
     figure = RETANGLE;
-    head->pos1[0] = head->pos1[1] = head->pos2[0] = head->pos2[1] = numClick = 0;
+    if (head != NULL)
+        head->pos1[0] = head->pos1[1] = head->pos2[0] = head->pos2[1] = numClick = 0;
 }
 
 void cleanScreen() {
@@ -387,9 +409,7 @@ void mouse(int button, int state, int x, int y) {
 
         if (numClick == 0) {
 
-            figLst *newFig = initFigure();
-            newFig->next = head;
-            head = newFig;
+            addNode();
             setCoords(x, y, &head->pos1[0], &head->pos1[1]);
         }
 
