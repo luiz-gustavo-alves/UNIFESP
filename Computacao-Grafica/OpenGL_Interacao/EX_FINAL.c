@@ -20,6 +20,9 @@
 
 const int WIDTH = 800, HEIGHT = 800;
 
+float pos1[2] = {0.0, 0.0};
+float pos2[2] = {0.0, 0.0};
+
 float radius = 0;
 float espessura = 2;
 int start = 0;
@@ -43,13 +46,16 @@ typedef struct figLst {
 
     float pos1[2];
     float pos2[2];
+    float *vColor;
+    float espessura;
+    float radius;
+    int figure;
     struct figLst *next;
 
 }figLst;
 
-figLst *head = NULL;
-
-figLst* initFigure();
+void addNode();
+void printList();
 void deleteList();
 void drawLine();
 void drawCircumference();
@@ -62,29 +68,52 @@ void setEspessura(unsigned char key, int x, int y);
 void keyboard(unsigned char key, int x, int y);
 void mouse(int button, int state, int x, int y);
 
-figLst* initFigure() {
-
-    figLst *newFig = (figLst*) malloc(sizeof(figLst));
-    newFig->next = NULL;
-    return newFig;
-}
+figLst *head = NULL;
+figLst *last = NULL;
 
 void addNode() {
 
-    figLst *newFig = initFigure();
-    figLst *temp = head;
+    figLst *newFig = (figLst*) malloc(sizeof(figLst));
+
+    newFig->pos1[0] = pos1[0];
+    newFig->pos1[1] = pos1[1];
+    newFig->pos2[0] = pos2[0];
+    newFig->pos2[1] = pos2[1];
+    newFig->vColor = vColor;
+    newFig->espessura = espessura;
+    newFig->radius = radius;
+    newFig->figure = figure;
+    newFig->next = NULL;
 
     if (head == NULL) {
         head = newFig;
+        last = head;
     }
 
     else
     {
+        figLst *temp = head;
         while (temp->next != NULL) {
             temp = temp->next;
         }
         temp->next = newFig;
+        last = temp->next;
     }
+}
+
+void printList() {
+
+   figLst *ptr = head;
+   printf("\n[ HEAD ->\n");
+
+   char *typeFigure[] = {"LINE", "CIRC", "RETANGLE"};
+
+   while(ptr != NULL) {
+      printf("(%f, %f) - (%f, %f) - %s\n", ptr->pos1[0], ptr->pos1[1], ptr->pos2[0], ptr->pos2[1], typeFigure[ptr->figure]);
+      ptr = ptr->next;
+   }
+
+   printf(" -> TAIL ]\n");
 }
 
 void deleteList() {
@@ -98,47 +127,49 @@ void deleteList() {
         free(current);
         current = next;
     }
+    head = NULL;
+    last = NULL;
 }
 
-void drawLine() {
+void drawLine(figLst *p) {
 
-    glLineWidth(espessura);
+    glLineWidth(p->espessura);
     glBegin(GL_LINES);
 
-        glVertex2fv(head->pos1);
-        glVertex2fv(head->pos2);
+        glVertex2fv(p->pos1);
+        glVertex2fv(p->pos2);
 
     glEnd();
     glutPostRedisplay();
 }
 
-void drawCircumference() {
+void drawCircumference(figLst *p) {
 
     float theta;
 
-    glLineWidth(espessura);
+    glLineWidth(p->espessura);
     glBegin(GL_LINE_LOOP);
 
         int i;
 		for(i = 0; i <= 300; i++) {
 
             theta = 2 * PI * (float) i / (float) 300;
-            glVertex2f(head->pos1[0] + (radius * cos(theta)), head->pos1[1] + (radius * sin(theta)));
+            glVertex2f(p->pos1[0] + (p->radius * cos(theta)), p->pos1[1] + (p->radius * sin(theta)));
 		}
 
 	glEnd();
     glutPostRedisplay();
 }
 
-void drawRetangle() {
+void drawRetangle(figLst *p) {
 
-    glLineWidth(espessura);
+    glLineWidth(p->espessura);
     glBegin(GL_LINE_LOOP);
 
-        glVertex2f(head->pos1[0], head->pos1[1]);
-        glVertex2f(head->pos1[0], head->pos2[1]);
-        glVertex2f(head->pos2[0], head->pos2[1]);
-        glVertex2f(head->pos2[0], head->pos1[1]);
+        glVertex2f(p->pos1[0], p->pos1[1]);
+        glVertex2f(p->pos1[0], p->pos2[1]);
+        glVertex2f(p->pos2[0], p->pos2[1]);
+        glVertex2f(p->pos2[0], p->pos1[1]);
 
     glEnd();
     glutPostRedisplay();
@@ -147,7 +178,6 @@ void drawRetangle() {
 void display() {
 
     glClearColor(1.0, 1.0, 1.0, 0);
-    glColor3fv(vColor);
 
     if (start == 0)
         glClear(GL_COLOR_BUFFER_BIT);
@@ -156,19 +186,28 @@ void display() {
 
         if (limparTela == 1) {
             glClear(GL_COLOR_BUFFER_BIT);
+            printList();
             deleteList();
         }
 
         else {
 
-            if (figure == LINE && numClick == 0)
-                drawLine();
+            figLst *p = head;
+            while (p != NULL) {
 
-            else if (figure == CIRC && numClick == 0)
-                drawCircumference();
+                glColor3fv(p->vColor);
 
-            else if (figure == RETANGLE && numClick == 0)
-                drawRetangle();
+                if (p->figure == LINE && numClick == 0)
+                    drawLine(p);
+
+                else if (p->figure == CIRC && numClick == 0)
+                    drawCircumference(p);
+
+                else if (p->figure == RETANGLE && numClick == 0)
+                    drawRetangle(p);
+
+                p = p->next;
+            }
         }
     }
     glutSwapBuffers();
@@ -177,22 +216,19 @@ void display() {
 void changeToLineFig() {
 
     figure = LINE;
-    if (head != NULL)
-        head->pos1[0] = head->pos1[1] = head->pos2[0] = head->pos2[1] = numClick = 0;
+    pos1[0] = pos1[1] = pos2[0] = pos2[1] = numClick = 0;
 }
 
 void changeToCircFig() {
 
     figure = CIRC;
-    if (head != NULL)
-        head->pos1[0] = head->pos1[1] = head->pos2[0] = head->pos2[1] = radius = numClick = 0;
+    pos1[0] = pos1[1] = pos2[0] = pos2[1] = radius = numClick = 0;
 }
 
 void changeToRetangleFig() {
 
     figure = RETANGLE;
-    if (head != NULL)
-        head->pos1[0] = head->pos1[1] = head->pos2[0] = head->pos2[1] = numClick = 0;
+    pos1[0] = pos1[1] = pos2[0] = pos2[1] = numClick = 0;
 }
 
 void cleanScreen() {
@@ -284,6 +320,10 @@ void setColor(unsigned char key, int x, int y) {
         default:
             break;
     }
+
+    if (last != NULL)
+        last->vColor = vColor;
+
     glutPostRedisplay();
 }
 
@@ -360,6 +400,10 @@ void setEspessura(unsigned char key, int x, int y) {
         default:
             break;
     }
+
+    if (last != NULL)
+        last->espessura = espessura;
+
     glutPostRedisplay();
 }
 
@@ -408,26 +452,26 @@ void mouse(int button, int state, int x, int y) {
     if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
 
         if (numClick == 0) {
-
-            addNode();
-            setCoords(x, y, &head->pos1[0], &head->pos1[1]);
+            setCoords(x, y, &pos1[0], &pos1[1]);
         }
 
         else {
-            setCoords(x, y, &head->pos2[0], &head->pos2[1]);
+
+            setCoords(x, y, &pos2[0], &pos2[1]);
+            if (figure == CIRC)
+                radius = sqrt(pow((pos2[0] - pos1[0]), 2) + pow((pos2[1] - pos1[1]), 2));
+
+            addNode();
             limparTela = 0;
         }
-
-        if (figure == CIRC)
-            radius = sqrt(pow((head->pos2[0] - head->pos1[0]), 2) + pow((head->pos2[1] - head->pos1[1]), 2));
 
         if (numClick > 0)
             numClick = 0;
 
         else {
             numClick += 1;
-            vColor = vColorBlack;
             start = 1;
+            vColor = vColorBlack;
         }
     }
     glutPostRedisplay();
