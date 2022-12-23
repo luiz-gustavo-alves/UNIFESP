@@ -19,13 +19,24 @@
 #define WINDOW_WIDTH 700
 #define WINDOW_HEIGHT 700
 
-#define MAX_ZOOM_IN 180
-#define MAX_ZOOM_OUT 30
+#define MAX_ZOOM_OUT 180
+#define MAX_ZOOM_IN 30
 #define PI 3.141592
 
-/* Articulacao atual do corpo */
-Joint *currentJoint;
 
+/* Rotacao da camera */
+float cameraX, cameraY, cameraZ;
+float aspectRatio       = 0.0;
+float vision            = 45.0;
+float cameraRadius      = 135.0f;
+float theta             = 0.35f;
+float alpha             = 0.0f;
+
+/* Opcoes de menu e animacao */
+int opt = -1;
+
+
+/* Definicao dos eixos de rotacao a serem modificados pelo usuario */
 typedef struct {
 
     float *x, *y, *z;
@@ -36,17 +47,12 @@ typedef struct {
 
 Rotation rotate;
 
-/* Rotacao da camera */
-float cameraX, cameraY, cameraZ;
+/* Junta atual do corpo humano */
+Animation *currentJoint;
 
-float aspectRatio       = 0.0;
-float vision            = 45.0;
-float cameraRadius      = 120.0f;
-float theta             = 0.35f;
-float alpha             = 0.0f;
+/* Posicao atual do corpo humano */
+ObjectPosition humanBody = {0.0, 0.0, 0.0};
 
-/* Opcoes de menu e animacao */
-int opt = -1;
 
 void initLightning() {
 
@@ -190,11 +196,12 @@ void changeBodyJoint() {
     }
 }
 
+/* Altera os eixos de rotacao de uma dada junta do corpo humano */
 void changeJointRotation() {
 
-    rotate.x = &currentJoint->x;
-    rotate.y = &currentJoint->y;
-    rotate.z = &currentJoint->z;
+    rotate.x = &currentJoint->rotation[0];
+    rotate.y = &currentJoint->rotation[1];
+    rotate.z = &currentJoint->rotation[2];
 }
 
 void menu(int id) {
@@ -208,16 +215,23 @@ void menu(int id) {
     }
 }
 
+/* Verifica se as juntas do corpo humano ultrapassam os limites especificados da animacao */
 int checkJointRotation() {
 
-    if (rotate.keyPressed == 'x')
-        return (-currentJoint->xMin <= currentJoint->x + rotate.orientation) && (currentJoint->x + rotate.orientation <= currentJoint->xMax);
+    char keys[] = {"xyz"};
 
-    if (rotate.keyPressed == 'y')
-        return (-currentJoint->yMin <= currentJoint->y + rotate.orientation) && (currentJoint->y + rotate.orientation <= currentJoint->yMax);
+    int i;
+    for (i = 0; i < 3; i++) {
 
-    if (rotate.keyPressed == 'z')
-        return (-currentJoint->zMin <= currentJoint->z + rotate.orientation) && (currentJoint->z + rotate.orientation <= currentJoint->zMax);
+        if (rotate.keyPressed == keys[i]) {
+
+            float offSet = currentJoint->rotation[i] + rotate.orientation;
+            float minRot = currentJoint->minRotation[i];
+            float maxRot = currentJoint->maxRotation[i];
+
+            return (-minRot <= offSet) && (offSet <= maxRot);
+        }
+    }
 }
 
 void keyboard(unsigned char key, int x, int y) {
@@ -232,7 +246,7 @@ void keyboard(unsigned char key, int x, int y) {
         case 'x':
         case 'X':
 
-            if (opt < 0) return;
+            if (opt < 0 || opt > 9) return;
 
             rotate.keyPressed = 'x';
             if (key == 'x') {
@@ -250,7 +264,7 @@ void keyboard(unsigned char key, int x, int y) {
         case 'y':
         case 'Y':
 
-            if (opt < 0) return;
+            if (opt < 0 || opt > 9) return;
 
             rotate.keyPressed = 'y';
             if (key == 'y') {
@@ -268,7 +282,7 @@ void keyboard(unsigned char key, int x, int y) {
         case 'z':
         case 'Z':
 
-            if (opt < 0) return;
+            if (opt < 0 || opt > 9) return;
 
             rotate.keyPressed = 'z';
             if (key == 'z') {
@@ -285,12 +299,12 @@ void keyboard(unsigned char key, int x, int y) {
 
         case '+':
 
-            if (cameraRadius > MAX_ZOOM_OUT) cameraRadius -= 2.0;
+            if (cameraRadius > MAX_ZOOM_IN) cameraRadius -= 2.0;
             break;
 
         case '-':
 
-            if (cameraRadius < MAX_ZOOM_IN) cameraRadius += 2.0;
+            if (cameraRadius < MAX_ZOOM_OUT) cameraRadius += 2.0;
             break;
     }
     glutPostRedisplay();
@@ -303,10 +317,12 @@ void specialKeyboard(int key, int x, int y) {
     switch (key) {
 
         case GLUT_KEY_LEFT:
+
             alpha -= 0.05;
             break;
 
         case GLUT_KEY_RIGHT:
+
             alpha += 0.05;
             break;
 
@@ -328,6 +344,57 @@ void specialKeyboard(int key, int x, int y) {
     glutPostRedisplay();
 }
 
+/* Verifica se o eixo de rotacao das juntas do corpo humano estao na posicao inicial */
+int checkInitialJointRotation() {
+
+    float minRot = -0.1;
+    float maxRot = 0.1;
+
+    return (((*rotate.x - minRot) * (*rotate.x - maxRot) <= 0) &&
+            ((*rotate.y - minRot) * (*rotate.y - maxRot) <= 0) &&
+            ((*rotate.z - minRot) * (*rotate.z - maxRot) <= 0));
+}
+
+/* Reseta todos os angulos para posicao inicial */
+int resetJointsAngle() {
+
+    int numResetedJoints = 0;
+
+    int i;
+    for (i = 0; i < NUM_JOINTS; i++) {
+
+        opt = i;
+        changeBodyJoint();
+        changeJointRotation();
+
+        if (checkInitialJointRotation()) {
+            *rotate.x = *rotate.y = *rotate.z = 0.0;
+            numResetedJoints += 1;
+            continue;
+        }
+
+        if (*rotate.x < 0) *rotate.x += STEP;
+        else if (*rotate.x > 0) *rotate.x -= STEP;
+
+        if (*rotate.y < 0) *rotate.y += STEP;
+        else if (*rotate.y > 0) *rotate.y -= STEP;
+
+        if (*rotate.z < 0) *rotate.z += STEP;
+        else if (*rotate.z > 0) *rotate.z -= STEP;
+    }
+    return numResetedJoints;
+}
+
+void idleFunc() {
+
+    if (opt == 9) {
+
+        if (resetJointsAngle() == NUM_JOINTS) opt = -1;
+        else opt = 9;
+    }
+    glutPostRedisplay();
+}
+
 int main(int argc, char *argv[]) {
 
     glutInit(&argc,argv);
@@ -342,6 +409,7 @@ int main(int argc, char *argv[]) {
     glutKeyboardFunc(keyboard);
     glutSpecialFunc(specialKeyboard);
     glutReshapeFunc(reshape);
+    glutIdleFunc(idleFunc);
 
     glutCreateMenu(menu);
 	glutAddMenuEntry(" Mover Cabeca ", 0);
@@ -353,6 +421,7 @@ int main(int argc, char *argv[]) {
 	glutAddMenuEntry(" Mover Perna Direita ", 6);
     glutAddMenuEntry(" Mover Joelho Esquerdo ", 7);
 	glutAddMenuEntry(" Mover Joelho Direito ", 8);
+	glutAddMenuEntry(" Resetar ", 9);
 
 	glutAttachMenu(GLUT_RIGHT_BUTTON);
 
