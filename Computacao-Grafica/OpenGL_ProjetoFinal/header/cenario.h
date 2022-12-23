@@ -10,8 +10,9 @@
 #ifndef CENARIO_H_INCLUDED
 #define CENARIO_H_INCLUDED
 
-#include "paleteCores.h"
 #include "fractal.h"
+#include "animacao.h"
+#include "paleteCores.h"
 
 #define SLICES  10
 #define STACKS  10
@@ -32,17 +33,12 @@ float paintingSize  = 6.0;
 float shelfSize     = 5.0;
 float wallSize      = 1.0;
 
-typedef struct {
+/* Definindo Rotacao e Posicao (inicial) dos halteres que serao utilizados durante o exercicio */
+Animation   leftDumbbellRot  = {{0.0, 0.0, 0.0}},
+            rightDumbbellRot = {{0.0, 0.0, 0.0}};
 
-    float trX, trY, trZ;
-    float rotX, rotY, rotZ;
-
-} Dumbbell;
-
-/* Declaracao dos halteres que serao utilizados durante o exercicio */
-Dumbbell    leftDumbbell  = {-2.0, 5.0, -1.0, 0.0, 0.0, 0.0},
-            rightDumbbell = {-2.0, 1.0, -1.0, 0.0, 0.0, 0.0};
-
+ObjectPosition  leftDumbbellPos  = {-2.0, 5.0, -1.0},
+                rightDumbbellPos = {-2.0, 1.0, -1.0};
 
 /* Declaracao da superficie quadrica */
 GLUquadricObj *quad;
@@ -941,10 +937,10 @@ void drawDumbbellRack() {
 
         glPushMatrix();
 
-            glTranslatef(leftDumbbell.trX, leftDumbbell.trY, leftDumbbell.trZ);
-            glRotatef(leftDumbbell.rotX, 1.0, 0.0, 0.0);
-            glRotatef(leftDumbbell.rotY, 0.0, 1.0, 0.0);
-            glRotatef(leftDumbbell.rotZ, 0.0, 0.0, 1.0);
+            glTranslatef(leftDumbbellPos.init[0], leftDumbbellPos.init[1], leftDumbbellPos.init[2]);
+            glRotatef(leftDumbbellRot.rotation[0], 1.0, 0.0, 0.0);
+            glRotatef(leftDumbbellRot.rotation[1], 0.0, 1.0, 0.0);
+            glRotatef(leftDumbbellRot.rotation[2], 0.0, 0.0, 1.0);
 
             /* Desenha haltere da mao esquerda */
             drawDumbbell();
@@ -954,11 +950,10 @@ void drawDumbbellRack() {
         glPushMatrix();
 
             /* Desenha haltere da mao direita */
-            glTranslatef(rightDumbbell.trX, rightDumbbell.trY, rightDumbbell.trZ);
-
-            glRotatef(rightDumbbell.rotX, 1.0, 0.0, 0.0);
-            glRotatef(rightDumbbell.rotY, 0.0, 1.0, 0.0);
-            glRotatef(rightDumbbell.rotZ, 0.0, 0.0, 1.0);
+            glTranslatef(rightDumbbellPos.init[0], rightDumbbellPos.init[1], rightDumbbellPos.init[2]);
+            glRotatef(rightDumbbellRot.rotation[0], 1.0, 0.0, 0.0);
+            glRotatef(rightDumbbellRot.rotation[1], 0.0, 1.0, 0.0);
+            glRotatef(rightDumbbellRot.rotation[2], 0.0, 0.0, 1.0);
 
             /* Desenha haltere da mao direita */
             drawDumbbell();

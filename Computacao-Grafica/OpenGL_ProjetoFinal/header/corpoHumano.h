@@ -11,6 +11,7 @@
 #define CORPOHUMANO_H_INCLUDED
 
 #include "paleteCores.h"
+#include "animacao.h"
 
 #define SLICES  10
 #define STACKS  10
@@ -21,13 +22,6 @@ typedef struct {
 
 } Body_Structure;
 
-typedef struct {
-
-    float x, y, z;
-    float xMin, yMin, zMin;
-    float xMax, yMax, zMax;
-
-} Joint;
 
 /* Estruturas do corpo humano */
 Body_Structure  torso =      {4.0, 2.0},    /*  Torso      */
@@ -46,17 +40,16 @@ Body_Structure  torso =      {4.0, 2.0},    /*  Torso      */
                 lowerLeg =   {2.5, 0.6},    /*  Canela     */
                 feet     =   {0.0, 0.8};    /*  Pe         */
 
-
 /* Juntas (articulacoes) do corpo humano */
-Joint   neckJoint =           {0.0, 0.0, 0.0, 20.0, 20.0, 15.0, 20.0, 20.0, 15.0},  /*  Juntas do pescoco            */
-        leftShoulderJoint =   {0.0, 0.0, 0.0, 170.0, 0.0, 90.0, 60.0, 0.0, 0.0},    /*  Juntas do ombro esquerdo     */
-        rightShoulderJoint =  {0.0, 0.0, 0.0, 170.0, 0.0, 0.0, 60.0, 0.0, 90.0},    /*  Juntas do ombro direito      */
-        leftElbowJoint =      {0.0, 0.0, 0.0, 120.0, 0.0, 0.0, 0.0, 0.0, 60.0},     /*  Juntas do cotovelo esquerdo  */
-        rightElbowJoint =     {0.0, 0.0, 0.0, 120.0, 0.0, 60.0, 0.0, 0.0, 0.0},     /*  Juntas do cotovelo direito   */
-        leftHipJoint =        {0.0, 0.0, 0.0, 60.0, 0.0, 30.0, 60.0, 0.0, 30.0},    /*  Juntas do quadril esquerdo   */
-        rightHipJoint =       {0.0, 0.0, 0.0, 60.0, 0.0, 30.0, 60.0, 0.0, 30.0},    /*  Juntas do quadril direito    */
-        leftKneeJoint =       {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 55.0, 0.0, 0.0},       /*  Juntas do joelho esquerdo    */
-        rightKneeJoint =      {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 55.0, 0.0, 0.0};       /*  Juntas do joelho direito     */
+Animation   neckJoint =           {{0.0, 0.0, 0.0}, {20.0, 20.0, 15.0}, {20.0, 20.0, 15.0}},  /*  Juntas do pescoco            */
+            leftShoulderJoint =   {{0.0, 0.0, 0.0}, {170.0, 0.0, 90.0}, {60.0, 0.0, 0.0}},    /*  Juntas do ombro esquerdo     */
+            rightShoulderJoint =  {{0.0, 0.0, 0.0}, {170.0, 0.0, 0.0},  {60.0, 0.0, 90.0}},   /*  Juntas do ombro direito      */
+            leftElbowJoint =      {{0.0, 0.0, 0.0}, {120.0, 0.0, 0.0},  {0.0, 0.0, 60.0}},    /*  Juntas do cotovelo esquerdo  */
+            rightElbowJoint =     {{0.0, 0.0, 0.0}, {120.0, 0.0, 60.0}, {0.0, 0.0, 0.0}},     /*  Juntas do cotovelo direito   */
+            leftHipJoint =        {{0.0, 0.0, 0.0}, {60.0, 0.0, 30.0},  {60.0, 0.0, 30.0}},   /*  Juntas do quadril esquerdo   */
+            rightHipJoint =       {{0.0, 0.0, 0.0}, {60.0, 0.0, 30.0},  {60.0, 0.0, 30.0}},   /*  Juntas do quadril direito    */
+            leftKneeJoint =       {{0.0, 0.0, 0.0}, {0.0, 0.0, 0.0},    {55.0, 0.0, 0.0}},    /*  Juntas do joelho esquerdo    */
+            rightKneeJoint =      {{0.0, 0.0, 0.0}, {0.0, 0.0, 0.0},    {55.0, 0.0, 0.0}};    /*  Juntas do joelho direito     */
 
 
 /* Declaracao da superficie quadrica */
@@ -253,9 +246,9 @@ void drawHuman() {
 
             glPushMatrix();
 
-                glRotatef(neckJoint.x, 1.0, 0.0, 0.0);
-                glRotatef(neckJoint.y, 0.0, 1.0, 0.0);
-                glRotatef(neckJoint.z, 0.0, 0.0, 1.0);
+                glRotatef(neckJoint.rotation[0], 1.0, 0.0, 0.0);
+                glRotatef(neckJoint.rotation[1], 0.0, 1.0, 0.0);
+                glRotatef(neckJoint.rotation[2], 0.0, 0.0, 1.0);
 
                 drawNeck();
                 drawHead();
@@ -268,15 +261,15 @@ void drawHuman() {
             glPushMatrix();
 
                 glTranslatef(-torso.radius, -shoulder.radius, 0.0);
-                glRotatef(leftShoulderJoint.x, 1.0, 0.0, 0.0);
-                glRotatef(leftShoulderJoint.z, 0.0, 0.0, 1.0);
+                glRotatef(leftShoulderJoint.rotation[0], 1.0, 0.0, 0.0);
+                glRotatef(leftShoulderJoint.rotation[2], 0.0, 0.0, 1.0);
 
                 drawShoulder();
                 drawUpperArm();
 
                 glTranslatef(0.0, - (upperArm.height + lowerArm.radius * 0.25), 0.0);
-                glRotatef(leftElbowJoint.x, 1.0, 0.0, 0.0);
-                glRotatef(leftElbowJoint.z, 0.0, 0.0, 1.0);
+                glRotatef(leftElbowJoint.rotation[0], 1.0, 0.0, 0.0);
+                glRotatef(leftElbowJoint.rotation[2], 0.0, 0.0, 1.0);
 
                 drawElbow();
                 drawLowerArm();
@@ -293,15 +286,15 @@ void drawHuman() {
             glPushMatrix();
 
                 glTranslatef(torso.radius, -shoulder.radius, 0.0);
-                glRotatef(rightShoulderJoint.x, 1.0, 0.0, 0.0);
-                glRotatef(rightShoulderJoint.z, 0.0, 0.0, 1.0);
+                glRotatef(rightShoulderJoint.rotation[0], 1.0, 0.0, 0.0);
+                glRotatef(rightShoulderJoint.rotation[2], 0.0, 0.0, 1.0);
 
                 drawShoulder();
                 drawUpperArm();
 
                 glTranslatef(0.0, - (upperArm.height + lowerArm.radius * 0.25), 0.0);
-                glRotatef(rightElbowJoint.x, 1.0, 0.0, 0.0);
-                glRotatef(rightElbowJoint.z, 0.0, 0.0, 1.0);
+                glRotatef(rightElbowJoint.rotation[0], 1.0, 0.0, 0.0);
+                glRotatef(rightElbowJoint.rotation[2], 0.0, 0.0, 1.0);
 
                 drawElbow();
                 drawLowerArm();
@@ -324,14 +317,14 @@ void drawHuman() {
         glPushMatrix();
 
             glTranslated(-waist.radius * 0.5, -waist.height * 0.85, 0.0);
-            glRotatef(leftHipJoint.x, 1.0, 0.0, 0.0);
-            glRotatef(leftHipJoint.z, 0.0, 0.0, 1.0);
+            glRotatef(leftHipJoint.rotation[0], 1.0, 0.0, 0.0);
+            glRotatef(leftHipJoint.rotation[2], 0.0, 0.0, 1.0);
 
             drawHip();
             drawUpperLeg();
 
             glTranslatef(0.0, - (upperLeg.height + lowerLeg.radius * 0.25), 0.0);
-            glRotatef(leftKneeJoint.x, 1.0, 0.0, 0.0);
+            glRotatef(leftKneeJoint.rotation[0], 1.0, 0.0, 0.0);
 
             drawKnee();
             drawLowerLeg();
@@ -350,14 +343,14 @@ void drawHuman() {
         glPushMatrix();
 
             glTranslated(waist.radius * 0.5, -waist.height * 0.85, 0.0);
-            glRotatef(rightHipJoint.x, 1.0, 0.0, 0.0);
-            glRotatef(rightHipJoint.z, 0.0, 0.0, 1.0);
+            glRotatef(rightHipJoint.rotation[0], 1.0, 0.0, 0.0);
+            glRotatef(rightHipJoint.rotation[2], 0.0, 0.0, 1.0);
 
             drawHip();
             drawUpperLeg();
 
             glTranslatef(0.0, - (upperLeg.height + lowerLeg.radius * 0.25), 0.0);
-            glRotatef(rightKneeJoint.x, 1.0, 0.0, 0.0);
+            glRotatef(rightKneeJoint.rotation[0], 1.0, 0.0, 0.0);
 
             drawKnee();
             drawLowerLeg();
