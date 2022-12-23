@@ -29,28 +29,30 @@ Body_Structure  torso =      {4.0, 2.0},    /*  Torso      */
                 head =       {1.5, 1.0},    /*  Cabeca     */
                 eye =        {0.0, 0.3},    /*  Olho       */
                 shoulder =   {0.0, 0.6},    /*  Ombro      */
-                upperArm =   {3.0, 0.5},    /*  Braco      */
+                upperArm =   {3.5, 0.5},    /*  Braco      */
                 elbow =      {0.0, 0.4},    /*  Cotovelo   */
-                lowerArm =   {2.5, 0.5},    /*  Antebraco  */
+                lowerArm =   {3.0, 0.5},    /*  Antebraco  */
                 hand     =   {0.0, 0.5},    /*  Mao        */
-                waist =      {4.0, 1.6},    /*  Cintura    */
+                waist =      {3.5, 1.6},    /*  Cintura    */
                 hip =        {0.0, 0.6},    /*  Quadril    */
-                upperLeg =   {3.0, 0.6},    /*  Coxa       */
+                upperLeg =   {2.5, 0.6},    /*  Coxa       */
                 knee =       {0.0, 0.5},    /*  Joelho     */
-                lowerLeg =   {2.5, 0.6},    /*  Canela     */
+                lowerLeg =   {3.0, 0.6},    /*  Canela     */
                 feet     =   {0.0, 0.8};    /*  Pe         */
 
 /* Juntas (articulacoes) do corpo humano */
 Animation   neckJoint =           {{0.0, 0.0, 0.0}, {20.0, 20.0, 15.0}, {20.0, 20.0, 15.0}},  /*  Juntas do pescoco            */
-            leftShoulderJoint =   {{0.0, 0.0, 0.0}, {170.0, 0.0, 90.0}, {60.0, 0.0, 0.0}},    /*  Juntas do ombro esquerdo     */
-            rightShoulderJoint =  {{0.0, 0.0, 0.0}, {170.0, 0.0, 0.0},  {60.0, 0.0, 90.0}},   /*  Juntas do ombro direito      */
-            leftElbowJoint =      {{0.0, 0.0, 0.0}, {120.0, 0.0, 0.0},  {0.0, 0.0, 60.0}},    /*  Juntas do cotovelo esquerdo  */
-            rightElbowJoint =     {{0.0, 0.0, 0.0}, {120.0, 0.0, 60.0}, {0.0, 0.0, 0.0}},     /*  Juntas do cotovelo direito   */
-            leftHipJoint =        {{0.0, 0.0, 0.0}, {60.0, 0.0, 30.0},  {60.0, 0.0, 30.0}},   /*  Juntas do quadril esquerdo   */
-            rightHipJoint =       {{0.0, 0.0, 0.0}, {60.0, 0.0, 30.0},  {60.0, 0.0, 30.0}},   /*  Juntas do quadril direito    */
-            leftKneeJoint =       {{0.0, 0.0, 0.0}, {0.0, 0.0, 0.0},    {55.0, 0.0, 0.0}},    /*  Juntas do joelho esquerdo    */
-            rightKneeJoint =      {{0.0, 0.0, 0.0}, {0.0, 0.0, 0.0},    {55.0, 0.0, 0.0}};    /*  Juntas do joelho direito     */
+            leftShoulderJoint =   {{0.0, 0.0, 0.0}, {160.0, 0.0, 90.0}, {60.0, 0.0, 0.0}},    /*  Juntas do ombro esquerdo     */
+            rightShoulderJoint =  {{0.0, 0.0, 0.0}, {160.0, 0.0, 0.0},  {60.0, 0.0, 90.0}},   /*  Juntas do ombro direito      */
+            leftElbowJoint =      {{0.0, 0.0, 0.0}, {140.0, 0.0, 0.0},  {0.0, 0.0, 60.0}},    /*  Juntas do cotovelo esquerdo  */
+            rightElbowJoint =     {{0.0, 0.0, 0.0}, {140.0, 0.0, 60.0}, {0.0, 0.0, 0.0}},     /*  Juntas do cotovelo direito   */
+            leftHipJoint =        {{0.0, 0.0, 0.0}, {30.0, 0.0, 30.0},  {30.0, 0.0, 30.0}},   /*  Juntas do quadril esquerdo   */
+            rightHipJoint =       {{0.0, 0.0, 0.0}, {30.0, 0.0, 30.0},  {30.0, 0.0, 30.0}},   /*  Juntas do quadril direito    */
+            leftKneeJoint =       {{0.0, 0.0, 0.0}, {0.0, 0.0, 0.0},    {140.0, 0.0, 0.0}},   /*  Juntas do joelho esquerdo    */
+            rightKneeJoint =      {{0.0, 0.0, 0.0}, {0.0, 0.0, 0.0},    {140.0, 0.0, 0.0}};   /*  Juntas do joelho direito     */
 
+/* Posicao atual do corpo humano */
+ObjectPosition humanBody = {{0.0, -1.0, 0.0}, {0.0, -1.0, 0.0}};
 
 /* Declaracao da superficie quadrica */
 GLUquadricObj *quad;
@@ -168,7 +170,7 @@ void drawWaist() {
 
     glPushMatrix();
 
-        glTranslatef(0.0, - (torso.height * 0.8), 0.0);
+        glTranslatef(0.0, - (torso.height * 0.7), 0.0);
         glRotatef(-90.0, 1.0, 0.0, 0.0);
         gluCylinder(quad, waist.radius / 1.2, waist.radius, waist.height * 0.8, SLICES, STACKS);
 
@@ -225,6 +227,8 @@ void drawFeet() {
 void drawHuman() {
 
     glPushMatrix();
+
+        glTranslatef(humanBody.current[0], humanBody.current[1], humanBody.current[2]);
 
         glPushMatrix();
 
@@ -316,7 +320,7 @@ void drawHuman() {
 
         glPushMatrix();
 
-            glTranslated(-waist.radius * 0.5, -waist.height * 0.85, 0.0);
+            glTranslated(-waist.radius * 0.5, -waist.height * 0.7, 0.0);
             glRotatef(leftHipJoint.rotation[0], 1.0, 0.0, 0.0);
             glRotatef(leftHipJoint.rotation[2], 0.0, 0.0, 1.0);
 
@@ -342,7 +346,7 @@ void drawHuman() {
 
         glPushMatrix();
 
-            glTranslated(waist.radius * 0.5, -waist.height * 0.85, 0.0);
+            glTranslated(waist.radius * 0.5, -waist.height * 0.7, 0.0);
             glRotatef(rightHipJoint.rotation[0], 1.0, 0.0, 0.0);
             glRotatef(rightHipJoint.rotation[2], 0.0, 0.0, 1.0);
 
