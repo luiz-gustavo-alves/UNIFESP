@@ -1,7 +1,7 @@
 /*
  *   UNIFESP SJC
  *
- *   COMPUTACAOO GRAFICA
+ *   COMPUTACAO GRAFICA
  *   OPENGL - PROJETO FINAL
  *
  *   LUIZ GUSTAVO ALVES ASSIS DA SILVA
@@ -21,8 +21,10 @@
 
 #define MAX_ZOOM_IN 180
 #define MAX_ZOOM_OUT 30
-
 #define PI 3.141592
+
+/* Articulacao atual do corpo */
+Joint *currentJoint;
 
 typedef struct {
 
@@ -34,16 +36,17 @@ typedef struct {
 
 Rotation rotate;
 
-float aspectRatio = 0.0;
-int opt = -1;
-
-Joint *currentJoint;
-
-float fieldOfVision = 45.0;
+/* Rotacao da camera */
 float cameraX, cameraY, cameraZ;
-float cameraRadius = 120.0f;
-float theta = 0.35f;
-float alpha = 0.0f;
+
+float aspectRatio       = 0.0;
+float vision            = 45.0;
+float cameraRadius      = 120.0f;
+float theta             = 0.35f;
+float alpha             = 0.0f;
+
+/* Opcoes de menu e animacao */
+int opt = -1;
 
 void initLightning() {
 
@@ -89,7 +92,7 @@ void updateCamera() {
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
 
-    gluPerspective(fieldOfVision, aspectRatio, 1, 1000);
+    gluPerspective(vision, aspectRatio, 1, 1000);
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
@@ -98,16 +101,9 @@ void updateCamera() {
     cameraY = sin(theta) * cameraRadius;
     cameraZ = cos(alpha) * cos(theta) * cameraRadius;
 
-    float upX = 0.0;
-    float upY = 1.0;
-    float upZ = 0.0;
-
-    if (theta >= PI / 2.0 && theta < 3.0 * PI / 2.0) upY = -1.0;
-    else upY = 1.0;
-
     //printf("x: %f |  y: %f  |  z: %f  |  THETA: %f  ALPHA: %f\n", cameraX, cameraY, cameraZ, theta, alpha);
 
-    gluLookAt(cameraX, cameraY, cameraZ, 0, 0, 0, upX, upY, upZ);
+    gluLookAt(cameraX, cameraY, cameraZ, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
     updateLightningPosition();
 }
 
@@ -302,6 +298,8 @@ void keyboard(unsigned char key, int x, int y) {
 
 void specialKeyboard(int key, int x, int y) {
 
+    float newTheta = theta;
+
     switch (key) {
 
         case GLUT_KEY_LEFT:
@@ -313,18 +311,17 @@ void specialKeyboard(int key, int x, int y) {
             break;
 
         case GLUT_KEY_UP:
-            theta += 0.05;
+
+            if (newTheta + 0.05 < 1.50) theta += 0.05;
             break;
 
         case GLUT_KEY_DOWN:
-            theta -= 0.05;
+
+            if (newTheta - 0.05 > 0) theta -= 0.05;
             break;
     }
 
     /* Limitar os angulos da camera entre 0 e 2PI */
-    if (theta > 2 * PI) theta = theta - 2 * PI;
-    else if(theta < 0.0) theta = 2 * PI - theta;
-
     if (alpha > 2 * PI) alpha = alpha - 2 * PI;
     else if(alpha < 0.0) alpha = 2 * PI - alpha;
 
