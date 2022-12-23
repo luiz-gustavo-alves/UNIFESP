@@ -39,7 +39,7 @@ int opt = -1;
 /* Definicao dos eixos de rotacao a serem modificados pelo usuario */
 typedef struct {
 
-    float *x, *y, *z;
+    float *axis[3];
     float orientation;
     char keyPressed;
 
@@ -49,10 +49,6 @@ Rotation rotate;
 
 /* Junta atual do corpo humano */
 Animation *currentJoint;
-
-/* Posicao atual do corpo humano */
-ObjectPosition humanBody = {0.0, 0.0, 0.0};
-
 
 void initLightning() {
 
@@ -199,9 +195,9 @@ void changeBodyJoint() {
 /* Altera os eixos de rotacao de uma dada junta do corpo humano */
 void changeJointRotation() {
 
-    rotate.x = &currentJoint->rotation[0];
-    rotate.y = &currentJoint->rotation[1];
-    rotate.z = &currentJoint->rotation[2];
+    rotate.axis[0] = &currentJoint->rotation[0];
+    rotate.axis[1] = &currentJoint->rotation[1];
+    rotate.axis[2] = &currentJoint->rotation[2];
 }
 
 void menu(int id) {
@@ -245,55 +241,38 @@ void keyboard(unsigned char key, int x, int y) {
 
         case 'x':
         case 'X':
-
-            if (opt < 0 || opt > 9) return;
-
-            rotate.keyPressed = 'x';
-            if (key == 'x') {
-
-                rotate.orientation = 2.0;
-                if (checkJointRotation()) *rotate.x += 2.0;
-            }
-            else {
-
-                rotate.orientation = -2.0;
-                if (checkJointRotation()) *rotate.x -= 2.0;
-            }
-            break;
-
         case 'y':
         case 'Y':
-
-            if (opt < 0 || opt > 9) return;
-
-            rotate.keyPressed = 'y';
-            if (key == 'y') {
-
-                rotate.orientation = 2.0;
-                if (checkJointRotation()) *rotate.y += 2.0;
-            }
-            else {
-
-                rotate.orientation = -2.0;
-                if (checkJointRotation()) *rotate.y -= 2.0;
-            }
-            break;
-
         case 'z':
         case 'Z':
 
             if (opt < 0 || opt > 9) return;
 
-            rotate.keyPressed = 'z';
-            if (key == 'z') {
+            if (key == 'x' || key == 'X') rotate.keyPressed = 'x';
+            else if (key == 'y' || key == 'Y') rotate.keyPressed = 'y';
+            else rotate.keyPressed = 'z';
+
+            if (key == 'x' || key == 'y' || key == 'z') {
 
                 rotate.orientation = 2.0;
-                if (checkJointRotation()) *rotate.z += 2.0;
+
+                if (checkJointRotation()) {
+
+                    if (rotate.keyPressed == 'x') *rotate.axis[0] += 2.0;
+                    else if (rotate.keyPressed == 'y') *rotate.axis[1] += 2.0;
+                    else *rotate.axis[2] += 2.0;
+                }
             }
             else {
 
                 rotate.orientation = -2.0;
-                if (checkJointRotation()) *rotate.z -= 2.0;
+
+                if (checkJointRotation()) {
+
+                    if (rotate.keyPressed == 'x') *rotate.axis[0] -= 2.0;
+                    else if (rotate.keyPressed == 'y') *rotate.axis[1] -= 2.0;
+                    else *rotate.axis[2] -= 2.0;
+                }
             }
             break;
 
@@ -350,9 +329,9 @@ int checkInitialJointRotation() {
     float minRot = -0.1;
     float maxRot = 0.1;
 
-    return (((*rotate.x - minRot) * (*rotate.x - maxRot) <= 0) &&
-            ((*rotate.y - minRot) * (*rotate.y - maxRot) <= 0) &&
-            ((*rotate.z - minRot) * (*rotate.z - maxRot) <= 0));
+    return (((*rotate.axis[0] - minRot) * (*rotate.axis[0]- maxRot) <= 0) &&
+            ((*rotate.axis[1] - minRot) * (*rotate.axis[1] - maxRot) <= 0) &&
+            ((*rotate.axis[2] - minRot) * (*rotate.axis[2] - maxRot) <= 0));
 }
 
 /* Reseta todos os angulos para posicao inicial */
@@ -360,7 +339,7 @@ int resetJointsAngle() {
 
     int numResetedJoints = 0;
 
-    int i;
+    int i, j;
     for (i = 0; i < NUM_JOINTS; i++) {
 
         opt = i;
@@ -368,19 +347,16 @@ int resetJointsAngle() {
         changeJointRotation();
 
         if (checkInitialJointRotation()) {
-            *rotate.x = *rotate.y = *rotate.z = 0.0;
+            *rotate.axis[0] = *rotate.axis[1] = *rotate.axis[2] = 0.0;
             numResetedJoints += 1;
             continue;
         }
 
-        if (*rotate.x < 0) *rotate.x += STEP;
-        else if (*rotate.x > 0) *rotate.x -= STEP;
+        for (j = 0; j < 3; j++) {
 
-        if (*rotate.y < 0) *rotate.y += STEP;
-        else if (*rotate.y > 0) *rotate.y -= STEP;
-
-        if (*rotate.z < 0) *rotate.z += STEP;
-        else if (*rotate.z > 0) *rotate.z -= STEP;
+            if (*rotate.axis[j] < 0) *rotate.axis[j] += STEP;
+            else if (*rotate.axis[j] > 0) *rotate.axis[j] -= STEP;
+        }
     }
     return numResetedJoints;
 }
