@@ -27,7 +27,8 @@ typedef struct {
 
 typedef struct {
 
-    /* Coordenadas de posicao inicial */
+    /* Coordenadas de posicao */
+    float current[AXIS];
     float init[AXIS];
 
 } ObjectPosition;

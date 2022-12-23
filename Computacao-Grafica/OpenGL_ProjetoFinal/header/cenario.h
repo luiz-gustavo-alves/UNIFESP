@@ -37,8 +37,8 @@ float wallSize      = 1.0;
 Animation   leftDumbbellRot  = {{0.0, 0.0, 0.0}},
             rightDumbbellRot = {{0.0, 0.0, 0.0}};
 
-ObjectPosition  leftDumbbellPos  = {-2.0, 5.0, -1.0},
-                rightDumbbellPos = {-2.0, 1.0, -1.0};
+ObjectPosition  leftDumbbellPos  = {{-2.0, 5.0, -1.0}, {-2.0, 5.0, -1.0}},
+                rightDumbbellPos = {{-2.0, 1.0, -1.0}, {-2.0, 1.0, -1.0}};
 
 /* Declaracao da superficie quadrica */
 GLUquadricObj *quad;
@@ -937,7 +937,7 @@ void drawDumbbellRack() {
 
         glPushMatrix();
 
-            glTranslatef(leftDumbbellPos.init[0], leftDumbbellPos.init[1], leftDumbbellPos.init[2]);
+            glTranslatef(leftDumbbellPos.current[0], leftDumbbellPos.current[1], leftDumbbellPos.current[2]);
             glRotatef(leftDumbbellRot.rotation[0], 1.0, 0.0, 0.0);
             glRotatef(leftDumbbellRot.rotation[1], 0.0, 1.0, 0.0);
             glRotatef(leftDumbbellRot.rotation[2], 0.0, 0.0, 1.0);
@@ -950,7 +950,7 @@ void drawDumbbellRack() {
         glPushMatrix();
 
             /* Desenha haltere da mao direita */
-            glTranslatef(rightDumbbellPos.init[0], rightDumbbellPos.init[1], rightDumbbellPos.init[2]);
+            glTranslatef(rightDumbbellPos.current[0], rightDumbbellPos.current[1], rightDumbbellPos.current[2]);
             glRotatef(rightDumbbellRot.rotation[0], 1.0, 0.0, 0.0);
             glRotatef(rightDumbbellRot.rotation[1], 0.0, 1.0, 0.0);
             glRotatef(rightDumbbellRot.rotation[2], 0.0, 0.0, 1.0);
