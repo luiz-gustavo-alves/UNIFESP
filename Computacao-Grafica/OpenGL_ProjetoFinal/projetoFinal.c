@@ -1,7 +1,7 @@
 /*
  *   UNIFESP SJC
  *
- *   COMPUTACAOO GRAFICA
+ *   COMPUTACAO GRAFICA
  *   OPENGL - PROJETO FINAL
  *
  *   LUIZ GUSTAVO ALVES ASSIS DA SILVA
@@ -19,14 +19,27 @@
 #define WINDOW_WIDTH 700
 #define WINDOW_HEIGHT 700
 
-#define MAX_ZOOM_IN 180
-#define MAX_ZOOM_OUT 30
-
+#define MAX_ZOOM_OUT 180
+#define MAX_ZOOM_IN 30
 #define PI 3.141592
 
+
+/* Rotacao da camera */
+float cameraX, cameraY, cameraZ;
+float aspectRatio       = 0.0;
+float vision            = 45.0;
+float cameraRadius      = 135.0f;
+float theta             = 0.35f;
+float alpha             = 0.0f;
+
+/* Opcoes de menu e animacao */
+int opt = -1;
+
+
+/* Definicao dos eixos de rotacao a serem modificados pelo usuario */
 typedef struct {
 
-    float *x, *y, *z;
+    float *axis[3];
     float orientation;
     char keyPressed;
 
@@ -34,16 +47,8 @@ typedef struct {
 
 Rotation rotate;
 
-float aspectRatio = 0.0;
-int opt = -1;
-
-Joint *currentJoint;
-
-float fieldOfVision = 45.0;
-float cameraX, cameraY, cameraZ;
-float cameraRadius = 120.0f;
-float theta = 0.35f;
-float alpha = 0.0f;
+/* Junta atual do corpo humano */
+Animation *currentJoint;
 
 void initLightning() {
 
@@ -89,7 +94,7 @@ void updateCamera() {
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
 
-    gluPerspective(fieldOfVision, aspectRatio, 1, 1000);
+    gluPerspective(vision, aspectRatio, 1, 1000);
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
@@ -98,16 +103,9 @@ void updateCamera() {
     cameraY = sin(theta) * cameraRadius;
     cameraZ = cos(alpha) * cos(theta) * cameraRadius;
 
-    float upX = 0.0;
-    float upY = 1.0;
-    float upZ = 0.0;
-
-    if (theta >= PI / 2.0 && theta < 3.0 * PI / 2.0) upY = -1.0;
-    else upY = 1.0;
-
     //printf("x: %f |  y: %f  |  z: %f  |  THETA: %f  ALPHA: %f\n", cameraX, cameraY, cameraZ, theta, alpha);
 
-    gluLookAt(cameraX, cameraY, cameraZ, 0, 0, 0, upX, upY, upZ);
+    gluLookAt(cameraX, cameraY, cameraZ, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
     updateLightningPosition();
 }
 
@@ -194,11 +192,12 @@ void changeBodyJoint() {
     }
 }
 
+/* Altera os eixos de rotacao de uma dada junta do corpo humano */
 void changeJointRotation() {
 
-    rotate.x = &currentJoint->x;
-    rotate.y = &currentJoint->y;
-    rotate.z = &currentJoint->z;
+    rotate.axis[0] = &currentJoint->rotation[0];
+    rotate.axis[1] = &currentJoint->rotation[1];
+    rotate.axis[2] = &currentJoint->rotation[2];
 }
 
 void menu(int id) {
@@ -212,16 +211,23 @@ void menu(int id) {
     }
 }
 
+/* Verifica se as juntas do corpo humano ultrapassam os limites especificados da animacao */
 int checkJointRotation() {
 
-    if (rotate.keyPressed == 'x')
-        return (-currentJoint->xMin <= currentJoint->x + rotate.orientation) && (currentJoint->x + rotate.orientation <= currentJoint->xMax);
+    char keys[] = {"xyz"};
 
-    if (rotate.keyPressed == 'y')
-        return (-currentJoint->yMin <= currentJoint->y + rotate.orientation) && (currentJoint->y + rotate.orientation <= currentJoint->yMax);
+    int i;
+    for (i = 0; i < 3; i++) {
 
-    if (rotate.keyPressed == 'z')
-        return (-currentJoint->zMin <= currentJoint->z + rotate.orientation) && (currentJoint->z + rotate.orientation <= currentJoint->zMax);
+        if (rotate.keyPressed == keys[i]) {
+
+            float offSet = currentJoint->rotation[i] + rotate.orientation;
+            float minRot = currentJoint->minRotation[i];
+            float maxRot = currentJoint->maxRotation[i];
+
+            return (-minRot <= offSet) && (offSet <= maxRot);
+        }
+    }
 }
 
 void keyboard(unsigned char key, int x, int y) {
@@ -235,66 +241,49 @@ void keyboard(unsigned char key, int x, int y) {
 
         case 'x':
         case 'X':
-
-            if (opt < 0) return;
-
-            rotate.keyPressed = 'x';
-            if (key == 'x') {
-
-                rotate.orientation = 2.0;
-                if (checkJointRotation()) *rotate.x += 2.0;
-            }
-            else {
-
-                rotate.orientation = -2.0;
-                if (checkJointRotation()) *rotate.x -= 2.0;
-            }
-            break;
-
         case 'y':
         case 'Y':
-
-            if (opt < 0) return;
-
-            rotate.keyPressed = 'y';
-            if (key == 'y') {
-
-                rotate.orientation = 2.0;
-                if (checkJointRotation()) *rotate.y += 2.0;
-            }
-            else {
-
-                rotate.orientation = -2.0;
-                if (checkJointRotation()) *rotate.y -= 2.0;
-            }
-            break;
-
         case 'z':
         case 'Z':
 
-            if (opt < 0) return;
+            if (opt < 0 || opt > 9) return;
 
-            rotate.keyPressed = 'z';
-            if (key == 'z') {
+            if (key == 'x' || key == 'X') rotate.keyPressed = 'x';
+            else if (key == 'y' || key == 'Y') rotate.keyPressed = 'y';
+            else rotate.keyPressed = 'z';
+
+            if (key == 'x' || key == 'y' || key == 'z') {
 
                 rotate.orientation = 2.0;
-                if (checkJointRotation()) *rotate.z += 2.0;
+
+                if (checkJointRotation()) {
+
+                    if (rotate.keyPressed == 'x') *rotate.axis[0] += 2.0;
+                    else if (rotate.keyPressed == 'y') *rotate.axis[1] += 2.0;
+                    else *rotate.axis[2] += 2.0;
+                }
             }
             else {
 
                 rotate.orientation = -2.0;
-                if (checkJointRotation()) *rotate.z -= 2.0;
+
+                if (checkJointRotation()) {
+
+                    if (rotate.keyPressed == 'x') *rotate.axis[0] -= 2.0;
+                    else if (rotate.keyPressed == 'y') *rotate.axis[1] -= 2.0;
+                    else *rotate.axis[2] -= 2.0;
+                }
             }
             break;
 
         case '+':
 
-            if (cameraRadius > MAX_ZOOM_OUT) cameraRadius -= 2.0;
+            if (cameraRadius > MAX_ZOOM_IN) cameraRadius -= 2.0;
             break;
 
         case '-':
 
-            if (cameraRadius < MAX_ZOOM_IN) cameraRadius += 2.0;
+            if (cameraRadius < MAX_ZOOM_OUT) cameraRadius += 2.0;
             break;
     }
     glutPostRedisplay();
@@ -302,32 +291,83 @@ void keyboard(unsigned char key, int x, int y) {
 
 void specialKeyboard(int key, int x, int y) {
 
+    float newTheta = theta;
+
     switch (key) {
 
         case GLUT_KEY_LEFT:
+
             alpha -= 0.05;
             break;
 
         case GLUT_KEY_RIGHT:
+
             alpha += 0.05;
             break;
 
         case GLUT_KEY_UP:
-            theta += 0.05;
+
+            if (newTheta + 0.05 < 1.50) theta += 0.05;
             break;
 
         case GLUT_KEY_DOWN:
-            theta -= 0.05;
+
+            if (newTheta - 0.05 > 0) theta -= 0.05;
             break;
     }
 
     /* Limitar os angulos da camera entre 0 e 2PI */
-    if (theta > 2 * PI) theta = theta - 2 * PI;
-    else if(theta < 0.0) theta = 2 * PI - theta;
-
     if (alpha > 2 * PI) alpha = alpha - 2 * PI;
     else if(alpha < 0.0) alpha = 2 * PI - alpha;
 
+    glutPostRedisplay();
+}
+
+/* Verifica se o eixo de rotacao das juntas do corpo humano estao na posicao inicial */
+int checkInitialJointRotation() {
+
+    float minRot = -0.1;
+    float maxRot = 0.1;
+
+    return (((*rotate.axis[0] - minRot) * (*rotate.axis[0]- maxRot) <= 0) &&
+            ((*rotate.axis[1] - minRot) * (*rotate.axis[1] - maxRot) <= 0) &&
+            ((*rotate.axis[2] - minRot) * (*rotate.axis[2] - maxRot) <= 0));
+}
+
+/* Reseta todos os angulos para posicao inicial */
+int resetJointsAngle() {
+
+    int numResetedJoints = 0;
+
+    int i, j;
+    for (i = 0; i < NUM_JOINTS; i++) {
+
+        opt = i;
+        changeBodyJoint();
+        changeJointRotation();
+
+        if (checkInitialJointRotation()) {
+            *rotate.axis[0] = *rotate.axis[1] = *rotate.axis[2] = 0.0;
+            numResetedJoints += 1;
+            continue;
+        }
+
+        for (j = 0; j < 3; j++) {
+
+            if (*rotate.axis[j] < 0) *rotate.axis[j] += STEP;
+            else if (*rotate.axis[j] > 0) *rotate.axis[j] -= STEP;
+        }
+    }
+    return numResetedJoints;
+}
+
+void idleFunc() {
+
+    if (opt == 9) {
+
+        if (resetJointsAngle() == NUM_JOINTS) opt = -1;
+        else opt = 9;
+    }
     glutPostRedisplay();
 }
 
@@ -345,6 +385,7 @@ int main(int argc, char *argv[]) {
     glutKeyboardFunc(keyboard);
     glutSpecialFunc(specialKeyboard);
     glutReshapeFunc(reshape);
+    glutIdleFunc(idleFunc);
 
     glutCreateMenu(menu);
 	glutAddMenuEntry(" Mover Cabeca ", 0);
@@ -356,6 +397,7 @@ int main(int argc, char *argv[]) {
 	glutAddMenuEntry(" Mover Perna Direita ", 6);
     glutAddMenuEntry(" Mover Joelho Esquerdo ", 7);
 	glutAddMenuEntry(" Mover Joelho Direito ", 8);
+	glutAddMenuEntry(" Resetar ", 9);
 
 	glutAttachMenu(GLUT_RIGHT_BUTTON);
 

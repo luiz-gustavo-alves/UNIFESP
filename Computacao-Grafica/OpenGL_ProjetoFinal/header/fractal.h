@@ -1,7 +1,7 @@
 /*
  *   UNIFESP SJC
  *
- *   COMPUTACAOO GRAFICA
+ *   COMPUTACAO GRAFICA
  *   OPENGL - FRACTAL
  *
  *   LUIZ GUSTAVO ALVES ASSIS DA SILVA
@@ -12,12 +12,12 @@
 
 #include "paleteCores.h"
 
-float triangle[3][2] = { {-0.5, -0.5}, {0.5, -0.5}, {0.0, 0.5} };
-
-/* NUMERO DE INTERACOES */
+/* Numero de iteracoes */
 int n;
 
-/* DEFININDO STRUCTS DE COORDENADAS */
+float triangle[3][2] = { {-0.5, -0.5}, {0.5, -0.5}, {0.0, 0.5} };
+
+
 typedef struct Coords {
 
     float px, py;
@@ -27,6 +27,8 @@ typedef struct Coords {
 Coords  a = { 1.0, -1.0},
         b = {-1.0, -1.0};
 
+
+/* Define a cor da Arvore de Pitagoras */
 void setPythagorasTreeColor(int n) {
 
     int color = n;
@@ -35,6 +37,7 @@ void setPythagorasTreeColor(int n) {
     else glColor3fv(saddlebrown.color);
 }
 
+/* Desenha a Arvore de Pitagoras */
 void drawPythagorasTree(Coords a, Coords b, Coords c, Coords d, int n) {
 
     setPythagorasTreeColor(n);
@@ -48,6 +51,7 @@ void drawPythagorasTree(Coords a, Coords b, Coords c, Coords d, int n) {
     glEnd();
 }
 
+/* Desenha Triangulo de Sierpinski */
 void drawSierpinskiTriangle(float *v1, float *v2, float *v3) {
 
     glBegin(GL_TRIANGLES);
