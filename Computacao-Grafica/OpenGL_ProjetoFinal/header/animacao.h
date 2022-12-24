@@ -59,17 +59,17 @@ ObjectPosition humanBody = {{0.0, -1.0, 0.0}, {0.0, -1.0, 0.0}};
 ObjectPosition  leftDumbbellPos  = {{-2.0, 5.0, -1.0}, {-2.0, 5.0, -1.0}},
                 rightDumbbellPos = {{-2.0, 1.0, -1.0}, {-2.0, 1.0, -1.0}};
 
-void inverseKinematics(int id);
-int kinematics(int id);
+void inverseKinematics(int id, int resetFlag, int optUser);
+int kinematics(int id, int resetFlag, int optUser);
 
 
-void changeAnimation() {
+int checkAnimation() {
 
-    animationFinished = 0;
+    return animationFinished;
 }
 
 /* Animacao inversa */
-void inverseKinematics(int id) {
+void inverseKinematics(int id, int resetFlag, int optUser) {
 
     switch (id) {
 
@@ -78,42 +78,75 @@ void inverseKinematics(int id) {
 
             if (!animationFinished) {
 
-                timer += 0.01;
+                if (timer >= 12 && timer < 20) {
 
-                if (leftShoulderJoint.rotation[0] <= 31 && leftShoulderJoint.rotation[0] >= 0)
-                    leftShoulderJoint.rotation[0] -= STEP * 0.8;
+                    timer += 0.01;
 
-                if (leftShoulderJoint.rotation[2] <= 11 && leftShoulderJoint.rotation[0] <= 25 && leftShoulderJoint.rotation[2] >= 0)
-                    leftShoulderJoint.rotation[2] -= STEP * 0.5;
+                    if (leftShoulderJoint.rotation[0] <= 31 && leftShoulderJoint.rotation[0] >= 0)
+                        leftShoulderJoint.rotation[0] -= STEP * 0.6;
 
-                if (leftElbowJoint.rotation[0] >= -13 && leftShoulderJoint.rotation[0] <= 25 && leftElbowJoint.rotation[0] <= 0)
-                    leftElbowJoint.rotation[0] += STEP * 0.5;
+                    if (leftShoulderJoint.rotation[2] <= 7 && leftShoulderJoint.rotation[0] <= 25 && leftShoulderJoint.rotation[2] >= 0)
+                        leftShoulderJoint.rotation[2] -= STEP * 0.2;
 
-                if (leftHipJoint.rotation[0] <= 31 && leftHipJoint.rotation[0] >= 0)
-                    leftHipJoint.rotation[0] -= STEP * 1.5;
+                    if (leftElbowJoint.rotation[0] >= -13 && leftShoulderJoint.rotation[0] <= 25 && leftElbowJoint.rotation[0] <= 0)
+                        leftElbowJoint.rotation[0] += STEP * 0.3;
 
-                if (leftKneeJoint.rotation[0] <= 107 && leftKneeJoint.rotation[0] >= 0)
-                    leftKneeJoint.rotation[0] -= STEP * 1.5;
+                    if (leftHipJoint.rotation[0] <= 31 && leftHipJoint.rotation[0] >= 0)
+                        leftHipJoint.rotation[0] -= STEP * 0.5;
 
-                if (timer >= 18) {
+                    if (leftKneeJoint.rotation[0] <= 107 && leftKneeJoint.rotation[0] >= 0)
+                        leftKneeJoint.rotation[0] -= STEP * 1.5;
 
-                    animationFinished = 1;
+                    if (timer >= 20) {
 
-                    leftShoulderJoint.rotation[0] = 0;
-                    leftShoulderJoint.rotation[2] = 0;
-                    leftElbowJoint.rotation[0] = 0;
-                    leftHipJoint.rotation[0] = 0;
-                    leftKneeJoint.rotation[0] = 0;
+                        leftShoulderJoint.rotation[0] = 0;
+                        leftShoulderJoint.rotation[2] = 0;
+                        leftElbowJoint.rotation[0] = 0;
+                        leftHipJoint.rotation[0] = 0;
+                        leftKneeJoint.rotation[0] = 0;
 
-                    kinematics(id);
-            }
+                        kinematics(id, resetFlag, optUser);
+                    }
+                }
+
+                else {
+
+                    timer += 0.01;
+
+                    if (rightShoulderJoint.rotation[0] <= 31 && rightShoulderJoint.rotation[0] >= 0)
+                        rightShoulderJoint.rotation[0] -= STEP * 0.6;
+
+                    if (rightShoulderJoint.rotation[2] >= -7 && rightShoulderJoint.rotation[0] <= 25 && rightShoulderJoint.rotation[2] <= 0)
+                        rightShoulderJoint.rotation[2] += STEP * 0.2;
+
+                    if (rightElbowJoint.rotation[0] <= 13 && rightShoulderJoint.rotation[0] <= 25 && rightElbowJoint.rotation[0] >= 0)
+                        rightElbowJoint.rotation[0] -= STEP * 0.3;
+
+                    if (rightHipJoint.rotation[0] <= 31 && rightHipJoint.rotation[0] >= 0)
+                        rightHipJoint.rotation[0] -= STEP * 0.5;
+
+                    if (rightKneeJoint.rotation[0] <= 107 && rightKneeJoint.rotation[0] >= 0)
+                        rightKneeJoint.rotation[0] -= STEP * 1.5;
+
+                    if (timer >= 40) {
+
+                        rightShoulderJoint.rotation[0] = 0;
+                        rightShoulderJoint.rotation[2] = 0;
+                        rightElbowJoint.rotation[0] = 0;
+                        rightHipJoint.rotation[0] = 0;
+                        rightKneeJoint.rotation[0] = 0;
+
+                        kinematics(id, resetFlag, optUser);
+                    }
+
+                }
         }
         break;
     }
 }
 
 /* Animacao corrente */
-int kinematics(int id) {
+int kinematics(int id, int resetFlag, int optUser) {
 
     switch (id) {
 
@@ -124,25 +157,52 @@ int kinematics(int id) {
 
             if (!animationFinished) {
 
-                if (timer >= 10) inverseKinematics(id);
-
-                else {
+                /* Alongamento perna esquerda */
+                if (timer < 12) {
 
                     timer += 0.01;
 
-                    if (leftShoulderJoint.rotation[0] < 30) leftShoulderJoint.rotation[0] += STEP * 0.8;
-                    if (leftShoulderJoint.rotation[2] < 10 && leftShoulderJoint.rotation[0] > 24) leftShoulderJoint.rotation[2] += STEP * 0.5;
-                    if (leftElbowJoint.rotation[0] > -12 && leftKneeJoint.rotation[0] < 50) leftElbowJoint.rotation[0] -= STEP * 0.5;
-                    if (leftHipJoint.rotation[0] < 30) leftHipJoint.rotation[0] += STEP * 1.5;
+                    if (leftShoulderJoint.rotation[0] < 30) leftShoulderJoint.rotation[0] += STEP * 0.6;
+                    if (leftShoulderJoint.rotation[2] < 6 && leftShoulderJoint.rotation[0] > 24) leftShoulderJoint.rotation[2] += STEP * 0.2;
+                    if (leftElbowJoint.rotation[0] > -12 && leftKneeJoint.rotation[0] < 50) leftElbowJoint.rotation[0] -= STEP * 0.3;
+                    if (leftHipJoint.rotation[0] < 30) leftHipJoint.rotation[0] += STEP;
                     if (leftKneeJoint.rotation[0] < 106) leftKneeJoint.rotation[0] += STEP * 1.5;
                 }
 
+                else if (timer >= 12 && timer < 20) {
+                        inverseKinematics(id, resetFlag, optUser);
+                }
+
+                /* Alongamento perna direita */
+                else if (timer >= 20 && timer < 32) {
+
+                    timer += 0.01;
+
+                    if (rightShoulderJoint.rotation[0] < 30) rightShoulderJoint.rotation[0] += STEP * 0.6;
+                    if (rightShoulderJoint.rotation[2] > -6 && rightShoulderJoint.rotation[0] > 24) rightShoulderJoint.rotation[2] -= STEP * 0.2;
+                    if (rightElbowJoint.rotation[0] < 12 && rightKneeJoint.rotation[0] < 50) rightElbowJoint.rotation[0] += STEP * 0.3;
+                    if (rightHipJoint.rotation[0] < 30) rightHipJoint.rotation[0] += STEP;
+                    if (rightKneeJoint.rotation[0] < 106) rightKneeJoint.rotation[0] += STEP * 1.5;
+                }
+
+                else if (timer >= 32 && timer < 40) {
+                    inverseKinematics(id, resetFlag, optUser);
+                }
+
+                else {
+                    timer = 0.01;
+                    animationFinished = 1;
+                }
             }
             break;
         }
 
-    if (animationFinished) timer = 0.01;
-    return animationFinished;
+    if (animationFinished && (resetFlag || optUser >= 0)) {
+        return -1;
+    }
+
+    animationFinished = 0;
+    return 0;
 }
 
 #endif // ANIMACAO_H_INCLUDED
