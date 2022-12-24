@@ -144,9 +144,9 @@ void display() {
     glutSwapBuffers();
 }
 
-void changeBodyJoint() {
+void changeBodyJoint(int id) {
 
-    switch (optUser) {
+    switch (id) {
 
         /* Junta do pescoco */
         case 0:
@@ -211,13 +211,13 @@ void resetMenu(int id) {
 void userMenu(int id) {
 
     optUser = id;
-    changeBodyJoint();
+    changeBodyJoint(id);
     changeJointRotation();
 }
 
 void animationMenu(int id) {
 
-    animationFlag = 0;
+    animationFlag = 1;
     optAnimation = id;
 }
 
@@ -353,8 +353,7 @@ int resetJointsAngle() {
     int i, j;
     for (i = 0; i < NUM_JOINTS; i++) {
 
-        optUser = i;
-        changeBodyJoint();
+        changeBodyJoint(i);
         changeJointRotation();
 
         if (checkInitialJointRotation()) {
@@ -375,21 +374,22 @@ int resetJointsAngle() {
 
 void idleFunc() {
 
-    if (resetFlag) {
+    if (resetFlag && (optAnimation < 0 || optUser >= 0)) {
 
         resetJointsAngle();
-        optUser = -1;
+        optAnimation = -1;
+        animationFlag = 0;
     }
 
     switch (optAnimation) {
 
         case 0:
 
-            if (kinematics(optAnimation)) optAnimation = -1;
+            optAnimation = kinematics(optAnimation, resetFlag, optUser);
+            if (optAnimation == -1) animationFlag = 0;
             break;
     }
 
-    if (optAnimation < 0) changeAnimation();
     glutPostRedisplay();
 }
 
