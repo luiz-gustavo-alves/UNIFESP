@@ -28,12 +28,15 @@
 float cameraX, cameraY, cameraZ;
 float aspectRatio       = 0.0;
 float vision            = 45.0;
-float cameraRadius      = 135.0f;
+float cameraRadius      = 100.0f;
 float theta             = 0.35f;
 float alpha             = 0.0f;
 
 /* Opcoes de menu e animacao */
-int opt = -1;
+int optUser = -1;
+int optAnimation = -1;
+int resetFlag = 0;
+int animationFlag = 0;
 
 
 /* Definicao dos eixos de rotacao a serem modificados pelo usuario */
@@ -77,9 +80,9 @@ void init() {
     glEnable(GL_COLOR_MATERIAL);
     glShadeModel(GL_SMOOTH);
 
-    initLightning();
     initBodyQuadrics();
     initScenarioQuadrics();
+    initLightning();
 }
 
 /* Define e posiciona a fonte de luz */
@@ -143,7 +146,7 @@ void display() {
 
 void changeBodyJoint() {
 
-    switch (opt) {
+    switch (optUser) {
 
         /* Junta do pescoco */
         case 0:
@@ -200,15 +203,22 @@ void changeJointRotation() {
     rotate.axis[2] = &currentJoint->rotation[2];
 }
 
-void menu(int id) {
+void resetMenu(int id) {
 
-    opt = id;
+    resetFlag = id;
+}
 
-    if (opt < 9) {
+void userMenu(int id) {
 
-        changeBodyJoint();
-        changeJointRotation();
-    }
+    optUser = id;
+    changeBodyJoint();
+    changeJointRotation();
+}
+
+void animationMenu(int id) {
+
+    animationFlag = 0;
+    optAnimation = id;
 }
 
 /* Verifica se as juntas do corpo humano ultrapassam os limites especificados da animacao */
@@ -217,7 +227,7 @@ int checkJointRotation() {
     char keys[] = {"xyz"};
 
     int i;
-    for (i = 0; i < 3; i++) {
+    for (i = 0; i < AXIS; i++) {
 
         if (rotate.keyPressed == keys[i]) {
 
@@ -246,7 +256,7 @@ void keyboard(unsigned char key, int x, int y) {
         case 'z':
         case 'Z':
 
-            if (opt < 0 || opt > 9) return;
+            if (optUser < 0 || (animationFlag || resetFlag)) return;
 
             if (key == 'x' || key == 'X') rotate.keyPressed = 'x';
             else if (key == 'y' || key == 'Y') rotate.keyPressed = 'y';
@@ -274,6 +284,7 @@ void keyboard(unsigned char key, int x, int y) {
                     else *rotate.axis[2] -= 2.0;
                 }
             }
+            printf("x: %f | y: %f | z: %f\n", *rotate.axis[0], *rotate.axis[1], *rotate.axis[2]);
             break;
 
         case '+':
@@ -307,7 +318,7 @@ void specialKeyboard(int key, int x, int y) {
 
         case GLUT_KEY_UP:
 
-            if (newTheta + 0.05 < 1.50) theta += 0.05;
+            if (newTheta + 0.05 < 1.5) theta += 0.05;
             break;
 
         case GLUT_KEY_DOWN:
@@ -342,7 +353,7 @@ int resetJointsAngle() {
     int i, j;
     for (i = 0; i < NUM_JOINTS; i++) {
 
-        opt = i;
+        optUser = i;
         changeBodyJoint();
         changeJointRotation();
 
@@ -352,26 +363,39 @@ int resetJointsAngle() {
             continue;
         }
 
-        for (j = 0; j < 3; j++) {
+        for (j = 0; j < AXIS; j++) {
 
             if (*rotate.axis[j] < 0) *rotate.axis[j] += STEP;
             else if (*rotate.axis[j] > 0) *rotate.axis[j] -= STEP;
         }
     }
-    return numResetedJoints;
+
+    if (numResetedJoints == NUM_JOINTS) resetFlag = 0;
 }
 
 void idleFunc() {
 
-    if (opt == 9) {
+    if (resetFlag) {
 
-        if (resetJointsAngle() == NUM_JOINTS) opt = -1;
-        else opt = 9;
+        resetJointsAngle();
+        optUser = -1;
     }
+
+    switch (optAnimation) {
+
+        case 0:
+
+            if (kinematics(optAnimation)) optAnimation = -1;
+            break;
+    }
+
+    if (optAnimation < 0) changeAnimation();
     glutPostRedisplay();
 }
 
 int main(int argc, char *argv[]) {
+
+    int subUserMenu, aquecimento, reset;
 
     glutInit(&argc,argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
@@ -387,17 +411,31 @@ int main(int argc, char *argv[]) {
     glutReshapeFunc(reshape);
     glutIdleFunc(idleFunc);
 
-    glutCreateMenu(menu);
-	glutAddMenuEntry(" Mover Cabeca ", 0);
-	glutAddMenuEntry(" Mover Braco Esquerdo ", 1);
-	glutAddMenuEntry(" Mover Braco Direito ", 2);
-    glutAddMenuEntry(" Mover Antebraco Esquerdo ", 3);
-	glutAddMenuEntry(" Mover Antebraco Direito ", 4);
-	glutAddMenuEntry(" Mover Perna Esquerda ", 5);
-	glutAddMenuEntry(" Mover Perna Direita ", 6);
-    glutAddMenuEntry(" Mover Joelho Esquerdo ", 7);
-	glutAddMenuEntry(" Mover Joelho Direito ", 8);
-	glutAddMenuEntry(" Resetar ", 9);
+    subUserMenu = glutCreateMenu(userMenu);
+
+        glutAddMenuEntry(" Mover Cabeca ", 0);
+        glutAddMenuEntry(" Mover Braco Esquerdo ", 1);
+        glutAddMenuEntry(" Mover Braco Direito ", 2);
+        glutAddMenuEntry(" Mover Antebraco Esquerdo ", 3);
+        glutAddMenuEntry(" Mover Antebraco Direito ", 4);
+        glutAddMenuEntry(" Mover Perna Esquerda ", 5);
+        glutAddMenuEntry(" Mover Perna Direita ", 6);
+        glutAddMenuEntry(" Mover Joelho Esquerdo ", 7);
+        glutAddMenuEntry(" Mover Joelho Direito ", 8);
+
+    aquecimento = glutCreateMenu(animationMenu);
+
+            glutAddMenuEntry(" Alongamento Pernas ", 0);
+            glutAddMenuEntry(" Alongamento Bracos ", 1);
+            glutAddMenuEntry(" Agachamento ", 2);
+            glutAddMenuEntry(" Polichinelo ", 3);
+            glutAddMenuEntry(" Todos ", 4);
+
+    reset = glutCreateMenu(resetMenu);
+
+    glutAddMenuEntry(" Resetar ", 1);
+    glutAddSubMenu(" Movimentacao ", subUserMenu);
+    glutAddSubMenu(" Aquecimento ", aquecimento);
 
 	glutAttachMenu(GLUT_RIGHT_BUTTON);
 
