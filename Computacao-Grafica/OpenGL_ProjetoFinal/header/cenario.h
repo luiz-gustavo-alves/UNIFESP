@@ -17,12 +17,12 @@
 #define SLICES  10
 #define STACKS  10
 
-#define CAMERA_RIGHT_DIRECTION  (alpha > 0.50 && alpha < 2.80) || theta > 1.15
-#define CAMERA_BACK_DIRECTION   (alpha > 2.15 && alpha < 4.40) || theta > 1.15
-#define CAMERA_LEFT_DIRECTION   (alpha > 3.70 && alpha < 5.90) || theta > 1.15
-#define CAMERA_FRONT_DIRECTION  (alpha > 5.25 || alpha < 1.20) || theta > 1.15
+#define CAMERA_RIGHT_DIRECTION  (cameraAlpha > 0.50 && cameraAlpha < 2.80) || cameraTheta > 1.15
+#define CAMERA_BACK_DIRECTION   (cameraAlpha > 2.15 && cameraAlpha < 4.40) || cameraTheta > 1.15
+#define CAMERA_LEFT_DIRECTION   (cameraAlpha > 3.70 && cameraAlpha < 5.90) || cameraTheta > 1.15
+#define CAMERA_FRONT_DIRECTION  (cameraAlpha > 5.25 || cameraAlpha < 1.20) || cameraTheta > 1.15
 
-float alpha, theta;
+float cameraAlpha, cameraTheta;
 float roomSize      = 40.0;
 float rackSize      = 20.0;
 float doorSize      = 10.0;
@@ -32,13 +32,6 @@ float matSize       = 7.0;
 float paintingSize  = 6.0;
 float shelfSize     = 5.0;
 float wallSize      = 1.0;
-
-/* Definindo Rotacao e Posicao (inicial) dos halteres que serao utilizados durante o exercicio */
-Animation   leftDumbbellRot  = {{0.0, 0.0, 0.0}},
-            rightDumbbellRot = {{0.0, 0.0, 0.0}};
-
-ObjectPosition  leftDumbbellPos  = {{-2.0, 5.0, -1.0}, {-2.0, 5.0, -1.0}},
-                rightDumbbellPos = {{-2.0, 1.0, -1.0}, {-2.0, 1.0, -1.0}};
 
 /* Declaracao da superficie quadrica */
 GLUquadricObj *quad;
@@ -988,10 +981,10 @@ void drawObjects() {
 }
 
 /* Desenha todo o cenario */
-void drawScenario(float newAlpha, float newTheta) {
+void drawScenario(float alpha, float theta) {
 
-    alpha = newAlpha;
-    theta = newTheta;
+    cameraAlpha = alpha;
+    cameraTheta = theta;
 
     drawWalls();
     drawFloor();
