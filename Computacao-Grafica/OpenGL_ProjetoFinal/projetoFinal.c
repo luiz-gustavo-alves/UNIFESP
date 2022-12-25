@@ -381,13 +381,15 @@ void idleFunc() {
         animationFlag = 0;
     }
 
-    switch (optAnimation) {
+    if (optAnimation >= 0 && animationFlag > 0) {
 
-        case 0:
+        updateAnimation(optAnimation);
+        kinematics(optAnimation, resetFlag, optUser);
 
-            optAnimation = kinematics(optAnimation, resetFlag, optUser);
-            if (optAnimation == -1) animationFlag = 0;
-            break;
+        if (endAnimation()) {
+            animationFlag = 0;
+            optAnimation = -1;
+        }
     }
 
     glutPostRedisplay();
@@ -426,7 +428,7 @@ int main(int argc, char *argv[]) {
     aquecimento = glutCreateMenu(animationMenu);
 
             glutAddMenuEntry(" Alongamento Pernas ", 0);
-            glutAddMenuEntry(" Alongamento Bracos ", 1);
+            glutAddMenuEntry(" Alongamento Pescoco ", 1);
             glutAddMenuEntry(" Agachamento ", 2);
             glutAddMenuEntry(" Polichinelo ", 3);
             glutAddMenuEntry(" Todos ", 4);
