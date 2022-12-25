@@ -132,9 +132,9 @@ void printList() {
 
 void leftLegExercise(int animationCycle) {
 
-    if (animationCycle == 1) {
+    timer += 0.01;
 
-        timer += 0.01;
+    if (animationCycle == 1) {
 
         if (leftShoulderJoint.rotation[0] < 30) leftShoulderJoint.rotation[0] += STEP * 0.6;
         if (leftShoulderJoint.rotation[2] < 6 && leftShoulderJoint.rotation[0] > 24) leftShoulderJoint.rotation[2] += STEP * 0.2;
@@ -144,8 +144,6 @@ void leftLegExercise(int animationCycle) {
     }
 
     else if (animationCycle == 2) {
-
-        timer += 0.01;
 
         if (leftShoulderJoint.rotation[0] <= 31 && leftShoulderJoint.rotation[0] >= 0)
             leftShoulderJoint.rotation[0] -= STEP * 0.6;
@@ -166,9 +164,9 @@ void leftLegExercise(int animationCycle) {
 
 void rightLegExercise(int animationCycle) {
 
-    if (animationCycle == 1) {
+    timer += 0.01;
 
-        timer += 0.01;
+    if (animationCycle == 1) {
 
         if (rightShoulderJoint.rotation[0] < 30) rightShoulderJoint.rotation[0] += STEP * 0.6;
         if (rightShoulderJoint.rotation[2] > -6 && rightShoulderJoint.rotation[0] > 24) rightShoulderJoint.rotation[2] -= STEP * 0.2;
@@ -178,8 +176,6 @@ void rightLegExercise(int animationCycle) {
     }
 
     else if (animationCycle == 2) {
-
-        timer += 0.01;
 
         if (rightShoulderJoint.rotation[0] <= 31 && rightShoulderJoint.rotation[0] >= 0)
             rightShoulderJoint.rotation[0] -= STEP * 0.6;
@@ -200,15 +196,76 @@ void rightLegExercise(int animationCycle) {
 
 void neckExercise(int animationCycle) {
 
+    timer += 0.01;
+
     if (animationCycle == 1) {
 
-        timer += 0.01;
+        if (leftShoulderJoint.rotation[0] > -172) leftShoulderJoint.rotation[0] -= STEP * 3;
+        if (leftShoulderJoint.rotation[2] > -26 && leftShoulderJoint.rotation[0] <= -30) leftShoulderJoint.rotation[2] -= STEP;
+        if (leftElbowJoint.rotation[0] > -150 && leftShoulderJoint.rotation[2] <= -10) leftElbowJoint.rotation[0] -= STEP * 2.5;
+        if (leftElbowJoint.rotation[2] < 54 && leftShoulderJoint.rotation[2] <= -10) leftElbowJoint.rotation[2] += STEP * 1.5;
+        if (neckJoint.rotation[2] < 22 && leftShoulderJoint.rotation[0] <= -40) neckJoint.rotation[2] += STEP * 0.3;
+        if (neckJoint.rotation[0] < 16 && leftShoulderJoint.rotation[0] <= -40) neckJoint.rotation[0] += STEP * 0.3;
+        if (neckJoint.rotation[1] > -6 && leftShoulderJoint.rotation[0] <= -40) neckJoint.rotation[1] -= STEP * 0.3;
+    }
 
-        if (neckJoint.rotation[2] < 16) neckJoint.rotation[2] += STEP * 0.2;
-        if (neckJoint.rotation[0] > -16) neckJoint.rotation[0] -= STEP * 0.2;
-        if (neckJoint.rotation[1] > -6) neckJoint.rotation[1] -= STEP * 0.2;
-        if (leftShoulderJoint.rotation[0] > -178) leftShoulderJoint.rotation[0] -= STEP * 2.5;
-        if (leftShoulderJoint.rotation[2] < 40 && leftShoulderJoint.rotation[0] <= -150) leftShoulderJoint.rotation[2] += STEP;
+    if (animationCycle == 2) {
+
+        if (leftShoulderJoint.rotation[0] >= -173 && leftShoulderJoint.rotation[0] <= 0)
+            leftShoulderJoint.rotation[0] += STEP * 2;
+
+        if (leftShoulderJoint.rotation[2] >= -27 && leftShoulderJoint.rotation[2] <= 0)
+            leftShoulderJoint.rotation[2] += STEP;
+
+        if (leftElbowJoint.rotation[0] >= -151 && leftElbowJoint.rotation[0] <= 0)
+            leftElbowJoint.rotation[0] += STEP * 2.5;
+
+        if (leftElbowJoint.rotation[2] < 55 && leftElbowJoint.rotation[2] >= 0)
+            leftElbowJoint.rotation[2] -= STEP * 1.5;
+
+        if (neckJoint.rotation[2] < 23 && neckJoint.rotation[2] >= 0)
+            neckJoint.rotation[2] -= STEP * 0.3;
+
+        if (neckJoint.rotation[0] < 17 && neckJoint.rotation[0] >= 0)
+            neckJoint.rotation[0] -= STEP * 0.3;
+
+        if (neckJoint.rotation[1] >= -7 && neckJoint.rotation[1] <= 0)
+            neckJoint.rotation[1] += STEP * 0.3;
+    }
+
+    if (animationCycle == 3) {
+
+        if (rightShoulderJoint.rotation[0] > -172) rightShoulderJoint.rotation[0] -= STEP * 3;
+        if (rightShoulderJoint.rotation[2] < 26 && rightShoulderJoint.rotation[0] <= -30) rightShoulderJoint.rotation[2] += STEP;
+        if (rightElbowJoint.rotation[0] > -150 && rightShoulderJoint.rotation[2] >= -10) rightElbowJoint.rotation[0] -= STEP * 2.5;
+        if (rightElbowJoint.rotation[2] > -54 && rightShoulderJoint.rotation[2] >= -10) rightElbowJoint.rotation[2] -= STEP * 1.5;
+        if (neckJoint.rotation[2] > -22 && rightShoulderJoint.rotation[0] <= -40) neckJoint.rotation[2] -= STEP * 0.3;
+        if (neckJoint.rotation[0] < 16 && rightShoulderJoint.rotation[0] <= -40) neckJoint.rotation[0] += STEP * 0.3;
+        if (neckJoint.rotation[1] < 6 && rightShoulderJoint.rotation[0] <= -40) neckJoint.rotation[1] += STEP * 0.3;
+    }
+
+    if (animationCycle == 4) {
+
+        if (rightShoulderJoint.rotation[0] >= -173 && rightShoulderJoint.rotation[0] <= 0)
+            rightShoulderJoint.rotation[0] += STEP * 2;
+
+        if (rightShoulderJoint.rotation[2] < 27 && rightShoulderJoint.rotation[2] >= 0)
+            rightShoulderJoint.rotation[2] -= STEP;
+
+        if (rightElbowJoint.rotation[0] >= -151 && rightElbowJoint.rotation[0] <= 0)
+            rightElbowJoint.rotation[0] += STEP * 2.5;
+
+        if (rightElbowJoint.rotation[2] > -55 && rightElbowJoint.rotation[2] <= 0)
+            rightElbowJoint.rotation[2] += STEP * 1.5;
+
+        if (neckJoint.rotation[2] > -23 && neckJoint.rotation[2] <= 0)
+            neckJoint.rotation[2] += STEP * 0.3;
+
+        if (neckJoint.rotation[0] < 17 && neckJoint.rotation[0] >= 0)
+            neckJoint.rotation[0] -= STEP * 0.3;
+
+        if (neckJoint.rotation[1] < 7 && neckJoint.rotation[1] >= 0)
+            neckJoint.rotation[1] -= STEP * 0.3;
     }
 }
 
@@ -221,9 +278,15 @@ void updateAnimation(int optAnimation) {
     else newAnimation = 0;
 }
 
-int endAnimation() {
+int checkIfAnimationEnded() {
 
     return (headNode == NULL);
+}
+
+void endAnimation() {
+
+    timer = 0.01;
+    animationFinished = 1;
 }
 
 /* Animacao inversa */
@@ -266,6 +329,47 @@ void inverseKinematics(int optAnimation, int resetFlag, int optUser) {
                 }
             }
             break;
+
+        /* Alongamento pescoco */
+        case 1:
+
+            /* Alongamento pescoco com braco esquerdo */
+            if (timer >= 15 && timer < 27) {
+
+                neckExercise(2);
+
+                if (timer >= 27) {
+
+                    leftShoulderJoint.rotation[0] = 0;
+                    leftShoulderJoint.rotation[2] = 0;
+                    leftElbowJoint.rotation[0] = 0;
+                    leftElbowJoint.rotation[2] = 0;
+                    neckJoint.rotation[0] = 0;
+                    neckJoint.rotation[1] = 0;
+                    neckJoint.rotation[2] = 0;
+                    kinematics(optAnimation, resetFlag, optUser);
+                }
+            }
+
+            /* Alongamento pescoco com braco direito */
+            else {
+
+                neckExercise(4);
+
+                if (timer >= 52) {
+
+                    rightShoulderJoint.rotation[0] = 0;
+                    rightShoulderJoint.rotation[2] = 0;
+                    rightElbowJoint.rotation[0] = 0;
+                    rightElbowJoint.rotation[2] = 0;
+                    neckJoint.rotation[0] = 0;
+                    neckJoint.rotation[1] = 0;
+                    neckJoint.rotation[2] = 0;
+                    kinematics(optAnimation, resetFlag, optUser);
+                }
+            }
+
+            break;
     }
 }
 
@@ -291,20 +395,21 @@ void kinematics(int optAnimation, int resetFlag, int optUser) {
             if (timer >= 20 && timer < 32) rightLegExercise(1);
             else if (timer >= 32 && timer < 40) inverseKinematics(optAnimation, resetFlag, optUser);
 
-            if (timer >= 40) {
-                timer = 0.01;
-                animationFinished = 1;
-            }
+            if (timer >= 40) endAnimation();
             break;
 
         /* Alongamento pescoco */
         case 1:
 
-            if (timer < 8) {
+            /* Alongamento pescoco com braco esquerdo */
+            if (timer < 15) neckExercise(1);
+            else if (timer >= 15 && timer < 27) inverseKinematics(optAnimation, resetFlag, optUser);
 
-                neckExercise(1);
+            /* Alongamento pescoco com braco direito */
+            if (timer >= 27 && timer < 40) neckExercise(3);
+            else if (timer >= 40 && timer < 52) inverseKinematics(optAnimation, resetFlag, optUser);
 
-            }
+            if (timer >= 52) endAnimation();
             break;
     }
 
