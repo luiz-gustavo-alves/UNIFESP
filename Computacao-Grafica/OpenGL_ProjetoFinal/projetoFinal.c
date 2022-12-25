@@ -38,7 +38,6 @@ int optAnimation = -1;
 int resetFlag = 0;
 int animationFlag = 0;
 
-
 /* Definicao dos eixos de rotacao a serem modificados pelo usuario */
 typedef struct {
 
@@ -369,29 +368,30 @@ int resetJointsAngle() {
         }
     }
 
-    if (numResetedJoints == NUM_JOINTS) resetFlag = 0;
+    if (numResetedJoints == NUM_JOINTS) {
+        resetFlag = 0;
+        optUser = -1;
+    }
 }
 
 void idleFunc() {
 
-    if (resetFlag && (optAnimation < 0 || optUser >= 0)) {
+    if (resetFlag && (optAnimation < 0 || (endAnimation() && optUser >= 0))) resetJointsAngle();
 
-        resetJointsAngle();
-        optAnimation = -1;
-        animationFlag = 0;
-    }
+    if (animationFlag) {
 
-    if (optAnimation >= 0 && animationFlag > 0) {
+        if (endAnimation() && optUser >= 0) resetFlag = 1;
+        else {
 
-        updateAnimation(optAnimation);
-        kinematics(optAnimation, resetFlag, optUser);
+            updateAnimation(optAnimation);
+            kinematics(optAnimation, resetFlag, optUser);
 
-        if (endAnimation()) {
-            animationFlag = 0;
-            optAnimation = -1;
+            if (endAnimation()) {
+                animationFlag = 0;
+                optAnimation = -1;
+            }
         }
     }
-
     glutPostRedisplay();
 }
 
