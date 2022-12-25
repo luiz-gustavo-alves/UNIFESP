@@ -33,36 +33,22 @@ Body_Structure  torso =      {4.0, 2.0},    /*  Torso      */
                 elbow =      {0.0, 0.4},    /*  Cotovelo   */
                 lowerArm =   {3.0, 0.5},    /*  Antebraco  */
                 hand     =   {0.0, 0.5},    /*  Mao        */
-                waist =      {3.5, 1.6},    /*  Cintura    */
+                waist =      {3.5, 1.7},    /*  Cintura    */
                 hip =        {0.0, 0.6},    /*  Quadril    */
                 upperLeg =   {2.5, 0.6},    /*  Coxa       */
                 knee =       {0.0, 0.5},    /*  Joelho     */
                 lowerLeg =   {3.0, 0.6},    /*  Canela     */
                 feet     =   {0.0, 0.8};    /*  Pe         */
 
-/* Juntas (articulacoes) do corpo humano */
-Animation   neckJoint =           {{0.0, 0.0, 0.0}, {20.0, 20.0, 15.0}, {20.0, 20.0, 15.0}},  /*  Juntas do pescoco            */
-            leftShoulderJoint =   {{0.0, 0.0, 0.0}, {160.0, 0.0, 90.0}, {60.0, 0.0, 0.0}},    /*  Juntas do ombro esquerdo     */
-            rightShoulderJoint =  {{0.0, 0.0, 0.0}, {160.0, 0.0, 0.0},  {60.0, 0.0, 90.0}},   /*  Juntas do ombro direito      */
-            leftElbowJoint =      {{0.0, 0.0, 0.0}, {140.0, 0.0, 0.0},  {0.0, 0.0, 60.0}},    /*  Juntas do cotovelo esquerdo  */
-            rightElbowJoint =     {{0.0, 0.0, 0.0}, {140.0, 0.0, 60.0}, {0.0, 0.0, 0.0}},     /*  Juntas do cotovelo direito   */
-            leftHipJoint =        {{0.0, 0.0, 0.0}, {30.0, 0.0, 30.0},  {30.0, 0.0, 30.0}},   /*  Juntas do quadril esquerdo   */
-            rightHipJoint =       {{0.0, 0.0, 0.0}, {30.0, 0.0, 30.0},  {30.0, 0.0, 30.0}},   /*  Juntas do quadril direito    */
-            leftKneeJoint =       {{0.0, 0.0, 0.0}, {0.0, 0.0, 0.0},    {140.0, 0.0, 0.0}},   /*  Juntas do joelho esquerdo    */
-            rightKneeJoint =      {{0.0, 0.0, 0.0}, {0.0, 0.0, 0.0},    {140.0, 0.0, 0.0}};   /*  Juntas do joelho direito     */
-
-/* Posicao atual do corpo humano */
-ObjectPosition humanBody = {{0.0, -1.0, 0.0}, {0.0, -1.0, 0.0}};
-
 /* Declaracao da superficie quadrica */
-GLUquadricObj *quad;
+GLUquadricObj *quadHuman;
 
 /* Inicializacao das quadricas */
 void initBodyQuadrics() {
 
-    quad = gluNewQuadric();
-    gluQuadricDrawStyle(quad, GLU_FILL);
-    gluQuadricNormals(quad, GLU_SMOOTH);
+    quadHuman = gluNewQuadric();
+    gluQuadricDrawStyle(quadHuman, GLU_FILL);
+    gluQuadricNormals(quadHuman, GLU_SMOOTH);
 }
 
 /* Desenha torso */
@@ -71,7 +57,7 @@ void drawTorso() {
     glPushMatrix();
 
         glRotatef(-90.0, 1.0, 0.0, 0.0);
-        gluCylinder(quad, torso.radius / 1.2, torso.radius, torso.height, SLICES, STACKS);
+        gluCylinder(quadHuman, torso.radius / 1.2, torso.radius, torso.height, SLICES, STACKS);
 
 	glPopMatrix();
 }
@@ -82,8 +68,8 @@ void drawNeck() {
     glPushMatrix();
 
         glRotatef(-90.0, 1.0, 0.0, 0.0);
-        gluSphere(quad, neck.radius, SLICES, STACKS);
-        gluCylinder(quad, neck.radius, neck.radius, neck.height, SLICES, STACKS);
+        gluSphere(quadHuman, neck.radius, SLICES, STACKS);
+        gluCylinder(quadHuman, neck.radius, neck.radius, neck.height, SLICES, STACKS);
 
     glPopMatrix();
 }
@@ -99,7 +85,7 @@ void drawHead() {
         glPushMatrix();
 
             glScalef(1.05, 1.2, 1.0);
-            gluSphere(quad, head.radius, SLICES, STACKS);
+            gluSphere(quadHuman, head.radius, SLICES, STACKS);
 
         glPopMatrix();
 
@@ -110,7 +96,7 @@ void drawHead() {
         glPushMatrix();
 
             glTranslatef(head.radius * 0.5, 0.0, head.radius - eye.radius);
-            gluSphere(quad, eye.radius, SLICES, STACKS);
+            gluSphere(quadHuman, eye.radius, SLICES, STACKS);
 
         glPopMatrix();
 
@@ -118,7 +104,7 @@ void drawHead() {
         glPushMatrix();
 
             glTranslatef(-head.radius * 0.5, 0.0, head.radius - eye.radius);
-            gluSphere(quad, eye.radius, SLICES, STACKS);
+            gluSphere(quadHuman, eye.radius, SLICES, STACKS);
 
         glPopMatrix();
 
@@ -128,7 +114,7 @@ void drawHead() {
 /* Desenha ombro */
 void drawShoulder() {
 
-    gluSphere(quad, shoulder.radius, SLICES, STACKS);
+    gluSphere(quadHuman, shoulder.radius, SLICES, STACKS);
 }
 
 /* Desenha braco */
@@ -137,7 +123,7 @@ void drawUpperArm() {
     glPushMatrix();
 
         glRotatef(90.0, 1.0, 0.0, 0.0);
-        gluCylinder(quad, upperArm.radius, upperArm.radius - 0.1, upperArm.height, SLICES, STACKS);
+        gluCylinder(quadHuman, upperArm.radius, upperArm.radius - 0.1, upperArm.height, SLICES, STACKS);
 
     glPopMatrix();
 }
@@ -145,7 +131,7 @@ void drawUpperArm() {
 /* Desenha cotovelo */
 void drawElbow() {
 
-    gluSphere(quad, elbow.radius, SLICES, STACKS);
+    gluSphere(quadHuman, elbow.radius, SLICES, STACKS);
 }
 
 /* Desenha antebraco */
@@ -154,7 +140,7 @@ void drawLowerArm() {
     glPushMatrix();
 
         glRotatef(90.0, 1.0, 0.0, 0.0);
-        gluCylinder(quad, lowerArm.radius - 0.1, lowerArm.radius - 0.1, lowerArm.height, SLICES, STACKS);
+        gluCylinder(quadHuman, lowerArm.radius - 0.1, lowerArm.radius - 0.1, lowerArm.height, SLICES, STACKS);
 
     glPopMatrix();
 }
@@ -162,7 +148,7 @@ void drawLowerArm() {
 /* Desenha mao */
 void drawHand() {
 
-    gluSphere(quad, hand.radius, SLICES, STACKS);
+    gluSphere(quadHuman, hand.radius, SLICES, STACKS);
 }
 
 /* Desenha cintura */
@@ -172,7 +158,7 @@ void drawWaist() {
 
         glTranslatef(0.0, - (torso.height * 0.7), 0.0);
         glRotatef(-90.0, 1.0, 0.0, 0.0);
-        gluCylinder(quad, waist.radius / 1.2, waist.radius, waist.height * 0.8, SLICES, STACKS);
+        gluCylinder(quadHuman, waist.radius / 1.2, waist.radius, waist.height * 0.8, SLICES, STACKS);
 
 	glPopMatrix();
 }
@@ -180,7 +166,7 @@ void drawWaist() {
 /* Desenha quadril */
 void drawHip() {
 
-    gluSphere(quad, hip.radius, SLICES, STACKS);
+    gluSphere(quadHuman, hip.radius, SLICES, STACKS);
 }
 
 /* Desenha coxa */
@@ -189,7 +175,7 @@ void drawUpperLeg() {
     glPushMatrix();
 
         glRotatef(90.0, 1.0, 0.0, 0.0);
-        gluCylinder(quad, upperLeg.radius, upperLeg.radius - 0.1, upperLeg.height, SLICES, STACKS);
+        gluCylinder(quadHuman, upperLeg.radius, upperLeg.radius - 0.1, upperLeg.height, SLICES, STACKS);
 
     glPopMatrix();
 }
@@ -197,7 +183,7 @@ void drawUpperLeg() {
 /* Desenha joelho */
 void drawKnee() {
 
-    gluSphere(quad, knee.radius, SLICES, STACKS);
+    gluSphere(quadHuman, knee.radius, SLICES, STACKS);
 }
 
 /* Desenha canela */
@@ -206,7 +192,7 @@ void drawLowerLeg() {
     glPushMatrix();
 
         glRotatef(90.0, 1.0, 0.0, 0.0);
-        gluCylinder(quad, lowerLeg.radius - 0.1, lowerLeg.radius - 0.2, lowerLeg.height, SLICES, STACKS);
+        gluCylinder(quadHuman, lowerLeg.radius - 0.1, lowerLeg.radius - 0.2, lowerLeg.height, SLICES, STACKS);
 
     glPopMatrix();
 }
@@ -218,7 +204,7 @@ void drawFeet() {
 
         glRotatef(90, 0.0, 0.0, 1.0);
         glScalef(0.5, 1.0, 1.5);
-        gluSphere(quad, feet.radius, SLICES, STACKS);
+        gluSphere(quadHuman, feet.radius, SLICES, STACKS);
 
     glPopMatrix();
 }
@@ -241,7 +227,7 @@ void drawHuman() {
             glPushMatrix();
 
                 glRotatef(-90, 1.0, 0.0, 0.0);
-                gluDisk(quad, 0, torso.radius, SLICES, SLICES);
+                gluDisk(quadHuman, 0, torso.radius, SLICES, SLICES);
 
             glPopMatrix();
 
@@ -316,7 +302,7 @@ void drawHuman() {
         drawWaist();
 
         /* Define cor da perna esquerda */
-        glColor3fv(bisque.color);
+        glColor3fv(navy.color);
 
         glPushMatrix();
 
@@ -342,7 +328,7 @@ void drawHuman() {
         glPopMatrix();
 
         /* Define cor da perna direita */
-        glColor3fv(bisque.color);
+        glColor3fv(navy.color);
 
         glPushMatrix();
 
