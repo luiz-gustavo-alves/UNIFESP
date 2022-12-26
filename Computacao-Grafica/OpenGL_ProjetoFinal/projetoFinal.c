@@ -23,12 +23,11 @@
 #define MAX_ZOOM_IN 30
 #define PI 3.141592
 
-
 /* Rotacao da camera */
 float cameraX, cameraY, cameraZ;
 float aspectRatio       = 0.0;
 float vision            = 45.0;
-float cameraRadius      = 100.0f;
+float cameraRadius      = 30.0f;
 float theta             = 0.35f;
 float alpha             = 0.0f;
 
@@ -376,17 +375,17 @@ int resetJointsAngle() {
 
 void idleFunc() {
 
-    if (resetFlag && (optAnimation < 0 || (endAnimation() && optUser >= 0))) resetJointsAngle();
+    if (resetFlag && (optAnimation < 0 || (checkIfAnimationEnded() && optUser >= 0))) resetJointsAngle();
 
     if (animationFlag) {
 
-        if (endAnimation() && optUser >= 0) resetFlag = 1;
+        if (checkIfAnimationEnded() && optUser >= 0) resetFlag = 1;
         else {
 
             updateAnimation(optAnimation);
             kinematics(optAnimation, resetFlag, optUser);
 
-            if (endAnimation()) {
+            if (checkIfAnimationEnded()) {
                 animationFlag = 0;
                 optAnimation = -1;
             }
@@ -427,11 +426,10 @@ int main(int argc, char *argv[]) {
 
     aquecimento = glutCreateMenu(animationMenu);
 
-            glutAddMenuEntry(" Alongamento Pernas ", 0);
-            glutAddMenuEntry(" Alongamento Pescoco ", 1);
-            glutAddMenuEntry(" Agachamento ", 2);
-            glutAddMenuEntry(" Polichinelo ", 3);
-            glutAddMenuEntry(" Todos ", 4);
+            glutAddMenuEntry(" Aquecimento Pernas ", 0);
+            glutAddMenuEntry(" Aquecimento Pescoco ", 1);
+            glutAddMenuEntry(" Flexao Lateral Tronco ", 2);
+            glutAddMenuEntry(" Todos ", 3);
 
     reset = glutCreateMenu(resetMenu);
 

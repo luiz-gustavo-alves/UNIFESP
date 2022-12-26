@@ -40,6 +40,7 @@ Body_Structure  torso =      {4.0, 2.0},    /*  Torso      */
                 lowerLeg =   {3.0, 0.6},    /*  Canela     */
                 feet     =   {0.0, 0.8};    /*  Pe         */
 
+
 /* Declaracao da superficie quadrica */
 GLUquadricObj *quadHuman;
 
@@ -214,12 +215,16 @@ void drawHuman() {
 
     glPushMatrix();
 
-        glTranslatef(humanBody.current[0], humanBody.current[1], humanBody.current[2]);
+        glTranslatef(humanBodyPosition.current[0], humanBodyPosition.current[1], humanBodyPosition.current[2]);
 
         glPushMatrix();
 
             /* Define cor da camisa */
             glColor3fv(indianred.color);
+
+            glRotatef(torsoJoint.rotation[0], 1.0, 0.0, 0.0);
+            glRotatef(torsoJoint.rotation[1], 0.0, 1.0, 0.0);
+            glRotatef(torsoJoint.rotation[2], 0.0, 0.0, 1.0);
             drawTorso();
 
             glTranslatef(0.0, torso.height, 0.0);
@@ -299,6 +304,10 @@ void drawHuman() {
 
         /* Define cor da calca */
         glColor3fv(navy.color);
+        glRotatef(waistJoint.rotation[0], 1.0, 0.0, 0.0);
+        glRotatef(waistJoint.rotation[1], 0.0, 1.0, 0.0);
+        glRotatef(waistJoint.rotation[2], 0.0, 0.0, 1.0);
+
         drawWaist();
 
         /* Define cor da perna esquerda */
@@ -307,6 +316,7 @@ void drawHuman() {
         glPushMatrix();
 
             glTranslated(-waist.radius * 0.5, -waist.height * 0.7, 0.0);
+            glTranslatef(0.0, leftLegPosition.current[1], 0.0);
             glRotatef(leftHipJoint.rotation[0], 1.0, 0.0, 0.0);
             glRotatef(leftHipJoint.rotation[2], 0.0, 0.0, 1.0);
 
@@ -333,6 +343,7 @@ void drawHuman() {
         glPushMatrix();
 
             glTranslated(waist.radius * 0.5, -waist.height * 0.7, 0.0);
+            glTranslatef(0.0, rightLegPosition.current[1], 0.0);
             glRotatef(rightHipJoint.rotation[0], 1.0, 0.0, 0.0);
             glRotatef(rightHipJoint.rotation[2], 0.0, 0.0, 1.0);
 
