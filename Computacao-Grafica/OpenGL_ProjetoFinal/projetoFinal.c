@@ -426,10 +426,11 @@ int main(int argc, char *argv[]) {
 
     aquecimento = glutCreateMenu(animationMenu);
 
-            glutAddMenuEntry(" Aquecimento Pernas ", 0);
-            glutAddMenuEntry(" Aquecimento Pescoco ", 1);
+            glutAddMenuEntry(" Alongamento Pernas ", 0);
+            glutAddMenuEntry(" Alongamento Pescoco ", 1);
             glutAddMenuEntry(" Flexao Lateral Tronco ", 2);
-            glutAddMenuEntry(" Todos ", 3);
+            glutAddMenuEntry(" Polichinelo ", 3);
+            glutAddMenuEntry(" Todos ", 4);
 
     reset = glutCreateMenu(resetMenu);
 

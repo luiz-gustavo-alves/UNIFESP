@@ -48,17 +48,17 @@ typedef struct AnimationLst {
 } AnimationLst;
 
 /* Juntas (articulacoes) do corpo humano */
-Animation   neckJoint =           {{0.0, 0.0, 0.0}, {20.0, 20.0, 20.0}, {20.0, 20.0, 20.0}},  /*  Juntas do pescoco            */
-            leftShoulderJoint =   {{0.0, 0.0, 0.0}, {200.0, 0.0, 90.0}, {60.0, 0.0, 10.0}},   /*  Juntas do ombro esquerdo     */
-            rightShoulderJoint =  {{0.0, 0.0, 0.0}, {200.0, 0.0, 10.0}, {60.0, 0.0, 90.0}},   /*  Juntas do ombro direito      */
-            leftElbowJoint =      {{0.0, 0.0, 0.0}, {140.0, 0.0, 0.0},  {0.0, 0.0, 60.0}},    /*  Juntas do cotovelo esquerdo  */
-            rightElbowJoint =     {{0.0, 0.0, 0.0}, {140.0, 0.0, 60.0}, {0.0, 0.0, 0.0}},     /*  Juntas do cotovelo direito   */
-            leftHipJoint =        {{0.0, 0.0, 0.0}, {70.0, 0.0, 40.0},  {50.0, 0.0, 40.0}},   /*  Juntas do quadril esquerdo   */
-            rightHipJoint =       {{0.0, 0.0, 0.0}, {70.0, 0.0, 40.0},  {50.0, 0.0, 40.0}},   /*  Juntas do quadril direito    */
-            leftKneeJoint =       {{0.0, 0.0, 0.0}, {0.0, 0.0, 0.0},    {140.0, 0.0, 0.0}},   /*  Juntas do joelho esquerdo    */
-            rightKneeJoint =      {{0.0, 0.0, 0.0}, {0.0, 0.0, 0.0},    {140.0, 0.0, 0.0}},   /*  Juntas do joelho direito     */
-            torsoJoint =          {{0.0, 0.0, 0.0}},                                          /*  Juntas do torso              */
-            waistJoint =          {{0.0, 0.0, 0.0}};                                          /*  Juntas do quadril            */
+Animation   neckJoint =           {{0.0, 0.0, 0.0}, {20.0, 20.0, 20.0},  {20.0, 20.0, 20.0}},  /*  Juntas do pescoco            */
+            leftShoulderJoint =   {{0.0, 0.0, 0.0}, {200.0, 0.0, 160.0}, {60.0, 0.0, 10.0}},   /*  Juntas do ombro esquerdo     */
+            rightShoulderJoint =  {{0.0, 0.0, 0.0}, {200.0, 0.0, 10.0},  {60.0, 0.0, 160.0}},  /*  Juntas do ombro direito      */
+            leftElbowJoint =      {{0.0, 0.0, 0.0}, {140.0, 0.0, 0.0},   {0.0, 0.0, 60.0}},    /*  Juntas do cotovelo esquerdo  */
+            rightElbowJoint =     {{0.0, 0.0, 0.0}, {140.0, 0.0, 60.0},  {0.0, 0.0, 0.0}},     /*  Juntas do cotovelo direito   */
+            leftHipJoint =        {{0.0, 0.0, 0.0}, {70.0, 0.0, 40.0},   {50.0, 0.0, 40.0}},   /*  Juntas do quadril esquerdo   */
+            rightHipJoint =       {{0.0, 0.0, 0.0}, {70.0, 0.0, 40.0},   {50.0, 0.0, 40.0}},   /*  Juntas do quadril direito    */
+            leftKneeJoint =       {{0.0, 0.0, 0.0}, {0.0, 0.0, 0.0},     {140.0, 0.0, 0.0}},   /*  Juntas do joelho esquerdo    */
+            rightKneeJoint =      {{0.0, 0.0, 0.0}, {0.0, 0.0, 0.0},     {140.0, 0.0, 0.0}},   /*  Juntas do joelho direito     */
+            torsoJoint =          {{0.0, 0.0, 0.0}},                                           /*  Juntas do torso              */
+            waistJoint =          {{0.0, 0.0, 0.0}};                                           /*  Juntas do quadril            */
 
 
 /* Definindo Rotacao e Posicao (inicial) dos halteres que serao utilizados durante o exercicio */
@@ -319,7 +319,7 @@ void torsoExercise(int animationCycle) {
         if (rightShoulderJoint.rotation[0] > -181 && rightShoulderJoint.rotation[0] <= 0)
             rightShoulderJoint.rotation[0] += STEP * 2.5;
 
-        if (rightShoulderJoint.rotation[2] > -15 && rightShoulderJoint.rotation[0] >= -121 && rightShoulderJoint.rotation[2] <= 0)
+        if (rightShoulderJoint.rotation[2] > -15 && rightShoulderJoint.rotation[0] <= -121 && rightShoulderJoint.rotation[2] <= 0)
             rightShoulderJoint.rotation[2] += STEP;
 
         if (rightElbowJoint.rotation[2] > -41 && rightShoulderJoint.rotation[0] <= -81 && rightElbowJoint.rotation[2] <= 0)
@@ -340,9 +340,8 @@ void torsoExercise(int animationCycle) {
         if (leftHipJoint.rotation[2] > -15 && leftHipJoint.rotation[2] <= 0)
             leftHipJoint.rotation[2] += STEP * 0.2;
 
-        if (rightHipJoint.rotation[2] > -9 && rightHipJoint.rotation[2] <= 0) {
+        if (rightHipJoint.rotation[2] > -9 && rightHipJoint.rotation[2] <= 0)
             rightHipJoint.rotation[2] += STEP * 0.2;
-        }
 
         if (rightLegPosition.current[1] <= rightLegPosition.init[1])
             rightLegPosition.current[1] = -(waistJoint.rotation[2] * 0.04);
@@ -385,7 +384,7 @@ void torsoExercise(int animationCycle) {
         if (leftShoulderJoint.rotation[0] > -181 && leftShoulderJoint.rotation[0] <= 0)
             leftShoulderJoint.rotation[0] += STEP * 2.5;
 
-        if (leftShoulderJoint.rotation[2] < 15 && leftShoulderJoint.rotation[0] >= -121 && leftShoulderJoint.rotation[2] >= 0)
+        if (leftShoulderJoint.rotation[2] < 15 && leftShoulderJoint.rotation[0] <= -121 && leftShoulderJoint.rotation[2] >= 0)
             leftShoulderJoint.rotation[2] -= STEP;
 
         if (leftElbowJoint.rotation[2] < 41 && leftShoulderJoint.rotation[0] <= -81 && leftElbowJoint.rotation[2] >= 0)
@@ -432,6 +431,49 @@ void resetTorsoExerciseAnimation(int animationCycle) {
 
     if (animationCycle == 1) rightLegPosition.current[1] = rightLegPosition.init[1];
     if (animationCycle == 2) leftLegPosition.current[1] = leftLegPosition.init[1];
+
+    timer += 1;
+}
+
+/* Polichinelo */
+void jumpingJackExercise(int animationCycle) {
+
+    timer += 0.01;
+
+    if (animationCycle == 1) {
+
+        if (leftShoulderJoint.rotation[0] > -176) leftShoulderJoint.rotation[0] -= STEP * 4;
+        if (leftElbowJoint.rotation[2] < 30 && leftShoulderJoint.rotation[0] <= -100) leftElbowJoint.rotation[2] += STEP * 1.5;
+        if (rightShoulderJoint.rotation[0] > -176) rightShoulderJoint.rotation[0] -= STEP * 4;
+        if (rightElbowJoint.rotation[2] > -30 && rightShoulderJoint.rotation[0] <= -100) rightElbowJoint.rotation[2] -= STEP * 1.5;
+        if (leftHipJoint.rotation[2] > -24) leftHipJoint.rotation[2] -= STEP * 0.7;
+        if (rightHipJoint.rotation[2] < 24) rightHipJoint.rotation[2] += STEP * 0.7;
+        if (humanBodyPosition.current[1] < -0.5) humanBodyPosition.current[1] += 0.001;
+    }
+
+    else if (animationCycle == 2) {
+
+        if (leftShoulderJoint.rotation[0] > -177 && leftShoulderJoint.rotation[0] <= 0)
+            leftShoulderJoint.rotation[0] += STEP * 4;
+
+        if (leftElbowJoint.rotation[2] < 31 && leftShoulderJoint.rotation[0] <= -100 && leftElbowJoint.rotation[2] >= 0)
+            leftElbowJoint.rotation[2] -= STEP * 1.5;
+
+        if (rightShoulderJoint.rotation[0] > -177 && rightShoulderJoint.rotation[0] <= 0)
+            rightShoulderJoint.rotation[0] += STEP * 4;
+
+        if (rightElbowJoint.rotation[2] > -31 && rightShoulderJoint.rotation[0] <= -100 && rightElbowJoint.rotation[2] <= 0)
+            rightElbowJoint.rotation[2] += STEP * 1.5;
+
+        if (leftHipJoint.rotation[2] > -25 && leftHipJoint.rotation[2] <= 0)
+            leftHipJoint.rotation[2] += STEP * 0.7;
+
+        if (rightHipJoint.rotation[2] < 25 && rightHipJoint.rotation[2] >= 0)
+            rightHipJoint.rotation[2] -= STEP * 0.7;
+
+        if (humanBodyPosition.current[1] >= humanBodyPosition.init[1])
+            humanBodyPosition.current[1] -= 0.001;
+    }
 }
 
 void updateAnimation(int optAnimation) {
@@ -458,52 +500,54 @@ void inverseKinematics(int optAnimation, int resetFlag, int optUser) {
 
     switch (headNode->animationId) {
 
-        /* Aquecimento pernas */
+        /* Alongamento pernas */
         case 0:
 
-            /* Aquecimento perna esquerda */
-            if (timer < 20) {
+            /* Alongamento perna esquerda */
+            if (timer < 30) {
 
                 leftLegExercise(2);
 
-                if (timer >= 20) {
+                if (timer >= 30) {
 
                     leftShoulderJoint.rotation[0] = 0;
                     leftShoulderJoint.rotation[2] = 0;
                     leftElbowJoint.rotation[0] = 0;
                     leftHipJoint.rotation[0] = 0;
                     leftKneeJoint.rotation[0] = 0;
+                    timer += 1;
                     kinematics(optAnimation, resetFlag, optUser);
                 }
             }
 
-            /* Aquecimento perna direita */
+            /* Alongamento perna direita */
             else {
 
                 rightLegExercise(2);
 
-                if (timer >= 40) {
+                if (timer >= 61) {
 
                     rightShoulderJoint.rotation[0] = 0;
                     rightShoulderJoint.rotation[2] = 0;
                     rightElbowJoint.rotation[0] = 0;
                     rightHipJoint.rotation[0] = 0;
                     rightKneeJoint.rotation[0] = 0;
+                    timer += 1;
                     kinematics(optAnimation, resetFlag, optUser);
                 }
             }
             break;
 
 
-        /* Aquecimento pescoco */
+        /* Alongamento pescoco */
         case 1:
 
-            /* Aquecimento pescoco com braco esquerdo */
-            if (timer < 27) {
+            /* Alongamento pescoco com braco esquerdo */
+            if (timer < 34) {
 
                 neckExercise(2);
 
-                if (timer >= 27) {
+                if (timer >= 29) {
 
                     leftShoulderJoint.rotation[0] = 0;
                     leftShoulderJoint.rotation[2] = 0;
@@ -512,16 +556,17 @@ void inverseKinematics(int optAnimation, int resetFlag, int optUser) {
                     neckJoint.rotation[0] = 0;
                     neckJoint.rotation[1] = 0;
                     neckJoint.rotation[2] = 0;
+                    timer += 1;
                     kinematics(optAnimation, resetFlag, optUser);
                 }
             }
 
-            /* Aquecimento pescoco com braco direito */
+            /* Alongamento pescoco com braco direito */
             else {
 
                 neckExercise(4);
 
-                if (timer >= 52) {
+                if (timer >= 62) {
 
                     rightShoulderJoint.rotation[0] = 0;
                     rightShoulderJoint.rotation[2] = 0;
@@ -530,6 +575,7 @@ void inverseKinematics(int optAnimation, int resetFlag, int optUser) {
                     neckJoint.rotation[0] = 0;
                     neckJoint.rotation[1] = 0;
                     neckJoint.rotation[2] = 0;
+                    timer += 1;
                     kinematics(optAnimation, resetFlag, optUser);
                 }
             }
@@ -540,17 +586,34 @@ void inverseKinematics(int optAnimation, int resetFlag, int optUser) {
         /* Flexao lateral tronco */
         case 2:
 
-            if (timer < 20) {
+            if (timer < 28) {
 
                 torsoExercise(2);
-                if (timer >= 20) resetTorsoExerciseAnimation(1);
+                if (timer >= 28) resetTorsoExerciseAnimation(1);
             }
             else {
 
                 torsoExercise(4);
-                if (timer >= 40) resetTorsoExerciseAnimation(2);
+                if (timer >= 62) resetTorsoExerciseAnimation(2);
             }
             break;
+
+        /* Polichinelo */
+        case 3:
+
+            if (timer < 14) jumpingJackExercise(2);
+            else {
+
+                leftShoulderJoint.rotation[0] = 0;
+                leftElbowJoint.rotation[2] = 0;
+                rightShoulderJoint.rotation[0] = 0;
+                rightElbowJoint.rotation[2] = 0;
+                leftHipJoint.rotation[2] = 0;
+                rightHipJoint.rotation[2] = 0;
+                humanBodyPosition.current[1] = humanBodyPosition.init[1];
+                timer += 1;
+                kinematics(optAnimation, resetFlag, optUser);
+            }
     }
 }
 
@@ -564,33 +627,33 @@ void kinematics(int optAnimation, int resetFlag, int optUser) {
 
     switch (headNode->animationId) {
 
-        /* Aquecimento pernas */
+        /* Alongamento pernas */
         case 0:
 
-            /* Aquecimento perna esquerda */
-            if (timer < 12) leftLegExercise(1);
-            else if (timer >= 12 && timer < 20) inverseKinematics(optAnimation, resetFlag, optUser);
+            /* Alongamento perna esquerda */
+            if (timer < 20) leftLegExercise(1);
+            else if (timer >= 20 && timer < 31) inverseKinematics(optAnimation, resetFlag, optUser);
 
-            /* Aquecimento perna direita */
-            if (timer >= 20 && timer < 32) rightLegExercise(1);
-            else if (timer >= 32 && timer < 40) inverseKinematics(optAnimation, resetFlag, optUser);
+            /* Alongamento perna direita */
+            if (timer >= 30 && timer < 51) rightLegExercise(1);
+            else if (timer >= 51 && timer < 62) inverseKinematics(optAnimation, resetFlag, optUser);
 
-            if (timer >= 40) endAnimation();
+            if (timer >= 62) endAnimation();
             break;
 
 
-        /* Aquecimento pescoco */
+        /* Alongamento pescoco */
         case 1:
 
-            /* Aquecimento pescoco com braco esquerdo */
-            if (timer < 15) neckExercise(1);
-            else if (timer >= 15 && timer < 27) inverseKinematics(optAnimation, resetFlag, optUser);
+            /* Alongamento pescoco com braco esquerdo */
+            if (timer < 20) neckExercise(1);
+            else if (timer >= 20 && timer < 30) inverseKinematics(optAnimation, resetFlag, optUser);
 
-            /* Aquecimento pescoco com braco direito */
-            if (timer >= 27 && timer < 40) neckExercise(3);
-            else if (timer >= 40 && timer < 52) inverseKinematics(optAnimation, resetFlag, optUser);
+            /* Alongamento pescoco com braco direito */
+            if (timer >= 30 && timer < 51) neckExercise(3);
+            else if (timer >= 51 && timer < 63) inverseKinematics(optAnimation, resetFlag, optUser);
 
-            if (timer >= 52) endAnimation();
+            if (timer >= 63) endAnimation();
             break;
 
 
@@ -598,14 +661,24 @@ void kinematics(int optAnimation, int resetFlag, int optUser) {
         case 2:
 
             /* Flexao lateral tronco (esquerda) */
-            if (timer < 12) torsoExercise(1);
-            else if (timer >= 12 && timer < 20) inverseKinematics(optAnimation, resetFlag, optUser);
+            if (timer < 18) torsoExercise(1);
+            else if (timer >= 18 && timer < 29) inverseKinematics(optAnimation, resetFlag, optUser);
 
             /* Flexao lateral tronco (direita) */
-            if (timer >= 20 && timer < 32) torsoExercise(3);
-            else if (timer >= 32 && timer < 40) inverseKinematics(optAnimation, resetFlag, optUser);
+            if (timer >= 29 && timer < 52) torsoExercise(3);
+            else if (timer >= 52 && timer < 63) inverseKinematics(optAnimation, resetFlag, optUser);
 
-            if (timer >= 40) endAnimation();
+            if (timer >= 63) endAnimation();
+            break;
+
+
+        /* Polichinelo */
+        case 3:
+
+            if (timer < 6) jumpingJackExercise(1);
+            else if (timer >= 6 && timer < 15) inverseKinematics(optAnimation, resetFlag, optUser);
+
+            if (timer >= 15) endAnimation();
             break;
     }
 
@@ -618,7 +691,7 @@ void kinematics(int optAnimation, int resetFlag, int optUser) {
         else {
 
             deleteFirstNode();
-            printList();
+            //printList();
             if (checkIfAnimationEnded()) addNode();
         }
     }
