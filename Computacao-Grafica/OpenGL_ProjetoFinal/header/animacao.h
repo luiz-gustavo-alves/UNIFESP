@@ -47,12 +47,6 @@ typedef struct AnimationLst {
 
 } AnimationLst;
 
-ObjectPosition  humanBodyPosition   = {{0.0, -1.0, 0.0}, {0.0, -1.0, 0.0}},
-                leftLegPosition     = {{0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}},
-                rightLegPosition    = {{0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}};
-
-AnimationLst *headNode = NULL;
-
 /* Juntas (articulacoes) do corpo humano */
 Animation   neckJoint =           {{0.0, 0.0, 0.0}, {20.0, 20.0, 20.0}, {20.0, 20.0, 20.0}},  /*  Juntas do pescoco            */
             leftShoulderJoint =   {{0.0, 0.0, 0.0}, {200.0, 0.0, 90.0}, {60.0, 0.0, 10.0}},   /*  Juntas do ombro esquerdo     */
@@ -63,19 +57,26 @@ Animation   neckJoint =           {{0.0, 0.0, 0.0}, {20.0, 20.0, 20.0}, {20.0, 2
             rightHipJoint =       {{0.0, 0.0, 0.0}, {70.0, 0.0, 40.0},  {50.0, 0.0, 40.0}},   /*  Juntas do quadril direito    */
             leftKneeJoint =       {{0.0, 0.0, 0.0}, {0.0, 0.0, 0.0},    {140.0, 0.0, 0.0}},   /*  Juntas do joelho esquerdo    */
             rightKneeJoint =      {{0.0, 0.0, 0.0}, {0.0, 0.0, 0.0},    {140.0, 0.0, 0.0}},   /*  Juntas do joelho direito     */
-            torsoJoint =          {{0.0, 0.0, 0.0}, {45.0, 45.0, 45.0}, {45.0, 45.0, 45.0}},
-            waistJoint =          {{0.0, 0.0, 0.0}, {45.0, 45.0, 45.0}, {45.0, 45.0, 45.0}};
+            torsoJoint =          {{0.0, 0.0, 0.0}},                                          /*  Juntas do torso              */
+            waistJoint =          {{0.0, 0.0, 0.0}};                                          /*  Juntas do quadril            */
+
 
 /* Definindo Rotacao e Posicao (inicial) dos halteres que serao utilizados durante o exercicio */
 Animation   leftDumbbellRot  = {{0.0, 0.0, 0.0}},
             rightDumbbellRot = {{0.0, 0.0, 0.0}};
 
-/* Posicao inicial e atual do corpo humano */
 
+/* Posicao inicial do corpo humano e das estruturas do corpo */
+ObjectPosition  humanBodyPosition   = {{0.0, -1.0, 0.0}, {0.0, -1.0, 0.0}},
+                leftLegPosition     = {{0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}},
+                rightLegPosition    = {{0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}};
 
 /* Posicao inicial e atual dos halteres */
 ObjectPosition  leftDumbbellPos  = {{-2.0, 5.0, -1.0}, {-2.0, 5.0, -1.0}},
                 rightDumbbellPos = {{-2.0, 1.0, -1.0}, {-2.0, 1.0, -1.0}};
+
+/* Inicio da lista */
+AnimationLst *headNode = NULL;
 
 void inverseKinematics(int optAnimation, int resetFlag, int optUser);
 void kinematics(int optAnimation, int resetFlag, int optUser);
@@ -128,6 +129,9 @@ void deleteList() {
 void printList() {
 
     AnimationLst *temp = headNode;
+
+    if (temp == NULL) printf("null");
+
     while (temp != NULL) {
         printf("%d -> ", temp->animationId);
         temp = temp->next;
@@ -436,7 +440,6 @@ void updateAnimation(int optAnimation) {
         animationId = optAnimation;
         newAnimation = 1;
     }
-    else newAnimation = 0;
 }
 
 int checkIfAnimationEnded() {
@@ -613,9 +616,10 @@ void kinematics(int optAnimation, int resetFlag, int optUser) {
             deleteList();
         }
         else {
-            printList();
+
             deleteFirstNode();
-            if (!newAnimation) addNode();
+            printList();
+            if (checkIfAnimationEnded()) addNode();
         }
     }
 
