@@ -27,9 +27,9 @@
 float cameraX, cameraY, cameraZ;
 float aspectRatio       = 0.0;
 float vision            = 45.0;
-float cameraRadius      = 30.0f;
-float theta             = 0.35f;
-float alpha             = 0.0f;
+float cameraRadius      = 130.0;
+float theta             = 0.35;
+float alpha             = 0.0;
 
 /* Opcoes de menu e animacao */
 int optUser = -1;
@@ -254,7 +254,7 @@ void keyboard(unsigned char key, int x, int y) {
         case 'z':
         case 'Z':
 
-            if (optUser < 0 || (animationFlag || resetFlag)) return;
+            if (optUser < 0 || (animationFlag || resetFlag || checkIfHaveEquipament())) return;
 
             if (key == 'x' || key == 'X') rotate.keyPressed = 'x';
             else if (key == 'y' || key == 'Y') rotate.keyPressed = 'y';
@@ -396,7 +396,7 @@ void idleFunc() {
 
 int main(int argc, char *argv[]) {
 
-    int subUserMenu, aquecimento, reset;
+    int subUserMenu, aquecimento, halteres, reset;
 
     glutInit(&argc,argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
@@ -426,17 +426,23 @@ int main(int argc, char *argv[]) {
 
     aquecimento = glutCreateMenu(animationMenu);
 
-            glutAddMenuEntry(" Alongamento Pernas ", 0);
-            glutAddMenuEntry(" Alongamento Pescoco ", 1);
-            glutAddMenuEntry(" Flexao Lateral Tronco ", 2);
-            glutAddMenuEntry(" Polichinelo ", 3);
-            glutAddMenuEntry(" Todos ", 4);
+        glutAddMenuEntry(" Alongamento Pernas ", 0);
+        glutAddMenuEntry(" Alongamento Pescoco ", 1);
+        glutAddMenuEntry(" Flexao Lateral Tronco ", 2);
+        glutAddMenuEntry(" Agachamento ", 3);
+        glutAddMenuEntry(" Polichinelo ", 4);
+        glutAddMenuEntry(" Todos ", 5);
+
+    halteres = glutCreateMenu(animationMenu);
+
+        glutAddMenuEntry(" Pegar equipamento ", 6);
 
     reset = glutCreateMenu(resetMenu);
 
     glutAddMenuEntry(" Resetar ", 1);
-    glutAddSubMenu(" Movimentacao ", subUserMenu);
-    glutAddSubMenu(" Aquecimento ", aquecimento);
+    glutAddSubMenu(" Movimentacao individual ", subUserMenu);
+    glutAddSubMenu(" Exercicios - Aquecimento ", aquecimento);
+    glutAddSubMenu(" Exercicios - Halteres ", halteres);
 
 	glutAttachMenu(GLUT_RIGHT_BUTTON);
 

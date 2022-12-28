@@ -216,6 +216,9 @@ void drawHuman() {
     glPushMatrix();
 
         glTranslatef(humanBodyPosition.current[0], humanBodyPosition.current[1], humanBodyPosition.current[2]);
+        glRotatef(humanBodyRot.rotation[0], 1.0, 0.0, 0.0);
+        glRotatef(humanBodyRot.rotation[1], 0.0, 1.0, 0.0);
+        glRotatef(humanBodyRot.rotation[2], 0.0, 0.0, 1.0);
 
         glPushMatrix();
 
@@ -304,9 +307,11 @@ void drawHuman() {
 
         /* Define cor da calca */
         glColor3fv(navy.color);
+
         glRotatef(waistJoint.rotation[0], 1.0, 0.0, 0.0);
         glRotatef(waistJoint.rotation[1], 0.0, 1.0, 0.0);
         glRotatef(waistJoint.rotation[2], 0.0, 0.0, 1.0);
+        glTranslatef(waistPosition.current[0], waistPosition.current[1], waistPosition.current[2]);
 
         drawWaist();
 

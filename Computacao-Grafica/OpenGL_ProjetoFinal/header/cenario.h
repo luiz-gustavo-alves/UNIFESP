@@ -598,7 +598,7 @@ void drawRemoteController() {
 
     glPushMatrix();
 
-        glTranslatef(-roomSize + 8.0, 1.0, roomSize / 1.5);
+        glTranslatef(-roomSize + 8.0, 0.8, roomSize / 1.5);
         glRotatef(45, 0.0, 1.0, 0.0);
 
         glPushMatrix();
@@ -662,7 +662,7 @@ void drawTableLamp() {
 
     glPushMatrix();
 
-        glTranslatef(-roomSize + 6.0, 1.25, roomSize / 1.25);
+        glTranslatef(-roomSize + 6.0, 0.8, roomSize / 1.25);
 
         glPushMatrix();
 
@@ -775,7 +775,7 @@ void drawFlowerPot() {
 
     glPushMatrix();
 
-        glTranslatef(-0.8, 0.0, -3.0);
+        glTranslatef(-0.8, -0.5, -3.0);
 
         glPushMatrix();
 
@@ -935,8 +935,13 @@ void drawDumbbellRack() {
             glRotatef(leftDumbbellRot.rotation[1], 0.0, 1.0, 0.0);
             glRotatef(leftDumbbellRot.rotation[2], 0.0, 0.0, 1.0);
 
-            /* Desenha haltere da mao esquerda */
-            drawDumbbell();
+            glPushMatrix();
+
+                glTranslatef(-2.0, 5.0, -1.0);
+                /* Desenha haltere da mao esquerda */
+                drawDumbbell();
+
+            glPopMatrix();
 
         glPopMatrix();
 
@@ -948,8 +953,14 @@ void drawDumbbellRack() {
             glRotatef(rightDumbbellRot.rotation[1], 0.0, 1.0, 0.0);
             glRotatef(rightDumbbellRot.rotation[2], 0.0, 0.0, 1.0);
 
-            /* Desenha haltere da mao direita */
-            drawDumbbell();
+            glPushMatrix();
+
+                glTranslatef(-2.0, 1.0, -1.0);
+
+                /* Desenha haltere da mao direita */
+                drawDumbbell();
+
+            glPopMatrix();
 
         glPopMatrix();
 
