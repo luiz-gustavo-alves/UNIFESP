@@ -28,6 +28,7 @@ int hasLeftEquipment = 0;
 int hasRightEquipment = 0;
 int walkingCycle = 1;
 int stopWalkingAnimation = 1;
+int waitReturnEquipment = 0;
 
 typedef struct {
 
@@ -147,16 +148,29 @@ void printList() {
     printf("\n");
 }
 
-void updateAnimation(int optAnimation) {
+void updateAnimation(int optAnimation, int resetFlag, int optUser) {
 
-    if (optAnimation == 5 && !waitForAllAnimationFinish) {
+    if ((optAnimation == 5 && !hasEquipment && !waitForAllAnimationFinish) ||
+        (optAnimation == 12 && hasEquipment && !waitForAllAnimationFinish)) {
+
         allAnimationFlag = 1;
         waitForAllAnimationFinish = 1;
     }
 
-    else if (((optAnimation != animationId) && optAnimation < 7) || ((optAnimation != animationId) && (optAnimation > 6 && hasEquipment))) {
-        animationId = optAnimation;
-        newAnimation = 1;
+    else if (optAnimation != animationId) {
+
+        if (animationId == 13 && hasEquipment && !waitReturnEquipment) {
+
+            animationId = 13;
+            waitReturnEquipment = 1;
+            addNode();
+        }
+
+        else if ((optAnimation <= 6 && !hasEquipment) || (optAnimation > 6 && hasEquipment)) {
+
+            animationId = optAnimation;
+            newAnimation = 1;
+        }
     }
 }
 
@@ -174,313 +188,6 @@ void endAnimation() {
 
     timer = 0.01;
     animationFinished = 1;
-}
-
-/* Exercicios - Aquecimento (Alongamento Pernas) */
-void leftLegExercise(int animationCycle) {
-
-    timer += 0.01;
-
-    /* Animacao segurando perna */
-    if (animationCycle == 1) {
-
-        if (leftShoulderJoint.rotation[0] < 30) leftShoulderJoint.rotation[0] += STEP * 0.6;
-        if (leftShoulderJoint.rotation[2] < 6 && leftShoulderJoint.rotation[0] > 24) leftShoulderJoint.rotation[2] += STEP * 0.2;
-        if (leftElbowJoint.rotation[0] > -12 && leftKneeJoint.rotation[0] < 50) leftElbowJoint.rotation[0] -= STEP * 0.3;
-        if (leftHipJoint.rotation[0] < 30) leftHipJoint.rotation[0] += STEP;
-        if (leftKneeJoint.rotation[0] < 106) leftKneeJoint.rotation[0] += STEP * 1.5;
-    }
-
-    /* Resetar animacao segurando perna */
-    else if (animationCycle == 2) {
-
-        if (leftShoulderJoint.rotation[0] <= 25 && leftShoulderJoint.rotation[2] > 0)
-            leftShoulderJoint.rotation[2] -= STEP * 0.2;
-
-        if (leftShoulderJoint.rotation[0] <= 25 && leftElbowJoint.rotation[0] < 0)
-            leftElbowJoint.rotation[0] += STEP * 0.3;
-
-        if (leftShoulderJoint.rotation[0] > 0) leftShoulderJoint.rotation[0] -= STEP * 0.6;
-        if (leftHipJoint.rotation[0] > 0) leftHipJoint.rotation[0] -= STEP * 0.5;
-        if (leftKneeJoint.rotation[0] > 0) leftKneeJoint.rotation[0] -= STEP * 1.5;
-    }
-}
-
-/* Exercicios - Aquecimento (Alongamento Pernas) */
-void rightLegExercise(int animationCycle) {
-
-    timer += 0.01;
-
-    /* Animacao segurando perna */
-    if (animationCycle == 1) {
-
-        if (rightShoulderJoint.rotation[0] < 30) rightShoulderJoint.rotation[0] += STEP * 0.6;
-        if (rightShoulderJoint.rotation[2] > -6 && rightShoulderJoint.rotation[0] > 24) rightShoulderJoint.rotation[2] -= STEP * 0.2;
-        if (rightElbowJoint.rotation[0] < 12 && rightKneeJoint.rotation[0] < 50) rightElbowJoint.rotation[0] += STEP * 0.3;
-        if (rightHipJoint.rotation[0] < 30) rightHipJoint.rotation[0] += STEP;
-        if (rightKneeJoint.rotation[0] < 106) rightKneeJoint.rotation[0] += STEP * 1.5;
-    }
-
-    /* Resetar animacao segurando perna */
-    else if (animationCycle == 2) {
-
-        if (rightShoulderJoint.rotation[0] <= 25 && rightShoulderJoint.rotation[2] <= 0)
-            rightShoulderJoint.rotation[2] += STEP * 0.2;
-
-        if (rightShoulderJoint.rotation[0] <= 25 && rightElbowJoint.rotation[0] >= 0)
-            rightElbowJoint.rotation[0] -= STEP * 0.3;
-
-        if (rightShoulderJoint.rotation[0] > 0) rightShoulderJoint.rotation[0] -= STEP * 0.6;
-        if (rightHipJoint.rotation[0] > 0) rightHipJoint.rotation[0] -= STEP * 0.5;
-        if (rightKneeJoint.rotation[0] > 0) rightKneeJoint.rotation[0] -= STEP * 1.5;
-    }
-}
-
-/* Exercicios - Aquecimento (Alongamento Pescoco) */
-void neckExercise(int animationCycle) {
-
-    timer += 0.01;
-
-    /* Animacao com braco esquerdo no pescoco */
-    if (animationCycle == 1) {
-
-        if (leftShoulderJoint.rotation[0] > -172) leftShoulderJoint.rotation[0] -= STEP * 3;
-        if (leftShoulderJoint.rotation[2] > -26 && leftShoulderJoint.rotation[0] <= -30) leftShoulderJoint.rotation[2] -= STEP;
-        if (leftElbowJoint.rotation[0] > -150 && leftShoulderJoint.rotation[2] <= -10) leftElbowJoint.rotation[0] -= STEP * 2.5;
-        if (leftElbowJoint.rotation[2] < 54 && leftShoulderJoint.rotation[2] <= -10) leftElbowJoint.rotation[2] += STEP * 1.5;
-        if (neckJoint.rotation[2] < 22 && leftShoulderJoint.rotation[0] <= -40) neckJoint.rotation[2] += STEP * 0.3;
-        if (neckJoint.rotation[0] < 16 && leftShoulderJoint.rotation[0] <= -40) neckJoint.rotation[0] += STEP * 0.3;
-        if (neckJoint.rotation[1] > -6 && leftShoulderJoint.rotation[0] <= -40) neckJoint.rotation[1] -= STEP * 0.3;
-    }
-
-    /* Resetar animacao com braco esquerdo no pescoco */
-    else if (animationCycle == 2) {
-
-        if (leftShoulderJoint.rotation[0] < 0) leftShoulderJoint.rotation[0] += STEP * 2;
-        if (leftShoulderJoint.rotation[2] < 0) leftShoulderJoint.rotation[2] += STEP;
-        if (leftElbowJoint.rotation[0] < 0) leftElbowJoint.rotation[0] += STEP * 2.5;
-        if (leftElbowJoint.rotation[2] > 0) leftElbowJoint.rotation[2] -= STEP * 1.5;
-        if (neckJoint.rotation[2] > 0) neckJoint.rotation[2] -= STEP * 0.3;
-        if (neckJoint.rotation[0] > 0) neckJoint.rotation[0] -= STEP * 0.3;
-        if (neckJoint.rotation[1] < 0) neckJoint.rotation[1] += STEP * 0.3;
-    }
-
-    /* Animacao com braco direito no pescoco */
-    else if (animationCycle == 3) {
-
-        if (rightShoulderJoint.rotation[0] > -172) rightShoulderJoint.rotation[0] -= STEP * 3;
-        if (rightShoulderJoint.rotation[2] < 26 && rightShoulderJoint.rotation[0] <= -30) rightShoulderJoint.rotation[2] += STEP;
-        if (rightElbowJoint.rotation[0] > -150 && rightShoulderJoint.rotation[2] >= 10) rightElbowJoint.rotation[0] -= STEP * 2.5;
-        if (rightElbowJoint.rotation[2] > -54 && rightShoulderJoint.rotation[2] >= 10) rightElbowJoint.rotation[2] -= STEP * 1.5;
-        if (neckJoint.rotation[2] > -22 && rightShoulderJoint.rotation[0] <= -40) neckJoint.rotation[2] -= STEP * 0.3;
-        if (neckJoint.rotation[0] < 16 && rightShoulderJoint.rotation[0] <= -40) neckJoint.rotation[0] += STEP * 0.3;
-        if (neckJoint.rotation[1] < 6 && rightShoulderJoint.rotation[0] <= -40) neckJoint.rotation[1] += STEP * 0.3;
-    }
-
-    /* Resetar nimacao com braco direito no pescoco */
-    else if (animationCycle == 4) {
-
-        if (rightShoulderJoint.rotation[0] < 0) rightShoulderJoint.rotation[0] += STEP * 2;
-        if (rightShoulderJoint.rotation[2] > 0) rightShoulderJoint.rotation[2] -= STEP;
-        if (rightElbowJoint.rotation[0] < 0) rightElbowJoint.rotation[0] += STEP * 2.5;
-        if (rightElbowJoint.rotation[2] < 0) rightElbowJoint.rotation[2] += STEP * 1.5;
-        if (neckJoint.rotation[2] < 0) neckJoint.rotation[2] += STEP * 0.3;
-        if (neckJoint.rotation[0] > 0) neckJoint.rotation[0] -= STEP * 0.3;
-        if (neckJoint.rotation[1] >= 0) neckJoint.rotation[1] -= STEP * 0.3;
-    }
-}
-
-/* Exercicios - Aquecimento (Flexao Lateral Tronco) */
-void torsoExercise(int animationCycle) {
-
-    timer += 0.01;
-
-    /* Animacao de flexao na lateral direita do tronco */
-    if (animationCycle == 1) {
-
-        if (leftShoulderJoint.rotation[0] < 36) leftShoulderJoint.rotation[0] += STEP * 1.5;
-        if (leftShoulderJoint.rotation[2] > -46) leftShoulderJoint.rotation[2] -= STEP * 1.5;
-        if (leftElbowJoint.rotation[0] > -150) leftElbowJoint.rotation[0] -= STEP * 2;
-        if (leftElbowJoint.rotation[2] < 42) leftElbowJoint.rotation[2] += STEP * 1.5;
-        if (rightShoulderJoint.rotation[0] > -180) rightShoulderJoint.rotation[0] -= STEP * 2.5;
-        if (rightShoulderJoint.rotation[2] > -14 && rightShoulderJoint.rotation[0] <= -120) rightShoulderJoint.rotation[2] -= STEP;
-        if (rightElbowJoint.rotation[2] > -40 && rightShoulderJoint.rotation[0] <= -80) rightElbowJoint.rotation[2] -= STEP;
-        if (neckJoint.rotation[0] > -14) neckJoint.rotation[0] -= STEP * 0.2;
-        if (neckJoint.rotation[2] < 14) neckJoint.rotation[2] += STEP * 0.2;
-        if (torsoJoint.rotation[2] < 14) torsoJoint.rotation[2] += STEP * 0.2;
-        if (waistJoint.rotation[2] < 14) waistJoint.rotation[2] += STEP * 0.2;
-        if (leftHipJoint.rotation[2] > -14) leftHipJoint.rotation[2] -= STEP * 0.2;
-        if (rightHipJoint.rotation[2] > -8) {
-            rightHipJoint.rotation[2] -= STEP * 0.2;
-            rightLegPosition.current[1] = -(waistJoint.rotation[2] * 0.05);
-        }
-    }
-
-    /* Resetar animacao de flexao na lateral direita do tronco */
-    else if (animationCycle == 2) {
-
-        if (rightShoulderJoint.rotation[0] <= -121 && rightShoulderJoint.rotation[2] < 0)
-            rightShoulderJoint.rotation[2] += STEP;
-
-        if (rightShoulderJoint.rotation[0] <= -81 && rightElbowJoint.rotation[2] < 0)
-            rightElbowJoint.rotation[2] += STEP;
-
-        if (leftShoulderJoint.rotation[0] > 0) leftShoulderJoint.rotation[0] -= STEP * 1.5;
-        if (leftShoulderJoint.rotation[2] < 0) leftShoulderJoint.rotation[2] += STEP * 1.5;
-        if (leftElbowJoint.rotation[0] < 0) leftElbowJoint.rotation[0] += STEP * 2;
-        if (leftElbowJoint.rotation[2] > 0) leftElbowJoint.rotation[2] -= STEP * 1.5;
-        if (rightShoulderJoint.rotation[0] < 0) rightShoulderJoint.rotation[0] += STEP * 2.5;
-        if (neckJoint.rotation[0] < 0) neckJoint.rotation[0] += STEP * 0.2;
-        if (neckJoint.rotation[2] > 0) neckJoint.rotation[2] -= STEP * 0.2;
-        if (torsoJoint.rotation[2] > 0) torsoJoint.rotation[2] -= STEP * 0.2;
-        if (waistJoint.rotation[2] > 0) waistJoint.rotation[2] -= STEP * 0.2;
-        if (leftHipJoint.rotation[2] < 0) leftHipJoint.rotation[2] += STEP * 0.2;
-        if (rightHipJoint.rotation[2] < 0) rightHipJoint.rotation[2] += STEP * 0.2;
-        if (rightLegPosition.current[1] < rightLegPosition.init[1]) rightLegPosition.current[1] = -(waistJoint.rotation[2] * 0.04);
-    }
-
-    /* Animacao de flexao na lateral esquerda do tronco */
-    else if (animationCycle == 3) {
-
-        if (rightShoulderJoint.rotation[0] < 36) rightShoulderJoint.rotation[0] += STEP * 1.5;
-        if (rightShoulderJoint.rotation[2] < 46) rightShoulderJoint.rotation[2] += STEP * 1.5;
-        if (rightElbowJoint.rotation[0] > -150) rightElbowJoint.rotation[0] -= STEP * 2;
-        if (rightElbowJoint.rotation[2] > -42) rightElbowJoint.rotation[2] -= STEP * 1.5;
-        if (leftShoulderJoint.rotation[0] > -180) leftShoulderJoint.rotation[0] -= STEP * 2.5;
-        if (leftShoulderJoint.rotation[2] < 14 && leftShoulderJoint.rotation[0] <= -120) leftShoulderJoint.rotation[2] += STEP;
-        if (leftElbowJoint.rotation[2] < 40 && leftShoulderJoint.rotation[0] <= -80) leftElbowJoint.rotation[2] += STEP;
-        if (neckJoint.rotation[0] > -14) neckJoint.rotation[0] -= STEP * 0.2;
-        if (neckJoint.rotation[2] > -14) neckJoint.rotation[2] -= STEP * 0.2;
-        if (torsoJoint.rotation[2] > -14) torsoJoint.rotation[2] -= STEP * 0.2;
-        if (waistJoint.rotation[2] > -14) waistJoint.rotation[2] -= STEP * 0.2;
-        if (rightHipJoint.rotation[2] < 14) rightHipJoint.rotation[2] += STEP * 0.2;
-        if (leftHipJoint.rotation[2] < 8) {
-            leftHipJoint.rotation[2] += STEP * 0.2;
-            leftLegPosition.current[1] = waistJoint.rotation[2] * 0.05;
-        }
-    }
-
-    /* Resetar animacao de flexao na lateral direita do tronco */
-    else if (animationCycle == 4) {
-
-        if (leftShoulderJoint.rotation[2] < 15 && leftShoulderJoint.rotation[0] <= -121 && leftShoulderJoint.rotation[2] >= 0)
-            leftShoulderJoint.rotation[2] -= STEP;
-
-        if (leftElbowJoint.rotation[2] < 41 && leftShoulderJoint.rotation[0] <= -81 && leftElbowJoint.rotation[2] >= 0)
-            leftElbowJoint.rotation[2] -= STEP;
-
-        if (rightShoulderJoint.rotation[0] > 0) rightShoulderJoint.rotation[0] -= STEP * 1.5;
-        if (rightShoulderJoint.rotation[2] > 0) rightShoulderJoint.rotation[2] -= STEP * 1.5;
-        if (rightElbowJoint.rotation[0] < 0) rightElbowJoint.rotation[0] += STEP * 2;
-        if (rightElbowJoint.rotation[2] < 0) rightElbowJoint.rotation[2] += STEP * 1.5;
-        if (leftShoulderJoint.rotation[0] < 0) leftShoulderJoint.rotation[0] += STEP * 2.5;
-        if (neckJoint.rotation[0] < 0) neckJoint.rotation[0] += STEP * 0.2;
-        if (neckJoint.rotation[2] < 0) neckJoint.rotation[2] += STEP * 0.2;
-        if (torsoJoint.rotation[2] < 0) torsoJoint.rotation[2] += STEP * 0.2;
-        if (waistJoint.rotation[2] < 0) waistJoint.rotation[2] += STEP * 0.2;
-        if (rightHipJoint.rotation[2] > 0) rightHipJoint.rotation[2] -= STEP * 0.2;
-        if (leftHipJoint.rotation[2] > 0) leftHipJoint.rotation[2] -= STEP * 0.2;
-        if (leftLegPosition.current[1] < leftLegPosition.init[1]) leftLegPosition.current[1] = waistJoint.rotation[2] * 0.04;
-    }
-}
-
-/* Exercicios - Aquecimento (Agachamento) */
-void squat(int animationCycle) {
-
-    timer += 0.01;
-
-    /* Animacao de levantar os bracos */
-    if (animationCycle == 1) {
-
-        if (leftShoulderJoint.rotation[0] > -90) leftShoulderJoint.rotation[0] -= STEP * 1.5;
-        if (rightShoulderJoint.rotation[0] > -90) rightShoulderJoint.rotation[0] -= STEP * 1.5;
-    }
-
-    /* Animacao da descida do agachamento */
-    else if (animationCycle == 2) {
-
-        if (humanBodyPosition.current[1] > -4.0) humanBodyPosition.current[1] -= 0.005;
-        if (leftShoulderJoint.rotation[0] > -100) leftShoulderJoint.rotation[0] -= STEP * 0.2;
-        if (rightShoulderJoint.rotation[0] > -100) rightShoulderJoint.rotation[0] -= STEP * 0.2;
-        if (leftHipJoint.rotation[0] > -105) leftHipJoint.rotation[0] -= STEP * 2;
-        if (leftKneeJoint.rotation[0] < 90) leftKneeJoint.rotation[0] += STEP * 2;
-        if (rightHipJoint.rotation[0] > -105) rightHipJoint.rotation[0] -= STEP * 2;
-        if (rightKneeJoint.rotation[0] < 90) rightKneeJoint.rotation[0] += STEP * 2;
-        if (neckJoint.rotation[0] > 10) neckJoint.rotation[0] += STEP;
-        if (torsoJoint.rotation[0] < 18) torsoJoint.rotation[0] += STEP * 0.25;
-        if (waistJoint.rotation[0] < 18) waistJoint.rotation[0] += STEP * 0.25;
-    }
-
-    /* Animacao da subida do agachamento (resetar) */
-    else if (animationCycle == 3) {
-
-        if (humanBodyPosition.current[1] <= humanBodyPosition.init[1])
-            humanBodyPosition.current[1] += 0.005;
-
-        if (leftShoulderJoint.rotation[0] > -120 && leftShoulderJoint.rotation[0] <= -90)
-            leftShoulderJoint.rotation[0] += STEP * 0.2;
-
-        if (rightShoulderJoint.rotation[0] > -120 && rightShoulderJoint.rotation[0] <= -90)
-            rightShoulderJoint.rotation[0] += STEP * 0.2;
-
-        if (leftHipJoint.rotation[0] < 0) leftHipJoint.rotation[0] += STEP * 1.5;
-        if (leftKneeJoint.rotation[0] > 0) leftKneeJoint.rotation[0] -= STEP * 1.5;
-        if (rightHipJoint.rotation[0] < 0) rightHipJoint.rotation[0] += STEP * 1.5;
-        if (rightKneeJoint.rotation[0] > 0) rightKneeJoint.rotation[0] -= STEP * 1.5;
-        if (neckJoint.rotation[0] > 0) neckJoint.rotation[0] -= STEP;
-        if (torsoJoint.rotation[0] > 0) torsoJoint.rotation[0] -= STEP * 0.25;
-        if (waistJoint.rotation[0] > 0) waistJoint.rotation[0] -= STEP * 0.25;
-    }
-
-    /* Resetar animacao */
-    else if (animationCycle == 4) {
-
-        if (humanBodyPosition.current[1] < humanBodyPosition.init[1]) humanBodyPosition.current[1] += 0.005;
-        if (leftShoulderJoint.rotation[0] < 0) leftShoulderJoint.rotation[0] += STEP;
-        if (rightShoulderJoint.rotation[0] < 0) rightShoulderJoint.rotation[0] += STEP;
-        if (leftHipJoint.rotation[0] < 0) leftHipJoint.rotation[0] += STEP * 0.5;
-        if (leftKneeJoint.rotation[0] > 0) leftKneeJoint.rotation[0] -= STEP * 0.5;
-        if (rightHipJoint.rotation[0] < 0) rightHipJoint.rotation[0] += STEP * 0.5;
-        if (rightKneeJoint.rotation[0] > 0) rightKneeJoint.rotation[0] -= STEP * 0.5;
-        if (neckJoint.rotation[0] < 0) neckJoint.rotation[0] -= STEP;
-        if (torsoJoint.rotation[0] > 0) torsoJoint.rotation[0] -= STEP * 0.2;
-        if (waistJoint.rotation[0] > 0) waistJoint.rotation[0] -= STEP * 0.2;
-    }
-}
-
-/* Exercicios - Aquecimento (Polichinelo) */
-void jumpingJackExercise(int animationCycle) {
-
-    timer += 0.01;
-
-    /* Animacao de subida do polichinelo */
-    if (animationCycle == 1) {
-
-        if (leftShoulderJoint.rotation[0] > -176) leftShoulderJoint.rotation[0] -= STEP * 4;
-        if (leftElbowJoint.rotation[2] < 30 && leftShoulderJoint.rotation[0] <= -100) leftElbowJoint.rotation[2] += STEP * 1.5;
-        if (rightShoulderJoint.rotation[0] > -176) rightShoulderJoint.rotation[0] -= STEP * 4;
-        if (rightElbowJoint.rotation[2] > -30 && rightShoulderJoint.rotation[0] <= -100) rightElbowJoint.rotation[2] -= STEP * 1.5;
-        if (leftHipJoint.rotation[2] > -24) leftHipJoint.rotation[2] -= STEP * 0.7;
-        if (rightHipJoint.rotation[2] < 24) rightHipJoint.rotation[2] += STEP * 0.7;
-        if (humanBodyPosition.current[1] < -0.5) humanBodyPosition.current[1] += 0.002;
-    }
-
-    /* Animacao de descida do polichinelo (resetar) */
-    else if (animationCycle == 2) {
-
-        if (leftShoulderJoint.rotation[0] <= -100 && leftElbowJoint.rotation[2] >= 0)
-            leftElbowJoint.rotation[2] -= STEP * 1.5;
-
-        if (rightShoulderJoint.rotation[0] <= -100 && rightElbowJoint.rotation[2] <= 0)
-            rightElbowJoint.rotation[2] += STEP * 1.5;
-
-        if (leftShoulderJoint.rotation[0] < 0) leftShoulderJoint.rotation[0] += STEP * 4;
-        if (leftElbowJoint.rotation[2] > 0) leftElbowJoint.rotation[2] -= STEP * 1.5;
-        if (rightShoulderJoint.rotation[0] < 0) rightShoulderJoint.rotation[0] += STEP * 4;
-        if (leftHipJoint.rotation[2] < 0) leftHipJoint.rotation[2] += STEP * 0.7;
-        if (rightHipJoint.rotation[2] > 0) rightHipJoint.rotation[2] -= STEP * 0.7;
-        if (humanBodyPosition.current[1] > humanBodyPosition.init[1]) humanBodyPosition.current[1] -= 0.002;
-    }
 }
 
 void walkingAnimation() {
@@ -534,14 +241,10 @@ int getEquipment(int animationCycle) {
         if (humanBodyPosition.current[0] < 30) humanBodyPosition.current[0] += STEP * 0.05;
         if (humanBodyPosition.current[2] < 29) humanBodyPosition.current[2] += STEP * 0.05;
 
-        if (animationCycle == 1) {
+        if (animationCycle == 1 && humanBodyRot.rotation[1] < 45) humanBodyRot.rotation[1] += STEP * 0.2;
+        else if (animationCycle == 2 && humanBodyRot.rotation[1] < 100) humanBodyRot.rotation[1] += STEP * 0.25;
 
-            if (humanBodyRot.rotation[1] < 45) humanBodyRot.rotation[1] += STEP * 0.2;
-        }
-        else {
-
-            if (humanBodyRot.rotation[1] < 100) humanBodyRot.rotation[1] += STEP * 0.25;
-        }
+        timer += 0.01;
     }
 
     /* Resetar animacao */
@@ -569,17 +272,25 @@ int getEquipment(int animationCycle) {
     /* Pegar haltere com a mao esquerda */
     else if (animationCycle == 4) {
 
-        if (leftShoulderJoint.rotation[0] > -85 && !hasLeftEquipment) leftShoulderJoint.rotation[0] -= STEP * 0.8;
+        if (leftShoulderJoint.rotation[0] > -85 && !hasLeftEquipment)
+            leftShoulderJoint.rotation[0] -= STEP * 0.8;
+
         if (leftShoulderJoint.rotation[0] <= -85 || hasLeftEquipment) {
 
-            if (leftDumbbellPos.current[1] < 0.2 && !hasLeftEquipment) leftDumbbellPos.current[1] += STEP * 0.01;
+            if (leftDumbbellPos.current[1] < 0.2 && !hasLeftEquipment)
+                leftDumbbellPos.current[1] += STEP * 0.01;
+
             if (leftDumbbellPos.current[1] >= 0.2 || hasLeftEquipment) {
 
                 hasLeftEquipment = 1;
 
+                if (leftShoulderJoint.rotation[2] > -16 && leftShoulderJoint.rotation[0] > -40)
+                    leftShoulderJoint.rotation[2] -= STEP * 0.2;
+
+                if (leftDumbbellPos.current[0] > -6.5 && leftShoulderJoint.rotation[0] > -70)
+                    leftDumbbellPos.current[0] -= STEP * 0.07;
+
                 if (leftShoulderJoint.rotation[0] < 0) leftShoulderJoint.rotation[0] += STEP * 0.8;
-                if (leftShoulderJoint.rotation[2] > -16 && leftShoulderJoint.rotation[0] > -40) leftShoulderJoint.rotation[2] -= STEP * 0.2;
-                if (leftDumbbellPos.current[0] > -6.5 && leftShoulderJoint.rotation[0] > -70) leftDumbbellPos.current[0] -= STEP * 0.07;
                 if (leftDumbbellPos.current[1] > -5.5) leftDumbbellPos.current[1] -= STEP * 0.08;
                 if (leftDumbbellPos.current[2] < 3.0) leftDumbbellPos.current[2] += STEP * 0.02;
                 if (leftDumbbellPos.current[0] <= -6.5) timer += 1;
@@ -590,7 +301,9 @@ int getEquipment(int animationCycle) {
     /* Pegar haltere com a mao direita */
     else if (animationCycle == 5) {
 
-        if (rightShoulderJoint.rotation[0] > -60 && !hasRightEquipment) rightShoulderJoint.rotation[0] -= STEP * 0.8;
+        if (rightShoulderJoint.rotation[0] > -60 && !hasRightEquipment)
+            rightShoulderJoint.rotation[0] -= STEP * 0.8;
+
         if (rightElbowJoint.rotation[2] > -26 && rightShoulderJoint.rotation[0] < -20 && !hasRightEquipment)
             rightElbowJoint.rotation[2] -= STEP * 0.5;
 
@@ -611,6 +324,12 @@ int getEquipment(int animationCycle) {
 
             hasRightEquipment = 1;
 
+            if (rightDumbbellPos.current[0] > -5.5 && leftShoulderJoint.rotation[0] > -70)
+                rightDumbbellPos.current[0] -= STEP * 0.07;
+
+            if (rightDumbbellPos.current[2] > -2.5 && leftShoulderJoint.rotation[0] > -40)
+                rightDumbbellPos.current[2] -= STEP * 0.03;
+
             if (torsoJoint.rotation[0] > 0) torsoJoint.rotation[0] -= STEP * 0.2;
             if (waistJoint.rotation[0] > 0) waistJoint.rotation[0] -= STEP * 0.2;
             if (leftHipJoint.rotation[0] < 0) leftHipJoint.rotation[0] += STEP * 0.4;
@@ -618,9 +337,7 @@ int getEquipment(int animationCycle) {
             if (rightShoulderJoint.rotation[0] < 0) rightShoulderJoint.rotation[0] += STEP * 0.8;
             if (rightShoulderJoint.rotation[2] < 22) rightShoulderJoint.rotation[2] += STEP * 0.2;
             if (rightElbowJoint.rotation[2] < 0) rightElbowJoint.rotation[2] += STEP * 0.5;
-            if (rightDumbbellPos.current[0] > -5.5 && leftShoulderJoint.rotation[0] > -70) rightDumbbellPos.current[0] -= STEP * 0.07;
             if (rightDumbbellPos.current[1] > -1.5) rightDumbbellPos.current[1] -= STEP * 0.08;
-            if (rightDumbbellPos.current[2] > -2.5 && leftShoulderJoint.rotation[0] > -40) rightDumbbellPos.current[2] -= STEP * 0.03;
             if (leftDumbbellPos.current[0] < -5.5) leftDumbbellPos.current[0] += STEP * 0.03;
 
             if (rightDumbbellPos.current[2] <= -2.5) {
@@ -633,19 +350,8 @@ int getEquipment(int animationCycle) {
         }
     }
 
-    /* Atualizar temporizador e animacao de andar */
-    if (animationCycle < 3) {
-        timer += 0.01;
-        walkingAnimation();
-    }
-}
-
-/* Exercicios - Halteres (Pegar Equipamento) */
-void returnEquipment(int animationCycle) {
-
     /* Voltar para posicao inicial (horizontal) */
-    if (animationCycle == 1) {
-
+    else if (animationCycle == 6) {
 
         if (humanBodyPosition.current[0] >= 0) {
 
@@ -664,7 +370,7 @@ void returnEquipment(int animationCycle) {
     }
 
     /* Voltar para posicao inicial (vertical) */
-    else if (animationCycle == 2) {
+    else if (animationCycle == 7) {
 
         if (humanBodyPosition.current[2] >= 0) {
 
@@ -684,7 +390,7 @@ void returnEquipment(int animationCycle) {
     }
 
     /* Resetar animacao */
-    else if (animationCycle == 3) {
+    else if (animationCycle == 8) {
 
         if (leftHipJoint.rotation[0] > 0) leftHipJoint.rotation[0] -= STEP * 0.8;
         if (rightHipJoint.rotation[0] < 0) rightHipJoint.rotation[0] += STEP * 0.8;
@@ -695,9 +401,470 @@ void returnEquipment(int animationCycle) {
 
         timer += 0.01;
     }
-    if (animationCycle < 3) walkingAnimation();
+
+    /* Atualizar temporizador e animacao de andar */
+    if (animationCycle < 3 || (animationCycle > 5 && animationCycle < 8)) walkingAnimation();
 }
 
+/* Exercicios - Halteres (Devolver Equipamento) */
+void returnEquipment(int animationCycle) {
+
+    /* Voltar para posicao inicial (vertical) */
+    if (animationCycle == 1) {
+
+        if (humanBodyPosition.current[2] < 29) {
+
+            humanBodyPosition.current[2] += STEP * 0.07;
+            leftDumbbellPos.current[2] += STEP * 0.07;
+            rightDumbbellPos.current[2] += STEP * 0.07;
+        }
+        else {
+
+            humanBodyRot.rotation[1] = 100;
+            leftDumbbellRot.rotation[1] = rightDumbbellRot.rotation[1] = -180;
+            leftDumbbellPos.current[2] = 0;
+            rightDumbbellPos.current[2] = -4;
+            leftDumbbellPos.current[0] = -38.5;
+            rightDumbbellPos.current[0] = -38.5;
+            timer += 1;
+        }
+    }
+
+    /* Voltar para posicao inicial (horizontal) */
+    else if (animationCycle == 2) {
+
+        if (humanBodyPosition.current[0] < 30) {
+
+            humanBodyPosition.current[0] += STEP * 0.07;
+            leftDumbbellPos.current[0] += STEP * 0.07;
+            rightDumbbellPos.current[0] += STEP * 0.07;
+        }
+        else timer += 1;
+    }
+
+    /* Resetar animacao */
+    else if (animationCycle == 3) {
+
+        if (leftHipJoint.rotation[0] > 0) leftHipJoint.rotation[0] -= STEP;
+        if (rightHipJoint.rotation[0] < 0) rightHipJoint.rotation[0] += STEP;
+
+        timer += 0.01;
+    }
+
+    /* Devolver peso da mao direita */
+    else if (animationCycle == 4) {
+
+        if (rightShoulderJoint.rotation[0] > -60 && hasRightEquipment)
+            rightShoulderJoint.rotation[0] -= STEP * 0.8;
+
+        if (rightElbowJoint.rotation[2] > -26 && rightShoulderJoint.rotation[0] < -20 && hasRightEquipment)
+            rightElbowJoint.rotation[2] -= STEP * 0.5;
+
+        if (rightShoulderJoint.rotation[0] < -20 && hasRightEquipment) {
+
+            if (torsoJoint.rotation[0] < 12) torsoJoint.rotation[0] += STEP * 0.2;
+            if (waistJoint.rotation[0] < 12) waistJoint.rotation[0] += STEP * 0.2;
+            if (leftHipJoint.rotation[0] > -12) leftHipJoint.minRotation[0] -= STEP * 0.2;
+            if (rightHipJoint.rotation[0] > -12) rightHipJoint.rotation[0] -= STEP * 0.2;
+            if (humanBodyPosition.current[0] < 31) humanBodyPosition.current[0] += STEP * 0.04;
+            if (humanBodyPosition.current[2] < 31) humanBodyPosition.current[2] += STEP * 0.04;
+            if (leftDumbbellPos.current[2] < 5.0) leftDumbbellPos.current[2] += STEP * 0.04;
+            if (rightDumbbellPos.current[0] < 0) rightDumbbellPos.current[0] += STEP * 0.1;
+            if (rightDumbbellPos.current[1] < 0) rightDumbbellPos.current[1] += STEP * 0.1;
+            if (rightDumbbellPos.current[2] < -1) rightDumbbellPos.current[2] += STEP * 0.1;
+        }
+
+        if (timer >= 12 && timer < 19) {
+
+            hasRightEquipment = 0;
+
+            if (torsoJoint.rotation[0] > 0) torsoJoint.rotation[0] -= STEP * 0.2;
+            if (waistJoint.rotation[0] > 0) waistJoint.rotation[0] -= STEP * 0.2;
+            if (leftHipJoint.rotation[0] < 0) leftHipJoint.rotation[0] += STEP * 0.4;
+            if (rightHipJoint.rotation[0] < 0) rightHipJoint.rotation[0] += STEP * 0.4;
+            if (rightShoulderJoint.rotation[0] < -2) rightShoulderJoint.rotation[0] += STEP * 0.8;
+            if (rightShoulderJoint.rotation[2] < -1) rightShoulderJoint.rotation[2] += STEP * 0.2;
+            if (rightElbowJoint.rotation[2] < 0) rightElbowJoint.rotation[2] += STEP * 0.5;
+            if (leftDumbbellPos.current[0] < -7.5) leftDumbbellPos.current[0] += STEP * 0.03;
+        }
+
+        if (timer >= 19) {
+
+            rightHipJoint.rotation[0] = rightShoulderJoint.rotation[0] = rightShoulderJoint.rotation[2] = rightElbowJoint.rotation[0] = 0;
+            leftHipJoint.rotation[0] = torsoJoint.rotation[0] = waistJoint.rotation[0] = 0;
+        }
+        timer += 0.01;
+    }
+
+    /* Devolver peso da mao esquerda */
+    else if (animationCycle == 5) {
+
+        if (timer < 30) {
+
+            if (leftShoulderJoint.rotation[0] > -85) leftShoulderJoint.rotation[0] -= STEP;
+            if (leftShoulderJoint.rotation[2] < 0) leftShoulderJoint.rotation[0] += STEP * 0.2;
+            if (leftDumbbellPos.current[0] < -3.75) leftDumbbellPos.current[0] += STEP * 0.07;
+            if (leftDumbbellPos.current[1] < 0) leftDumbbellPos.current[1] += STEP * 0.07;
+            if (leftDumbbellPos.current[2] > -1) leftDumbbellPos.current[2] -= STEP * 0.07;
+        }
+
+        if (timer >= 30 && timer < 39) {
+
+            if (leftShoulderJoint.rotation[0] < 0) leftShoulderJoint.rotation[0] += STEP;
+            if (leftShoulderJoint.rotation[2] < 0) leftShoulderJoint.rotation[2] += STEP;
+        }
+        else if (timer > 39) {
+
+            humanBodyRot.rotation[1] = -100;
+            leftShoulderJoint.rotation[0] = leftShoulderJoint.rotation[2] = 0;
+            leftDumbbellRot.rotation[1] = rightDumbbellRot.rotation[1] = 0;
+            leftDumbbellPos.current[0] = leftDumbbellPos.current[1] = leftDumbbellPos.current[2] = 0;
+            rightDumbbellPos.current[0] = rightDumbbellPos.current[1] = rightDumbbellPos.current[2] = 0;
+            hasLeftEquipment = 0;
+        }
+        timer += 0.01;
+    }
+
+    /* Retornar para posicao inicial */
+    else if (animationCycle == 6 || animationCycle == 7) {
+
+        if (humanBodyPosition.current[0] > humanBodyPosition.init[0]) humanBodyPosition.current[0] -= STEP * 0.05;
+        if (humanBodyPosition.current[2] > humanBodyPosition.init[2]) humanBodyPosition.current[2] -= STEP * 0.05;
+
+        if (animationCycle == 6 && humanBodyRot.rotation[1] > -135) humanBodyRot.rotation[1] -= STEP * 0.2;
+        else if (animationCycle == 7 && humanBodyRot.rotation[1] > -180) humanBodyRot.rotation[1] -= STEP * 0.25;
+
+        timer += 0.01;
+    }
+
+    /* Resetar animacao */
+    else if (animationCycle == 8) {
+
+        humanBodyRot.rotation[1] = 0;
+
+        if (leftShoulderJoint.rotation[0] < 0) leftShoulderJoint.rotation[0] += STEP;
+        if (leftElbowJoint.rotation[0] > 0) leftElbowJoint.rotation[0] -= STEP;
+        if (leftHipJoint.rotation[0] > 0) leftHipJoint.rotation[0] -= STEP;
+        if (rightShoulderJoint.rotation[0] > 0) rightShoulderJoint.rotation[0] -= STEP;
+        if (rightElbowJoint.rotation[0] < 0) rightElbowJoint.rotation[0] += STEP;
+        if (rightHipJoint.rotation[0] < 0) rightHipJoint.rotation[0] += STEP;
+
+        timer += 0.01;
+    }
+
+    if (animationCycle < 3 || animationCycle > 5 && animationCycle < 8) walkingAnimation();
+}
+
+/* Exercicios - Aquecimento (Alongamento Pernas) */
+void leftLegExercise(int animationCycle) {
+
+    timer += 0.01;
+
+    /* Animacao segurando perna */
+    if (animationCycle == 1) {
+
+        if (leftShoulderJoint.rotation[0] < 30) leftShoulderJoint.rotation[0] += STEP * 0.6;
+        if (leftShoulderJoint.rotation[2] < 6 && leftShoulderJoint.rotation[0] > 24) leftShoulderJoint.rotation[2] += STEP * 0.2;
+        if (leftElbowJoint.rotation[0] > -12 && leftKneeJoint.rotation[0] < 50) leftElbowJoint.rotation[0] -= STEP * 0.3;
+        if (leftHipJoint.rotation[0] < 30) leftHipJoint.rotation[0] += STEP;
+        if (leftKneeJoint.rotation[0] < 106) leftKneeJoint.rotation[0] += STEP * 1.5;
+    }
+
+    /* Resetar animacao segurando perna */
+    else if (animationCycle == 2) {
+
+        if (leftShoulderJoint.rotation[0] < 25 && leftShoulderJoint.rotation[2] > 0)
+            leftShoulderJoint.rotation[2] -= STEP * 0.2;
+
+        if (leftShoulderJoint.rotation[0] < 25 && leftElbowJoint.rotation[0] < 0)
+            leftElbowJoint.rotation[0] += STEP * 0.3;
+
+        if (leftShoulderJoint.rotation[0] > 0) leftShoulderJoint.rotation[0] -= STEP * 0.6;
+        if (leftHipJoint.rotation[0] > 0) leftHipJoint.rotation[0] -= STEP * 0.5;
+        if (leftKneeJoint.rotation[0] > 0) leftKneeJoint.rotation[0] -= STEP * 1.5;
+    }
+}
+
+/* Exercicios - Aquecimento (Alongamento Pernas) */
+void rightLegExercise(int animationCycle) {
+
+    timer += 0.01;
+
+    /* Animacao segurando perna */
+    if (animationCycle == 1) {
+
+        if (rightShoulderJoint.rotation[0] < 30) rightShoulderJoint.rotation[0] += STEP * 0.6;
+        if (rightShoulderJoint.rotation[2] > -6 && rightShoulderJoint.rotation[0] > 24) rightShoulderJoint.rotation[2] -= STEP * 0.2;
+        if (rightElbowJoint.rotation[0] < 12 && rightKneeJoint.rotation[0] < 50) rightElbowJoint.rotation[0] += STEP * 0.3;
+        if (rightHipJoint.rotation[0] < 30) rightHipJoint.rotation[0] += STEP;
+        if (rightKneeJoint.rotation[0] < 106) rightKneeJoint.rotation[0] += STEP * 1.5;
+    }
+
+    /* Resetar animacao segurando perna */
+    else if (animationCycle == 2) {
+
+        if (rightShoulderJoint.rotation[0] <= 25 && rightShoulderJoint.rotation[2] < 0)
+            rightShoulderJoint.rotation[2] += STEP * 0.2;
+
+        if (rightShoulderJoint.rotation[0] <= 25 && rightElbowJoint.rotation[0] > 0)
+            rightElbowJoint.rotation[0] -= STEP * 0.3;
+
+        if (rightShoulderJoint.rotation[0] > 0) rightShoulderJoint.rotation[0] -= STEP * 0.6;
+        if (rightHipJoint.rotation[0] > 0) rightHipJoint.rotation[0] -= STEP * 0.5;
+        if (rightKneeJoint.rotation[0] > 0) rightKneeJoint.rotation[0] -= STEP * 1.5;
+    }
+}
+
+/* Exercicios - Aquecimento (Alongamento Pescoco) */
+void neckExercise(int animationCycle) {
+
+    timer += 0.01;
+
+    /* Animacao com braco esquerdo no pescoco */
+    if (animationCycle == 1) {
+
+        if (leftShoulderJoint.rotation[0] > -172) leftShoulderJoint.rotation[0] -= STEP * 3;
+        if (leftShoulderJoint.rotation[2] > -26 && leftShoulderJoint.rotation[0] < -30) leftShoulderJoint.rotation[2] -= STEP;
+        if (leftElbowJoint.rotation[0] > -150 && leftShoulderJoint.rotation[2] < -10) leftElbowJoint.rotation[0] -= STEP * 2.5;
+        if (leftElbowJoint.rotation[2] < 54 && leftShoulderJoint.rotation[2] < -10) leftElbowJoint.rotation[2] += STEP * 1.5;
+        if (neckJoint.rotation[2] < 22 && leftShoulderJoint.rotation[0] < -40) neckJoint.rotation[2] += STEP * 0.3;
+        if (neckJoint.rotation[0] < 16 && leftShoulderJoint.rotation[0] < -40) neckJoint.rotation[0] += STEP * 0.3;
+        if (neckJoint.rotation[1] > -6 && leftShoulderJoint.rotation[0] < -40) neckJoint.rotation[1] -= STEP * 0.3;
+    }
+
+    /* Resetar animacao com braco esquerdo no pescoco */
+    else if (animationCycle == 2) {
+
+        if (leftShoulderJoint.rotation[0] < 0) leftShoulderJoint.rotation[0] += STEP * 2;
+        if (leftShoulderJoint.rotation[2] < 0) leftShoulderJoint.rotation[2] += STEP;
+        if (leftElbowJoint.rotation[0] < 0) leftElbowJoint.rotation[0] += STEP * 2.5;
+        if (leftElbowJoint.rotation[2] > 0) leftElbowJoint.rotation[2] -= STEP * 1.5;
+        if (neckJoint.rotation[2] > 0) neckJoint.rotation[2] -= STEP * 0.3;
+        if (neckJoint.rotation[0] > 0) neckJoint.rotation[0] -= STEP * 0.3;
+        if (neckJoint.rotation[1] < 0) neckJoint.rotation[1] += STEP * 0.3;
+    }
+
+    /* Animacao com braco direito no pescoco */
+    else if (animationCycle == 3) {
+
+        if (rightShoulderJoint.rotation[0] > -172) rightShoulderJoint.rotation[0] -= STEP * 3;
+        if (rightShoulderJoint.rotation[2] < 26 && rightShoulderJoint.rotation[0] < -30) rightShoulderJoint.rotation[2] += STEP;
+        if (rightElbowJoint.rotation[0] > -150 && rightShoulderJoint.rotation[2] > 10) rightElbowJoint.rotation[0] -= STEP * 2.5;
+        if (rightElbowJoint.rotation[2] > -54 && rightShoulderJoint.rotation[2] > 10) rightElbowJoint.rotation[2] -= STEP * 1.5;
+        if (neckJoint.rotation[2] > -22 && rightShoulderJoint.rotation[0] < -40) neckJoint.rotation[2] -= STEP * 0.3;
+        if (neckJoint.rotation[0] < 16 && rightShoulderJoint.rotation[0] < -40) neckJoint.rotation[0] += STEP * 0.3;
+        if (neckJoint.rotation[1] < 6 && rightShoulderJoint.rotation[0] < -40) neckJoint.rotation[1] += STEP * 0.3;
+    }
+
+    /* Resetar animacao com braco direito no pescoco */
+    else if (animationCycle == 4) {
+
+        if (rightShoulderJoint.rotation[0] < 0) rightShoulderJoint.rotation[0] += STEP * 2;
+        if (rightShoulderJoint.rotation[2] > 0) rightShoulderJoint.rotation[2] -= STEP;
+        if (rightElbowJoint.rotation[0] < 0) rightElbowJoint.rotation[0] += STEP * 2.5;
+        if (rightElbowJoint.rotation[2] < 0) rightElbowJoint.rotation[2] += STEP * 1.5;
+        if (neckJoint.rotation[2] < 0) neckJoint.rotation[2] += STEP * 0.3;
+        if (neckJoint.rotation[0] > 0) neckJoint.rotation[0] -= STEP * 0.3;
+        if (neckJoint.rotation[1] > 0) neckJoint.rotation[1] -= STEP * 0.3;
+    }
+}
+
+/* Exercicios - Aquecimento (Flexao Lateral Tronco) */
+void torsoExercise(int animationCycle) {
+
+    timer += 0.01;
+
+    /* Animacao de flexao na lateral direita do tronco */
+    if (animationCycle == 1) {
+
+        if (leftShoulderJoint.rotation[0] < 36) leftShoulderJoint.rotation[0] += STEP * 1.5;
+        if (leftShoulderJoint.rotation[2] > -46) leftShoulderJoint.rotation[2] -= STEP * 1.5;
+        if (leftElbowJoint.rotation[0] > -150) leftElbowJoint.rotation[0] -= STEP * 2;
+        if (leftElbowJoint.rotation[2] < 42) leftElbowJoint.rotation[2] += STEP * 1.5;
+        if (rightShoulderJoint.rotation[0] > -180) rightShoulderJoint.rotation[0] -= STEP * 2.5;
+        if (rightShoulderJoint.rotation[2] > -14 && rightShoulderJoint.rotation[0] <= -120) rightShoulderJoint.rotation[2] -= STEP;
+        if (rightElbowJoint.rotation[2] > -40 && rightShoulderJoint.rotation[0] <= -80) rightElbowJoint.rotation[2] -= STEP;
+        if (neckJoint.rotation[0] > -14) neckJoint.rotation[0] -= STEP * 0.2;
+        if (neckJoint.rotation[2] < 14) neckJoint.rotation[2] += STEP * 0.2;
+        if (torsoJoint.rotation[2] < 14) torsoJoint.rotation[2] += STEP * 0.2;
+        if (waistJoint.rotation[2] < 14) waistJoint.rotation[2] += STEP * 0.2;
+        if (leftHipJoint.rotation[2] > -14) leftHipJoint.rotation[2] -= STEP * 0.2;
+        if (rightHipJoint.rotation[2] > -8) {
+            rightHipJoint.rotation[2] -= STEP * 0.2;
+            rightLegPosition.current[1] = -(waistJoint.rotation[2] * 0.05);
+        }
+    }
+
+    /* Resetar animacao de flexao na lateral direita do tronco */
+    else if (animationCycle == 2) {
+
+        if (rightShoulderJoint.rotation[0] < -121 && rightShoulderJoint.rotation[2] < 0)
+            rightShoulderJoint.rotation[2] += STEP;
+
+        if (rightShoulderJoint.rotation[0] < -81 && rightElbowJoint.rotation[2] < 0)
+            rightElbowJoint.rotation[2] += STEP;
+
+        if (leftShoulderJoint.rotation[0] > 0) leftShoulderJoint.rotation[0] -= STEP * 1.5;
+        if (leftShoulderJoint.rotation[2] < 0) leftShoulderJoint.rotation[2] += STEP * 1.5;
+        if (leftElbowJoint.rotation[0] < 0) leftElbowJoint.rotation[0] += STEP * 2;
+        if (leftElbowJoint.rotation[2] > 0) leftElbowJoint.rotation[2] -= STEP * 1.5;
+        if (rightShoulderJoint.rotation[0] < 0) rightShoulderJoint.rotation[0] += STEP * 2.5;
+        if (neckJoint.rotation[0] < 0) neckJoint.rotation[0] += STEP * 0.2;
+        if (neckJoint.rotation[2] > 0) neckJoint.rotation[2] -= STEP * 0.2;
+        if (torsoJoint.rotation[2] > 0) torsoJoint.rotation[2] -= STEP * 0.2;
+        if (waistJoint.rotation[2] > 0) waistJoint.rotation[2] -= STEP * 0.2;
+        if (leftHipJoint.rotation[2] < 0) leftHipJoint.rotation[2] += STEP * 0.2;
+        if (rightHipJoint.rotation[2] < 0) rightHipJoint.rotation[2] += STEP * 0.2;
+        if (rightLegPosition.current[1] < rightLegPosition.init[1]) rightLegPosition.current[1] = -(waistJoint.rotation[2] * 0.04);
+    }
+
+    /* Animacao de flexao na lateral esquerda do tronco */
+    else if (animationCycle == 3) {
+
+        if (rightShoulderJoint.rotation[0] < 36) rightShoulderJoint.rotation[0] += STEP * 1.5;
+        if (rightShoulderJoint.rotation[2] < 46) rightShoulderJoint.rotation[2] += STEP * 1.5;
+        if (rightElbowJoint.rotation[0] > -150) rightElbowJoint.rotation[0] -= STEP * 2;
+        if (rightElbowJoint.rotation[2] > -42) rightElbowJoint.rotation[2] -= STEP * 1.5;
+        if (leftShoulderJoint.rotation[0] > -180) leftShoulderJoint.rotation[0] -= STEP * 2.5;
+        if (leftShoulderJoint.rotation[2] < 14 && leftShoulderJoint.rotation[0] <= -120) leftShoulderJoint.rotation[2] += STEP;
+        if (leftElbowJoint.rotation[2] < 40 && leftShoulderJoint.rotation[0] <= -80) leftElbowJoint.rotation[2] += STEP;
+        if (neckJoint.rotation[0] > -14) neckJoint.rotation[0] -= STEP * 0.2;
+        if (neckJoint.rotation[2] > -14) neckJoint.rotation[2] -= STEP * 0.2;
+        if (torsoJoint.rotation[2] > -14) torsoJoint.rotation[2] -= STEP * 0.2;
+        if (waistJoint.rotation[2] > -14) waistJoint.rotation[2] -= STEP * 0.2;
+        if (rightHipJoint.rotation[2] < 14) rightHipJoint.rotation[2] += STEP * 0.2;
+        if (leftHipJoint.rotation[2] < 8) {
+            leftHipJoint.rotation[2] += STEP * 0.2;
+            leftLegPosition.current[1] = waistJoint.rotation[2] * 0.05;
+        }
+    }
+
+    /* Resetar animacao de flexao na lateral direita do tronco */
+    else if (animationCycle == 4) {
+
+        if (leftShoulderJoint.rotation[2] < 15 && leftShoulderJoint.rotation[0] < -121 && leftShoulderJoint.rotation[2] >= 0)
+            leftShoulderJoint.rotation[2] -= STEP;
+
+        if (leftElbowJoint.rotation[2] < 41 && leftShoulderJoint.rotation[0] < -81 && leftElbowJoint.rotation[2] >= 0)
+            leftElbowJoint.rotation[2] -= STEP;
+
+        if (rightShoulderJoint.rotation[0] > 0) rightShoulderJoint.rotation[0] -= STEP * 1.5;
+        if (rightShoulderJoint.rotation[2] > 0) rightShoulderJoint.rotation[2] -= STEP * 1.5;
+        if (rightElbowJoint.rotation[0] < 0) rightElbowJoint.rotation[0] += STEP * 2;
+        if (rightElbowJoint.rotation[2] < 0) rightElbowJoint.rotation[2] += STEP * 1.5;
+        if (leftShoulderJoint.rotation[0] < 0) leftShoulderJoint.rotation[0] += STEP * 2.5;
+        if (neckJoint.rotation[0] < 0) neckJoint.rotation[0] += STEP * 0.2;
+        if (neckJoint.rotation[2] < 0) neckJoint.rotation[2] += STEP * 0.2;
+        if (torsoJoint.rotation[2] < 0) torsoJoint.rotation[2] += STEP * 0.2;
+        if (waistJoint.rotation[2] < 0) waistJoint.rotation[2] += STEP * 0.2;
+        if (rightHipJoint.rotation[2] > 0) rightHipJoint.rotation[2] -= STEP * 0.2;
+        if (leftHipJoint.rotation[2] > 0) leftHipJoint.rotation[2] -= STEP * 0.2;
+        if (leftLegPosition.current[1] < leftLegPosition.init[1]) leftLegPosition.current[1] = waistJoint.rotation[2] * 0.04;
+    }
+}
+
+/* Exercicios - Aquecimento (Agachamento) */
+void squat(int animationCycle) {
+
+    timer += 0.01;
+
+    /* Animacao de levantar os bracos */
+    if (animationCycle == 1) {
+
+        if (leftShoulderJoint.rotation[0] > -90) leftShoulderJoint.rotation[0] -= STEP * 1.5;
+        if (rightShoulderJoint.rotation[0] > -90) rightShoulderJoint.rotation[0] -= STEP * 1.5;
+    }
+
+    /* Animacao da descida do agachamento */
+    else if (animationCycle == 2) {
+
+        if (humanBodyPosition.current[1] > -4.0) humanBodyPosition.current[1] -= 0.005;
+        if (leftShoulderJoint.rotation[0] > -100) leftShoulderJoint.rotation[0] -= STEP * 0.2;
+        if (rightShoulderJoint.rotation[0] > -100) rightShoulderJoint.rotation[0] -= STEP * 0.2;
+        if (leftHipJoint.rotation[0] > -105) leftHipJoint.rotation[0] -= STEP * 2;
+        if (leftKneeJoint.rotation[0] < 90) leftKneeJoint.rotation[0] += STEP * 2;
+        if (rightHipJoint.rotation[0] > -105) rightHipJoint.rotation[0] -= STEP * 2;
+        if (rightKneeJoint.rotation[0] < 90) rightKneeJoint.rotation[0] += STEP * 2;
+        if (neckJoint.rotation[0] > 10) neckJoint.rotation[0] += STEP;
+        if (torsoJoint.rotation[0] < 18) torsoJoint.rotation[0] += STEP * 0.25;
+        if (waistJoint.rotation[0] < 18) waistJoint.rotation[0] += STEP * 0.25;
+    }
+
+    /* Animacao da subida do agachamento (resetar) */
+    else if (animationCycle == 3) {
+
+        if (humanBodyPosition.current[1] < humanBodyPosition.init[1])
+            humanBodyPosition.current[1] += 0.005;
+
+        if (leftShoulderJoint.rotation[0] > -120 && leftShoulderJoint.rotation[0] <= -90)
+            leftShoulderJoint.rotation[0] += STEP * 0.2;
+
+        if (rightShoulderJoint.rotation[0] > -120 && rightShoulderJoint.rotation[0] <= -90)
+            rightShoulderJoint.rotation[0] += STEP * 0.2;
+
+        if (leftHipJoint.rotation[0] < 0) leftHipJoint.rotation[0] += STEP * 1.5;
+        if (leftKneeJoint.rotation[0] > 0) leftKneeJoint.rotation[0] -= STEP * 1.5;
+        if (rightHipJoint.rotation[0] < 0) rightHipJoint.rotation[0] += STEP * 1.5;
+        if (rightKneeJoint.rotation[0] > 0) rightKneeJoint.rotation[0] -= STEP * 1.5;
+        if (neckJoint.rotation[0] > 0) neckJoint.rotation[0] -= STEP;
+        if (torsoJoint.rotation[0] > 0) torsoJoint.rotation[0] -= STEP * 0.25;
+        if (waistJoint.rotation[0] > 0) waistJoint.rotation[0] -= STEP * 0.25;
+    }
+
+    /* Resetar animacao */
+    else if (animationCycle == 4) {
+
+        if (humanBodyPosition.current[1] < humanBodyPosition.init[1]) humanBodyPosition.current[1] += 0.005;
+        if (leftShoulderJoint.rotation[0] < 0) leftShoulderJoint.rotation[0] += STEP;
+        if (rightShoulderJoint.rotation[0] < 0) rightShoulderJoint.rotation[0] += STEP;
+        if (leftHipJoint.rotation[0] < 0) leftHipJoint.rotation[0] += STEP * 0.5;
+        if (leftKneeJoint.rotation[0] > 0) leftKneeJoint.rotation[0] -= STEP * 0.5;
+        if (rightHipJoint.rotation[0] < 0) rightHipJoint.rotation[0] += STEP * 0.5;
+        if (rightKneeJoint.rotation[0] > 0) rightKneeJoint.rotation[0] -= STEP * 0.5;
+        if (neckJoint.rotation[0] < 0) neckJoint.rotation[0] -= STEP;
+        if (torsoJoint.rotation[0] > 0) torsoJoint.rotation[0] -= STEP * 0.2;
+        if (waistJoint.rotation[0] > 0) waistJoint.rotation[0] -= STEP * 0.2;
+    }
+}
+
+/* Exercicios - Aquecimento (Polichinelo) */
+void jumpingJackExercise(int animationCycle) {
+
+    timer += 0.01;
+
+    /* Animacao de subida do polichinelo */
+    if (animationCycle == 1) {
+
+        if (leftElbowJoint.rotation[2] < 30 && leftShoulderJoint.rotation[0] < -100)
+            leftElbowJoint.rotation[2] += STEP * 1.5;
+
+        if (rightElbowJoint.rotation[2] > -30 && rightShoulderJoint.rotation[0] < -100)
+            rightElbowJoint.rotation[2] -= STEP * 1.5;
+
+        if (leftShoulderJoint.rotation[0] > -176) leftShoulderJoint.rotation[0] -= STEP * 4;
+        if (rightShoulderJoint.rotation[0] > -176) rightShoulderJoint.rotation[0] -= STEP * 4;
+        if (leftHipJoint.rotation[2] > -24) leftHipJoint.rotation[2] -= STEP * 0.7;
+        if (rightHipJoint.rotation[2] < 24) rightHipJoint.rotation[2] += STEP * 0.7;
+        if (humanBodyPosition.current[1] < -0.5) humanBodyPosition.current[1] += 0.002;
+    }
+
+    /* Animacao de descida do polichinelo (resetar) */
+    else if (animationCycle == 2) {
+
+        if (leftShoulderJoint.rotation[0] < -100 && leftElbowJoint.rotation[2] > 0)
+            leftElbowJoint.rotation[2] -= STEP * 1.5;
+
+        if (rightShoulderJoint.rotation[0] < -100 && rightElbowJoint.rotation[2] < 0)
+            rightElbowJoint.rotation[2] += STEP * 1.5;
+
+        if (leftShoulderJoint.rotation[0] < 0) leftShoulderJoint.rotation[0] += STEP * 4;
+        if (leftElbowJoint.rotation[2] > 0) leftElbowJoint.rotation[2] -= STEP * 1.5;
+        if (rightShoulderJoint.rotation[0] < 0) rightShoulderJoint.rotation[0] += STEP * 4;
+        if (leftHipJoint.rotation[2] < 0) leftHipJoint.rotation[2] += STEP * 0.7;
+        if (rightHipJoint.rotation[2] > 0) rightHipJoint.rotation[2] -= STEP * 0.7;
+        if (humanBodyPosition.current[1] > humanBodyPosition.init[1]) humanBodyPosition.current[1] -= 0.002;
+    }
+}
 /* Exercicios - Halteres (Rosca Alternada) */
 void unilateralCurl(int animationCycle) {
 
@@ -722,7 +889,8 @@ void unilateralCurl(int animationCycle) {
             leftElbowJoint.rotation[0] += STEP * 2;
             leftDumbbellPos.current[1] -= STEP * 0.095;
         }
-        if (leftDumbbellPos.current[2] > leftDumbbellPos.init[2] && leftElbowJoint.rotation[0] > -45) leftDumbbellPos.current[2] -= STEP * 0.06;
+        if (leftDumbbellPos.current[2] > leftDumbbellPos.init[2] && leftElbowJoint.rotation[0] > -45)
+            leftDumbbellPos.current[2] -= STEP * 0.06;
     }
 
     /* Subida antebraco direito */
@@ -744,7 +912,8 @@ void unilateralCurl(int animationCycle) {
             rightElbowJoint.rotation[0] += STEP * 2;
             rightDumbbellPos.current[1] -= STEP * 0.095;
         }
-        if (rightDumbbellPos.current[2] > rightDumbbellPos.init[2] && rightElbowJoint.rotation[0] > -45) rightDumbbellPos.current[2] -= STEP * 0.06;
+        if (rightDumbbellPos.current[2] > rightDumbbellPos.init[2] && rightElbowJoint.rotation[0] > -45)
+            rightDumbbellPos.current[2] -= STEP * 0.06;
     }
 }
 
@@ -811,8 +980,8 @@ void frontalRaise(int animationCycle) {
 
             if (leftDumbbellPos.current[2] < -25.5 && rightDumbbellPos.current[2] < -25.5) {
 
-                leftDumbbellPos.current[2] += STEP * 0.1;
-                rightDumbbellPos.current[2] += STEP * 0.1;
+                leftDumbbellPos.current[2] += STEP * 0.095;
+                rightDumbbellPos.current[2] += STEP * 0.095;
             }
         }
     }
@@ -831,8 +1000,8 @@ void frontalRaise(int animationCycle) {
             if ((leftDumbbellPos.current[2] > leftDumbbellPos.init[2] && rightDumbbellPos.current[2] > rightDumbbellPos.init[2]) &&
                 (leftShoulderJoint.rotation[0] > -66 && rightShoulderJoint.rotation[0] > -66)) {
 
-                leftDumbbellPos.current[2] -= STEP * 0.1;
-                rightDumbbellPos.current[2] -= STEP * 0.1;
+                leftDumbbellPos.current[2] -= STEP * 0.095;
+                rightDumbbellPos.current[2] -= STEP * 0.095;
             }
         }
     }
@@ -897,7 +1066,56 @@ void lateralRaise(int animationCycle) {
             rightDumbbellPos.current[2] -= STEP * 0.06;
         }
     }
+}
 
+/* Exercicios - Halteres (Afundo) */
+void lunge(int animationCycle) {
+
+    timer += 0.01;
+
+    /* Animacao de descida */
+    if (animationCycle == 1) {
+
+
+        if (leftShoulderJoint.rotation[2] > -14) leftShoulderJoint.rotation[2] -= STEP;
+        if (rightShoulderJoint.rotation[2] < 14) rightShoulderJoint.rotation[2] += STEP;
+        if (humanBodyPosition.current[1] > -3.75) humanBodyPosition.current[1] -= 0.004;
+        if (leftHipJoint.rotation[0] > -80) leftHipJoint.rotation[0] -= STEP * 1.5;
+        if (leftKneeJoint.rotation[0] < 76) leftKneeJoint.rotation[0] += STEP * 1.5;
+        if (rightHipJoint.rotation[0] < 36) rightHipJoint.rotation[0] += STEP;
+        if (rightKneeJoint.rotation[0] < 65) rightKneeJoint.rotation[0] += STEP;
+        if (leftDumbbellPos.current[0] > -42) leftDumbbellPos.current[0] -= STEP * 0.05;
+        if (rightDumbbellPos.current[0] < -34.5) rightDumbbellPos.current[0] += STEP * 0.05;
+        if (leftDumbbellPos.current[1] > -8.0) leftDumbbellPos.current[1] -= 0.004;
+        if (rightDumbbellPos.current[1] > -4.0) rightDumbbellPos.current[1] -= 0.004;
+    }
+
+    /* Animacao de descida */
+    else if (animationCycle == 2) {
+
+       if (humanBodyPosition.current[1] < humanBodyPosition.init[1])
+            humanBodyPosition.current[1] += 0.004;
+
+        if (leftDumbbellPos.current[1] < leftDumbbellPos.init[1])
+            leftDumbbellPos.current[1] += 0.004;
+
+        if (rightDumbbellPos.current[1] < rightDumbbellPos.init[1])
+            rightDumbbellPos.current[1] += 0.004;
+
+        if (leftHipJoint.rotation[0] < 0) leftHipJoint.rotation[0] += STEP * 0.8;
+        if (leftKneeJoint.rotation[0] > 0) leftKneeJoint.rotation[0] -= STEP * 0.8;
+        if (rightHipJoint.rotation[0] > 0) rightHipJoint.rotation[0] -= STEP * 0.5;
+        if (rightKneeJoint.rotation[0] > 0) rightKneeJoint.rotation[0] -= STEP * 0.5;
+    }
+
+    /* Resetar animacao */
+    else if (animationCycle == 3) {
+
+        if (leftShoulderJoint.rotation[2] < -4) leftShoulderJoint.rotation[2] += STEP;
+        if (rightShoulderJoint.rotation[2] > 4) rightShoulderJoint.rotation[2] -= STEP;
+        if (leftDumbbellPos.current[0] < leftDumbbellPos.init[0]) leftDumbbellPos.current[0] += STEP * 0.05;
+        if (rightDumbbellPos.current[0] > rightDumbbellPos.init[0]) rightDumbbellPos.current[0] -= STEP * 0.05;
+    }
 }
 
 void resetTorsoExerciseAnimation(int animationCycle) {
@@ -917,6 +1135,8 @@ void resetTorsoExerciseAnimation(int animationCycle) {
 }
 
 void resetDumbellAnimation() {
+
+    humanBodyPosition.current[1] = humanBodyPosition.init[1];
 
     leftShoulderJoint.rotation[0] = rightShoulderJoint.rotation[0] = -18;
     leftShoulderJoint.rotation[2] = -4; rightShoulderJoint.rotation[2] = 4;
@@ -1057,11 +1277,11 @@ void inverseKinematics(int optAnimation, int resetFlag, int optUser) {
         case 6:
 
             /* Retornar para posicao inicial (horizontal e vertical) */
-            if (timer < 74) returnEquipment(1);
-            else if (timer < 75) returnEquipment(2);
+            if (timer >= 73 && timer < 74) getEquipment(6);
+            else if (timer >= 74 && timer < 75) getEquipment(7);
 
             /* Resetar animacao */
-            else if (timer >= 75 && timer < 78) returnEquipment(3);
+            else if (timer >= 75 && timer < 78) getEquipment(8);
             else {
 
                 leftHipJoint.rotation[0] = rightHipJoint.rotation[0] = 0;
@@ -1080,6 +1300,12 @@ void inverseKinematics(int optAnimation, int resetFlag, int optUser) {
 
             resetDumbellAnimation();
             break;
+
+        case 11:
+
+            if (timer < 88) lunge(3);
+            else resetDumbellAnimation();
+            break;
     }
 }
 
@@ -1095,9 +1321,20 @@ void kinematics(int optAnimation, int resetFlag, int optUser) {
 
     if (allAnimationFlag) {
 
-        for (i = 0; i <= 5; i++) {
-            animationId = i;
-            addNode();
+        if (!hasEquipment) {
+
+            for (i = 0; i <= 5; i++) {
+                animationId = i;
+                addNode();
+            }
+        }
+
+        if (hasEquipment) {
+
+            for (i = 7; i <= 12; i++) {
+                animationId = i;
+                addNode();
+            }
         }
         allAnimationFlag = 0;
     }
@@ -1211,7 +1448,7 @@ void kinematics(int optAnimation, int resetFlag, int optUser) {
                 else if (timer >= 79) {
 
                     endAnimation();
-                    hasLeftEquipment = hasRightEquipment = 0;
+                    stopWalkingAnimation = 1;
                     hasEquipment = 1;
                 }
                 break;
@@ -1280,12 +1517,61 @@ void kinematics(int optAnimation, int resetFlag, int optUser) {
 
                 break;
 
+
+            /* Afundo */
+            case 11:
+
+                if ((timer < 14) || (timer >= 28 && timer < 42) || (timer >= 56 && timer < 70)) lunge(1);
+                else if ((timer >= 14 && timer < 28) || (timer >= 42 && timer < 56) || (timer >= 70 && timer < 84)) lunge(2);
+
+                if (timer >= 84 && timer < 88) inverseKinematics(optAnimation, resetFlag, optUser);
+                else if (timer >= 88) endAnimation();
+
+                break;
+
+            /* Todas animacoes com halteres */
+            case 12:
+
+                endAnimation();
+                waitForAllAnimationFinish = 0;
+                break;
+
+
+            /* Devolver equipamento */
+            case 13:
+
+                /* Andar ate rack dos halteres (vertical e horizontal) */
+                if (timer < 1) returnEquipment(1);
+                else if (timer >= 1 && timer < 2) returnEquipment(2);
+
+                /* Devolver haltere direito e esquerdo */
+                if (timer >= 2 && timer < 7) returnEquipment(3);
+                else if (timer >= 7 && timer < 20) returnEquipment(4);
+                else if (timer >= 20 && timer < 40) returnEquipment(5);
+
+                /* Retornar a posicao inicial */
+                if (timer >= 40 && timer < 70) returnEquipment(6);
+                else if (timer >= 70 && timer < 105) returnEquipment(7);
+
+                /* Resetar animacao */
+                if (timer >= 105 && timer < 110) returnEquipment(8);
+                else if (timer >= 110) {
+
+                    humanBodyPosition.current[0] = humanBodyPosition.init[0];
+                    humanBodyPosition.current[1] = humanBodyPosition.init[1];
+                    humanBodyPosition.current[2] = humanBodyPosition.init[2];
+                    hasEquipment = waitReturnEquipment = 0;
+                    endAnimation();
+                }
+                break;
         }
     }
 
+
+
     if (animationFinished) {
 
-        if (resetFlag || optUser >= 0 || headNode->animationId == 5 || headNode->animationId == 6) {
+        if ((!hasEquipment && (resetFlag || optUser >= 0)) || (headNode->animationId == 6 || headNode->animationId == 13)) {
 
             animationId = -1;
             waitForAllAnimationFinish = 0;
@@ -1293,9 +1579,9 @@ void kinematics(int optAnimation, int resetFlag, int optUser) {
         }
         else {
 
-            //printList();
             deleteFirstNode();
-            if (checkIfAnimationEnded()) addNode();
+            if (checkIfAnimationEnded() && animationId != 6)
+                addNode();
         }
     }
 

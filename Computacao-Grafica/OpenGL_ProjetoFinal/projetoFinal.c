@@ -104,8 +104,6 @@ void updateCamera() {
     cameraY = sin(theta) * cameraRadius;
     cameraZ = cos(alpha) * cos(theta) * cameraRadius;
 
-    //printf("x: %f |  y: %f  |  z: %f  |  THETA: %f  ALPHA: %f\n", cameraX, cameraY, cameraZ, theta, alpha);
-
     gluLookAt(cameraX, cameraY, cameraZ, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
     updateLightningPosition();
 }
@@ -254,7 +252,7 @@ void keyboard(unsigned char key, int x, int y) {
         case 'z':
         case 'Z':
 
-            if (optUser < 0 || (animationFlag || resetFlag || checkIfHaveEquipament())) return;
+            if (optUser < 0 || (animationFlag || resetFlag || checkIfHasEquipment())) return;
 
             if (key == 'x' || key == 'X') rotate.keyPressed = 'x';
             else if (key == 'y' || key == 'Y') rotate.keyPressed = 'y';
@@ -268,7 +266,7 @@ void keyboard(unsigned char key, int x, int y) {
 
                     if (rotate.keyPressed == 'x') *rotate.axis[0] += 2.0;
                     else if (rotate.keyPressed == 'y') *rotate.axis[1] += 2.0;
-                    else *rotate.axis[2] += 2.0;
+                    else if (rotate.keyPressed == 'z') *rotate.axis[2] += 2.0;
                 }
             }
             else {
@@ -279,10 +277,9 @@ void keyboard(unsigned char key, int x, int y) {
 
                     if (rotate.keyPressed == 'x') *rotate.axis[0] -= 2.0;
                     else if (rotate.keyPressed == 'y') *rotate.axis[1] -= 2.0;
-                    else *rotate.axis[2] -= 2.0;
+                    else if (rotate.keyPressed == 'z') *rotate.axis[2] -= 2.0;
                 }
             }
-            printf("x: %f | y: %f | z: %f\n", *rotate.axis[0], *rotate.axis[1], *rotate.axis[2]);
             break;
 
         case '+':
@@ -375,14 +372,14 @@ int resetJointsAngle() {
 
 void idleFunc() {
 
-    if (resetFlag && (optAnimation < 0 || (checkIfAnimationEnded() && optUser >= 0))) resetJointsAngle();
+    if ((resetFlag && !checkIfHasEquipment()) && (optAnimation < 0 || (checkIfAnimationEnded() && optUser >= 0))) resetJointsAngle();
 
     if (animationFlag) {
 
         if (checkIfAnimationEnded() && optUser >= 0) resetFlag = 1;
         else {
 
-            updateAnimation(optAnimation);
+            updateAnimation(optAnimation, resetFlag, optUser);
             kinematics(optAnimation, resetFlag, optUser);
 
             if (checkIfAnimationEnded()) {
@@ -435,12 +432,19 @@ int main(int argc, char *argv[]) {
 
     halteres = glutCreateMenu(animationMenu);
 
-        glutAddMenuEntry(" Pegar equipamento ", 6);
+        glutAddMenuEntry(" Pegar Equipamento ", 6);
+        glutAddMenuEntry(" Rosca Alternada ", 7);
+        glutAddMenuEntry(" Rosca Simultanea ", 8);
+        glutAddMenuEntry(" Elevacao Frontal ", 9);
+        glutAddMenuEntry(" Elevacao Lateral", 10);
+        glutAddMenuEntry(" Afundo ", 11);
+        glutAddMenuEntry(" Todos ", 12);
+        glutAddMenuEntry(" Devolver Equipamento ", 13);
 
     reset = glutCreateMenu(resetMenu);
 
     glutAddMenuEntry(" Resetar ", 1);
-    glutAddSubMenu(" Movimentacao individual ", subUserMenu);
+    glutAddSubMenu(" Movimentacao Individual ", subUserMenu);
     glutAddSubMenu(" Exercicios - Aquecimento ", aquecimento);
     glutAddSubMenu(" Exercicios - Halteres ", halteres);
 

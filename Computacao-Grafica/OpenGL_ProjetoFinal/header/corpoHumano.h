@@ -315,9 +315,6 @@ void drawHuman() {
 
         drawWaist();
 
-        /* Define cor da perna esquerda */
-        glColor3fv(navy.color);
-
         glPushMatrix();
 
             glTranslated(-waist.radius * 0.5, -waist.height * 0.7, 0.0);
@@ -342,7 +339,6 @@ void drawHuman() {
 
         glPopMatrix();
 
-        /* Define cor da perna direita */
         glColor3fv(navy.color);
 
         glPushMatrix();
