@@ -14,6 +14,7 @@
 
 #include "corpoHumano.h"
 #include "cenario.h"
+#include "textura.h"
 
 /* Tamanho da janela */
 #define WINDOW_WIDTH 700
@@ -23,10 +24,10 @@
 #define MAX_ZOOM_IN 30
 #define PI 3.141592
 
-/* Rotacao da camera */
+/* Parametros da camera */
 float cameraX, cameraY, cameraZ;
 float aspectRatio       = 0.0;
-float vision            = 45.0;
+float fov               = 45.0;
 float cameraRadius      = 130.0;
 float theta             = 0.35;
 float alpha             = 0.0;
@@ -36,6 +37,11 @@ int optUser = -1;
 int optAnimation = -1;
 int resetFlag = 0;
 int animationFlag = 0;
+
+/* Definicao dos parametros de luz */
+float lightAmbient[]  = {0.2, 0.2, 0.2, 1.0};
+float lightDiffuse[]  = {0.3, 0.3, 0.3, 1.0};
+float lightSpecular[] = {0.3, 0.3, 0.3, 1.0};
 
 /* Definicao dos eixos de rotacao a serem modificados pelo usuario */
 typedef struct {
@@ -51,21 +57,32 @@ Rotation rotate;
 /* Junta atual do corpo humano */
 Animation *currentJoint;
 
-void initLightning() {
+/* Reposiciona a fonte de luz */
+void updateLightningPosition() {
 
-    /* Definicao dos parametros de luz */
-    float lightAmbient[]  = {0.3, 0.3, 0.3, 1.0};
-    float lightDiffuse[]  = {0.4, 0.4, 0.4, 1.0};
-    float lightSpecular[] = {0.4, 0.4, 0.4, 1.0};
-
-    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, lightAmbient);
+    float light0_position[] = {cameraX, cameraY, cameraZ, 1.0};
 
     glLightfv(GL_LIGHT0, GL_AMBIENT, lightAmbient);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, lightDiffuse);
     glLightfv(GL_LIGHT0, GL_SPECULAR, lightSpecular);
+    glLightfv(GL_LIGHT0, GL_POSITION, light0_position);
+
+    float light1_position[] = {-cameraX, -cameraY, -cameraZ, 1.0};
+
+    glLightfv(GL_LIGHT1, GL_AMBIENT, lightAmbient);
+    glLightfv(GL_LIGHT1, GL_DIFFUSE, lightDiffuse);
+    glLightfv(GL_LIGHT1, GL_SPECULAR, lightSpecular);
+    glLightfv(GL_LIGHT1, GL_POSITION, light1_position);
+}
+
+void initLightning() {
+
+    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, lightAmbient);
 
     /* Definicao dos parametros de luz dos materiais (objetos) */
     glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+
+    updateLightningPosition();
 }
 
 void init() {
@@ -75,19 +92,15 @@ void init() {
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
+    glEnable(GL_LIGHT1);
     glEnable(GL_COLOR_MATERIAL);
     glShadeModel(GL_SMOOTH);
 
     initBodyQuadrics();
     initScenarioQuadrics();
     initLightning();
-}
 
-/* Define e posiciona a fonte de luz */
-void updateLightningPosition() {
-
-    float lightPosition[] = {alpha, theta, cameraZ, 1.0};
-    glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
+    loadTexture("floor.bmp", 0);
 }
 
 void updateCamera() {
@@ -95,7 +108,7 @@ void updateCamera() {
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
 
-    gluPerspective(vision, aspectRatio, 1, 1000);
+    gluPerspective(fov, aspectRatio, 1, 1000);
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
@@ -399,7 +412,7 @@ int main(int argc, char *argv[]) {
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
     glutInitWindowPosition(0, 0);
     glutInitWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT);
-    glutCreateWindow("Projeto Final - Computação Gráfica");
+    glutCreateWindow("Maratona da Fisioterapia - Projeto Final - Computacao Grafica");
 
     init();
 

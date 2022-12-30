@@ -1567,8 +1567,6 @@ void kinematics(int optAnimation, int resetFlag, int optUser) {
         }
     }
 
-
-
     if (animationFinished) {
 
         if ((!hasEquipment && (resetFlag || optUser >= 0)) || (headNode->animationId == 6 || headNode->animationId == 13)) {

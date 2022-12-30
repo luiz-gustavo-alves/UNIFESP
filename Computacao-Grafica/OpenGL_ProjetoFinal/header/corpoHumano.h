@@ -31,13 +31,13 @@ Body_Structure  torso =      {4.0, 2.0},    /*  Torso      */
                 shoulder =   {0.0, 0.6},    /*  Ombro      */
                 upperArm =   {3.5, 0.5},    /*  Braco      */
                 elbow =      {0.0, 0.4},    /*  Cotovelo   */
-                lowerArm =   {3.0, 0.5},    /*  Antebraco  */
+                lowerArm =   {3.0, 0.4},    /*  Antebraco  */
                 hand     =   {0.0, 0.5},    /*  Mao        */
                 waist =      {3.5, 1.7},    /*  Cintura    */
                 hip =        {0.0, 0.6},    /*  Quadril    */
                 upperLeg =   {2.5, 0.6},    /*  Coxa       */
                 knee =       {0.0, 0.5},    /*  Joelho     */
-                lowerLeg =   {3.0, 0.6},    /*  Canela     */
+                lowerLeg =   {3.0, 0.5},    /*  Canela     */
                 feet     =   {0.0, 0.8};    /*  Pe         */
 
 
@@ -85,7 +85,7 @@ void drawHead() {
         /* Desenha cabeca */
         glPushMatrix();
 
-            glScalef(1.05, 1.2, 1.0);
+            glScalef(1.0, 1.2, 1.0);
             gluSphere(quadHuman, head.radius, SLICES, STACKS);
 
         glPopMatrix();
@@ -96,7 +96,7 @@ void drawHead() {
         /* Desenha olho esquerdo */
         glPushMatrix();
 
-            glTranslatef(head.radius * 0.5, 0.0, head.radius - eye.radius);
+            glTranslatef(head.radius * 0.45, 0.0, head.radius - eye.radius);
             gluSphere(quadHuman, eye.radius, SLICES, STACKS);
 
         glPopMatrix();
@@ -104,7 +104,7 @@ void drawHead() {
         /* Desenha olho direito */
         glPushMatrix();
 
-            glTranslatef(-head.radius * 0.5, 0.0, head.radius - eye.radius);
+            glTranslatef(-head.radius * 0.45, 0.0, head.radius - eye.radius);
             gluSphere(quadHuman, eye.radius, SLICES, STACKS);
 
         glPopMatrix();
@@ -124,7 +124,7 @@ void drawUpperArm() {
     glPushMatrix();
 
         glRotatef(90.0, 1.0, 0.0, 0.0);
-        gluCylinder(quadHuman, upperArm.radius, upperArm.radius - 0.1, upperArm.height, SLICES, STACKS);
+        gluCylinder(quadHuman, upperArm.radius, elbow.radius, upperArm.height, SLICES, STACKS);
 
     glPopMatrix();
 }
@@ -141,7 +141,7 @@ void drawLowerArm() {
     glPushMatrix();
 
         glRotatef(90.0, 1.0, 0.0, 0.0);
-        gluCylinder(quadHuman, lowerArm.radius - 0.1, lowerArm.radius - 0.1, lowerArm.height, SLICES, STACKS);
+        gluCylinder(quadHuman, lowerArm.radius, lowerArm.radius, lowerArm.height, SLICES, STACKS);
 
     glPopMatrix();
 }
@@ -193,7 +193,7 @@ void drawLowerLeg() {
     glPushMatrix();
 
         glRotatef(90.0, 1.0, 0.0, 0.0);
-        gluCylinder(quadHuman, lowerLeg.radius - 0.1, lowerLeg.radius - 0.2, lowerLeg.height, SLICES, STACKS);
+        gluCylinder(quadHuman, lowerLeg.radius, lowerLeg.radius - 0.1, lowerLeg.height, SLICES, STACKS);
 
     glPopMatrix();
 }
@@ -228,6 +228,7 @@ void drawHuman() {
             glRotatef(torsoJoint.rotation[0], 1.0, 0.0, 0.0);
             glRotatef(torsoJoint.rotation[1], 0.0, 1.0, 0.0);
             glRotatef(torsoJoint.rotation[2], 0.0, 0.0, 1.0);
+
             drawTorso();
 
             glTranslatef(0.0, torso.height, 0.0);
@@ -265,7 +266,7 @@ void drawHuman() {
                 drawShoulder();
                 drawUpperArm();
 
-                glTranslatef(0.0, - (upperArm.height + lowerArm.radius * 0.25), 0.0);
+                glTranslatef(0.0, - (upperArm.height + lowerArm.radius * 0.3), 0.0);
                 glRotatef(leftElbowJoint.rotation[0], 1.0, 0.0, 0.0);
                 glRotatef(leftElbowJoint.rotation[2], 0.0, 0.0, 1.0);
 
@@ -290,7 +291,7 @@ void drawHuman() {
                 drawShoulder();
                 drawUpperArm();
 
-                glTranslatef(0.0, - (upperArm.height + lowerArm.radius * 0.25), 0.0);
+                glTranslatef(0.0, - (upperArm.height + lowerArm.radius * 0.3), 0.0);
                 glRotatef(rightElbowJoint.rotation[0], 1.0, 0.0, 0.0);
                 glRotatef(rightElbowJoint.rotation[2], 0.0, 0.0, 1.0);
 
@@ -325,7 +326,7 @@ void drawHuman() {
             drawHip();
             drawUpperLeg();
 
-            glTranslatef(0.0, - (upperLeg.height + lowerLeg.radius * 0.25), 0.0);
+            glTranslatef(0.0, - (upperLeg.height + lowerLeg.radius * 0.3), 0.0);
             glRotatef(leftKneeJoint.rotation[0], 1.0, 0.0, 0.0);
 
             drawKnee();
@@ -334,7 +335,7 @@ void drawHuman() {
             /* Define cor do sapato esquerdo */
             glColor3fv(black.color);
 
-            glTranslatef(0.0, - lowerLeg.height, lowerLeg.radius + 0.1);
+            glTranslatef(0.0, - lowerLeg.height, lowerLeg.radius + 0.2);
             drawFeet();
 
         glPopMatrix();
@@ -351,7 +352,7 @@ void drawHuman() {
             drawHip();
             drawUpperLeg();
 
-            glTranslatef(0.0, - (upperLeg.height + lowerLeg.radius * 0.25), 0.0);
+            glTranslatef(0.0, - (upperLeg.height + lowerLeg.radius * 0.3), 0.0);
             glRotatef(rightKneeJoint.rotation[0], 1.0, 0.0, 0.0);
 
             drawKnee();
@@ -360,7 +361,7 @@ void drawHuman() {
             /* Define cor do sapato direito */
             glColor3fv(black.color);
 
-            glTranslatef(0.0, - lowerLeg.height, lowerLeg.radius + 0.1);
+            glTranslatef(0.0, - lowerLeg.height, lowerLeg.radius + 0.2);
             drawFeet();
 
         glPopMatrix();

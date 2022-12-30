@@ -13,6 +13,7 @@
 #include "fractal.h"
 #include "animacao.h"
 #include "paleteCores.h"
+#include "textura.h"
 
 #define SLICES  10
 #define STACKS  10
@@ -91,15 +92,23 @@ void drawWalls() {
 /* Desenha chao da sala */
 void drawFloor() {
 
-    glColor3fv(saddlebrown.color);
-    glBegin(GL_QUADS);
+    glPushMatrix();
 
-        glVertex3f(-roomSize, -humanWidth,  roomSize);
-        glVertex3f( roomSize, -humanWidth,  roomSize);
-        glVertex3f( roomSize, -humanWidth, -roomSize);
-        glVertex3f(-roomSize, -humanWidth, -roomSize);
+        glEnable(GL_TEXTURE_2D);
+        glBindTexture(GL_TEXTURE_2D, texture_id[0]);
 
-    glEnd();
+        glBegin(GL_QUADS);
+
+            glVertex3f(-roomSize, -humanWidth,  roomSize);
+            glVertex3f( roomSize, -humanWidth,  roomSize);
+            glVertex3f( roomSize, -humanWidth, -roomSize);
+            glVertex3f(-roomSize, -humanWidth, -roomSize);
+
+        glEnd();
+
+        glDisable(GL_TEXTURE_2D);
+
+    glPopMatrix();
 }
 
 void drawSofa() {
@@ -761,63 +770,6 @@ void drawFlowerPot() {
     glPopMatrix();
 }
 
-void drawPaintingFrame() {
-
-    if (!CAMERA_LEFT_DIRECTION) {
-
-        glPushMatrix();
-
-            glTranslatef(0.0, -2.0, 0.0);
-
-            glPushMatrix();
-
-                glScalef(0.25, 0.30, 1.0);
-                glTranslatef(-roomSize * 3.75, roomSize * 1.5, 0.0);
-
-                glBegin(GL_QUADS);
-
-                    glColor3fv(sienna.color);
-
-                    /* Desenha quadro de pintura */
-                    glVertex3f(-paintingSize - wallSize + 1.0, -humanWidth,     -paintingSize);
-                    glVertex3f(-paintingSize - wallSize + 1.0, -humanWidth,      paintingSize);
-                    glVertex3f(-paintingSize - wallSize + 1.0,  humanWidth * 2,  paintingSize);
-                    glVertex3f(-paintingSize - wallSize + 1.0,  humanWidth * 2, -paintingSize);
-
-                glEnd();
-
-                glScalef(0.9, 1.25, 0.9);
-                glTranslatef(0.0, 4.0, 0.0);
-
-                glBegin(GL_QUADS);
-
-                    glColor3fv(black.color);
-
-                    /* Desenha borda de pintura */
-                    glVertex3f(-paintingSize - wallSize + 1.0, -humanWidth, -paintingSize);
-                    glVertex3f(-paintingSize - wallSize + 1.0, -humanWidth,  paintingSize);
-                    glVertex3f(-paintingSize - wallSize + 1.0,  humanWidth,  paintingSize);
-                    glVertex3f(-paintingSize - wallSize + 1.0,  humanWidth, -paintingSize);
-
-                glEnd();
-
-            glPopMatrix();
-
-            glPushMatrix();
-
-                glRotatef(-90, 0.0, 1.0, 0.0);
-                glScalef(6.0, 6.0, 1.0);
-                glTranslatef(0.0, 3.25, roomSize - 1.20);
-
-                /* Desenha Triangulo de Sierpinski (fractal) */
-                buildSierpinskiTriangle(2);
-
-            glPopMatrix();
-
-        glPopMatrix();
-    }
-}
-
 /* Desenha halteres (peso) */
 void drawDumbbell() {
 
@@ -940,7 +892,6 @@ void drawObjects() {
     drawFlowerPot();
     drawSpeakers();
     drawTableLamp();
-    drawPaintingFrame();
 }
 
 /* Desenha todo o cenario */
