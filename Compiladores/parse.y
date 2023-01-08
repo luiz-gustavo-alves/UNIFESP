@@ -2,18 +2,16 @@
 	#define YYPARSER 
 	#include "utils.h"
   	#define YYSTYPE TreeNode*
+
+	char *attr_name, *var_name, *func_name;	
+ 	int cur_line_number, func_cur_line_number;
+ 	int firstFunc = 1;
+  	
+	Stack func_stack;
+   	TreeNode* treeToReturn;
 	
 	static int yylex();
 	int yyerror(char *error);
-	
-	Stack func_stack;
-	char *attr_name, *var_name, *func_name;
-	
- 	int cur_line_number, func_cur_line_number;
- 	
- 	int firstFunc = 1;
-  
-   	TreeNode* treeToReturn;
 %}
 
 %token IF ELSE WHILE RETURN INT VOID
@@ -21,7 +19,7 @@
 %token ASSIGN EQUAL DIF LT GT LTE GTE PLUS MINUS TIMES SLASH
 %token OPARENT CPARENT OBRACKET CBRACKET OKEY CKEY SEMICOLON COMMA COMENT
 %token NEWLINE WHITESPACE
-%token ERROR FINISHED
+%token ERROR END
 
 %%
 program : list_decl { treeToReturn = $1; };
@@ -54,7 +52,7 @@ factor : OPARENT exp CPARENT { $$ = $1; }
         
           $$ = create_exp_tree_node(exp_num);
 
-          $$->attr.value = atoi(token_str);
+          $$->attr.value = atoi(token_num);
           $$->p_kind = Integer;
         };
 
@@ -117,7 +115,7 @@ decl : var_decl { $$ = $1; } | func_decl { $$ = $1; };
 
 var_decl : exp_kind ID { 
 
-                  attr_name = token_str;
+                  attr_name = string_copy(token_id);
                   cur_line_number = line_num;
                 }
               	SEMICOLON {
@@ -133,7 +131,7 @@ var_decl : exp_kind ID {
                 }
             	| exp_kind ID { 
             	
-                  attr_name = token_str;
+                  attr_name = string_copy(token_id);
                   cur_line_number = line_num;
                 }
             	OBRACKET NUM CBRACKET SEMICOLON { 
@@ -141,7 +139,7 @@ var_decl : exp_kind ID {
                   $$ = $1;
                   
                   YYSTYPE exp_node = create_exp_tree_node(exp_num);
-                  exp_node->attr.value = atoi(token_str);
+                  exp_node->attr.value = atoi(token_num);
                   exp_node->p_kind = Integer;
                   
                   YYSTYPE tree_node = create_decl_tree_node(decl_var);
@@ -157,7 +155,7 @@ var_decl : exp_kind ID {
 
 func_decl : exp_kind ID  {
 	
-                func_name = token_str;
+                func_name = string_copy(token_id);
                 func_cur_line_number = line_num;
               }
               OPARENT params CPARENT bloc_decl {
@@ -179,7 +177,7 @@ arg : exp_kind ID  {
 
             $$ = $1;
 
-            attr_name = token_str;
+            attr_name = string_copy(token_id);
             cur_line_number = line_num;
             
             YYSTYPE decl_node = create_decl_tree_node(decl_var); 
@@ -191,7 +189,7 @@ arg : exp_kind ID  {
             $$->child[0] = decl_node;
           } | exp_kind ID {
           	
-            attr_name = token_str;
+            attr_name = string_copy(token_id);
             cur_line_number = line_num;
           }
     	  OBRACKET CBRACKET {    
@@ -289,7 +287,7 @@ return_decl : RETURN SEMICOLON {
 
 var : ID { 
 
-        attr_name = token_str;
+        attr_name = string_copy(token_id);
         cur_line_number = line_num;
 
         $$ = create_exp_tree_node(exp_id);
@@ -300,7 +298,7 @@ var : ID {
       }
       | ID { 
       
-        var_name = token_str;
+        var_name = string_copy(token_id);
         cur_line_number = line_num;
       } 
       OBRACKET exp CBRACKET {
@@ -351,7 +349,7 @@ activate : ID {
                 firstFunc = 0;
               }
 
-              push_stack(&func_stack, token_str);
+              push_stack(&func_stack, string_copy(token_id));
               cur_line_number = line_num;
             }
             OPARENT arguments CPARENT { 
@@ -442,8 +440,8 @@ int yyerror(char *error_msg) {
 	
     char* token_name = get_token_name(yychar);
 
-    if (yychar == ID || yychar == NUM) fprintf(stdout,"ERRO SINTATICO %s - Linha : %d\n", token_name, line_num);
-    else fprintf(stdout,"ERRO SINTATICO %s (%s) - Linha: %d\n", token_name, yytext, line_num); 
+    if (yychar == ID || yychar == NUM) fprintf(stdout, "ERRO SINTATICO %s - Linha : %d\n", token_name, line_num);
+    else  fprintf(stdout, "ERRO SINTATICO %s (%s) - Linha: %d\n", token_name, yytext, line_num); 
 
-    free(token_name);
+    free(token_name); 
 }

@@ -26,13 +26,17 @@
 
 extern FILE* input_file;
 extern char* yytext;
-extern char token_str[TOKEN_LEN];
-
 typedef int token_t;
 int line_num;
 
 char *get_token_name(token_t);
 token_t get_token();
+
+char *string_copy(char *string);
+
+char token_id[TOKEN_LEN];
+char token_num[TOKEN_LEN];
+char token_str[TOKEN_LEN];
 
 /* Fases de Analise */
 void lexical_analysis(char *fileName, FILE *input);

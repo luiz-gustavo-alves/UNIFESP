@@ -80,7 +80,7 @@ extern int yydebug;
     NEWLINE = 286,
     WHITESPACE = 287,
     ERROR = 288,
-    FINISHED = 289
+    END = 289
   };
 #endif
 

@@ -481,8 +481,10 @@ char *yytext;
 	char token_str[TOKEN_LEN];
 
 	void lexical_error();
-#line 485 "lex.yy.c"
-#line 486 "lex.yy.c"
+
+	char token_id[TOKEN_LEN], token_num[TOKEN_LEN], token_str[TOKEN_LEN];
+#line 487 "lex.yy.c"
+#line 488 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -699,9 +701,9 @@ YY_DECL
 		}
 
 	{
-#line 17 "scanner.l"
+#line 19 "scanner.l"
 
-#line 705 "lex.yy.c"
+#line 707 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -760,132 +762,132 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 18 "scanner.l"
+#line 20 "scanner.l"
 { return ASSIGN; }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 19 "scanner.l"
+#line 21 "scanner.l"
 { return CBRACKET; }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 20 "scanner.l"
+#line 22 "scanner.l"
 { return CKEY;	}
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 21 "scanner.l"
+#line 23 "scanner.l"
 { return COMMA; }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 22 "scanner.l"
+#line 24 "scanner.l"
 { return CPARENT; }	
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 23 "scanner.l"
+#line 25 "scanner.l"
 { return DIF; }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 24 "scanner.l"
+#line 26 "scanner.l"
 { return ELSE; }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 25 "scanner.l"
+#line 27 "scanner.l"
 { return EQUAL; }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 26 "scanner.l"
+#line 28 "scanner.l"
 { return GT; }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 27 "scanner.l"
+#line 29 "scanner.l"
 { return GTE; }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 28 "scanner.l"
+#line 30 "scanner.l"
 { return IF; }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 29 "scanner.l"
+#line 31 "scanner.l"
 { return INT; }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 30 "scanner.l"
+#line 32 "scanner.l"
 { return LT; }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 31 "scanner.l"
+#line 33 "scanner.l"
 { return LTE; }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 32 "scanner.l"
+#line 34 "scanner.l"
 { return MINUS; }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 33 "scanner.l"
+#line 35 "scanner.l"
 { return OBRACKET; }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 34 "scanner.l"
+#line 36 "scanner.l"
 { return OKEY; }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 35 "scanner.l"
+#line 37 "scanner.l"
 { return OPARENT; }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 36 "scanner.l"
+#line 38 "scanner.l"
 { return PLUS; }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 37 "scanner.l"
+#line 39 "scanner.l"
 { return RETURN; }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 38 "scanner.l"
+#line 40 "scanner.l"
 { return SEMICOLON; }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 39 "scanner.l"
+#line 41 "scanner.l"
 { return SLASH; }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 40 "scanner.l"
+#line 42 "scanner.l"
 { return TIMES; }
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 41 "scanner.l"
+#line 43 "scanner.l"
 { return VOID; }
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 42 "scanner.l"
+#line 44 "scanner.l"
 { return WHILE; }
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 43 "scanner.l"
+#line 45 "scanner.l"
 {
             char current_char, previous_char;
 
@@ -909,40 +911,40 @@ YY_RULE_SETUP
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 63 "scanner.l"
-{ strncpy(token_str, yytext, TOKEN_LEN); return ID; };
+#line 65 "scanner.l"
+{ strncpy(token_id, yytext, TOKEN_LEN); return ID; };
 	YY_BREAK
 case 28:
 /* rule 28 can match eol */
 YY_RULE_SETUP
-#line 64 "scanner.l"
+#line 66 "scanner.l"
 { line_num++; };
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 65 "scanner.l"
-{ strncpy(token_str, yytext, TOKEN_LEN); return NUM; };
+#line 67 "scanner.l"
+{ strncpy(token_num, yytext, TOKEN_LEN); return NUM; };
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 66 "scanner.l"
+#line 68 "scanner.l"
 { };
 	YY_BREAK
 case YY_STATE_EOF(INITIAL):
-#line 67 "scanner.l"
-{ return FINISHED; };
+#line 69 "scanner.l"
+{ return yytext[0]; };
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 68 "scanner.l"
+#line 70 "scanner.l"
 { lexical_error(); return ERROR; }
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 69 "scanner.l"
+#line 71 "scanner.l"
 ECHO;
 	YY_BREAK
-#line 946 "lex.yy.c"
+#line 948 "lex.yy.c"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -1945,7 +1947,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 69 "scanner.l"
+#line 71 "scanner.l"
 
 
 token_t get_token(void) {

@@ -49,18 +49,18 @@ void lexical_analysis(char *fileName, FILE *input_file) {
 		}
 		free(token_name);
 		
-		while (token != FINISHED) {
+		while (newToken) {
 	
 			token = get_token();
 			token_name = get_token_name(token);
 			
-			if (token == FINISHED || line_num != current_line_num) {
+			if (token == 0 || line_num != current_line_num) {
 				
 				firstToken = 1;
 				free(token_name);
 				break;
 			}
-			
+
 			printf("%s ", token_name);
             free(token_name);
 		}
@@ -118,9 +118,16 @@ char *get_token_name(token_t token) {
         case WHILE: strcpy(token_name, "WHILE"); break;
         case WHITESPACE: strcpy(token_name, "WHITESPACE"); break;
 
-		case FINISHED: strcpy(token_name, "FINISHED"); break;
 		default: strcpy(token_name, "Invalid Token"); break;
     }
+    return token_name;
+}
+
+char *string_copy(char *string) { 
+
+    char *token_name = malloc(strlen(string) + 1);
+    strcpy(token_name, string);
+    
     return token_name;
 }
 
@@ -135,7 +142,7 @@ void push_stack(Stack *stack, char *name) {
 	Stack *stack_t = (Stack*)malloc(sizeof(Stack));
 	
 	stack_t->next = stack->top;
-	stack_t->name = name;
+	stack_t->name = strdup(name);
 	stack->top = stack_t;
 }
 
@@ -151,6 +158,8 @@ char *pop_stack(Stack *stack) {
     stack->top = stack_old_top->next;
 
     free(stack_old_top);
+
+	return name;
 }
 
 TreeNode *init_tree_node(nodeKind node) {
@@ -198,7 +207,7 @@ void print_syntax_tree(TreeNode *tree) {
 	
 	tab_tree += TAB_SIZE;
 
-    while(tree != NULL) {
+    while (tree != NULL) {
 	
         for (i = 0; i < tab_tree; i++)
             printf(" ");
@@ -208,7 +217,7 @@ void print_syntax_tree(TreeNode *tree) {
             switch (tree->kind.exp) {
                 case exp_id:
 	
-                    if (strcmp(tree->attr.name, "Void") == 0) printf("Void\n");
+                    if (strcmp(tree->attr.name, "void") == 0) printf("void\n");
                     else printf("Id: %s\n", tree->attr.name);
                     break;
 
@@ -233,25 +242,21 @@ void print_syntax_tree(TreeNode *tree) {
 	
                 case decl_kind:
 	
-                    if (tree->p_kind == Integer) printf("Integer\n");
-                    else if(tree->p_kind == Array) printf("Array\n");
-                    else printf("Void\n");
+                    if (tree->p_kind == Integer) printf("Primitive int\n");
+                    else if(tree->p_kind == Array) printf("Primitive int[]\n");
+                    else printf("Primitive void\n");
                     break;
 
-                case decl_func:
-                    printf("Function: %s\n", tree->attr.name); break;
-
-                case decl_var:
-                    printf("Variable: %s\n", tree->attr.name); break;         
+                case decl_func: printf("Function: %s\n", tree->attr.name); break;
+                case decl_var: printf("Variable: %s\n", tree->attr.name); break;         
             } 
         } 
 
-        for(j = 0; j < CHILD_NODES; j++)
+        for (j = 0; j < CHILD_NODES; j++)
             print_syntax_tree(tree->child[j]);
 
         tree = tree->sibling;
     }
-
     tab_tree -= TAB_SIZE;
 }
 

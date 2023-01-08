@@ -1,9 +1,8 @@
 %{
 	#include "utils.h"
-	
-	char token_str[TOKEN_LEN];
 
 	void lexical_error();
+	char token_id[TOKEN_LEN], token_num[TOKEN_LEN], token_str[TOKEN_LEN];
 %}
 
 ALPHA [a-zA-Z]
@@ -60,11 +59,11 @@ WHITESPACE [ \t\r]+
 				lexical_error();
 			}
          }
-{IDENTIFIER} { strncpy(token_str, yytext, TOKEN_LEN); return ID; };
+{IDENTIFIER} { strncpy(token_id, yytext, TOKEN_LEN); return ID; };
 {NEWLINE} { line_num++; };
-{NUMBER} { strncpy(token_str, yytext, TOKEN_LEN); return NUM; };
+{NUMBER} { strncpy(token_num, yytext, TOKEN_LEN); return NUM; };
 {WHITESPACE} { };
-<<EOF>> { return FINISHED; };
+<<EOF>> { return yytext[0]; };
 . { lexical_error(); return ERROR; }
 %%
 
