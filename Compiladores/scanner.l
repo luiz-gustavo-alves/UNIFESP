@@ -45,22 +45,27 @@ WHITESPACE [ \t\r]+
 
             do 
 			{
+				
             	current_char = input();
               
-              	if (current_char == EOF) exit(-1);
               	if (current_char == '\n') line_num++;
               
 				if (previous_char == '*' && current_char == '/') break;
               	else previous_char = current_char;
 
-            } while(1);
+            } while(current_char != '\0');
+			
+			if (current_char != '/') {
+				strncpy(token_str, "Comentario Infinito", TOKEN_LEN);
+				lexical_error();
+			}
          }
 {IDENTIFIER} { strncpy(token_str, yytext, TOKEN_LEN); return ID; };
 {NEWLINE} { line_num++; };
 {NUMBER} { strncpy(token_str, yytext, TOKEN_LEN); return NUM; };
 {WHITESPACE} { };
 <<EOF>> { return FINISHED; };
-. {	lexical_error(); return ERROR; }
+. { lexical_error(); return ERROR; }
 %%
 
 token_t get_token(void) {
@@ -85,6 +90,6 @@ token_t get_token(void) {
 void lexical_error() {
 	
 	strcat(token_str, yytext);
-	printf("ERRO LEXICO: %s | Linha: %d\n", token_str, line_num);
+	printf("\n\n(!) ERRO LEXICO: %s | Linha: %d\n", token_str, line_num);
 	exit(-1);
 }

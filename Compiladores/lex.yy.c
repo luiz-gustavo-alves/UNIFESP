@@ -891,53 +891,58 @@ YY_RULE_SETUP
 
             do 
 			{
+				
             	current_char = input();
               
-              	if (current_char == EOF) exit(-1);
               	if (current_char == '\n') line_num++;
               
 				if (previous_char == '*' && current_char == '/') break;
               	else previous_char = current_char;
 
-            } while(1);
+            } while(current_char != '\0');
+			
+			if (current_char != '/') {
+				strncpy(token_str, "Comentario Infinito", TOKEN_LEN);
+				lexical_error();
+			}
          }
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 58 "scanner.l"
+#line 63 "scanner.l"
 { strncpy(token_str, yytext, TOKEN_LEN); return ID; };
 	YY_BREAK
 case 28:
 /* rule 28 can match eol */
 YY_RULE_SETUP
-#line 59 "scanner.l"
+#line 64 "scanner.l"
 { line_num++; };
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 60 "scanner.l"
+#line 65 "scanner.l"
 { strncpy(token_str, yytext, TOKEN_LEN); return NUM; };
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 61 "scanner.l"
+#line 66 "scanner.l"
 { };
 	YY_BREAK
 case YY_STATE_EOF(INITIAL):
-#line 62 "scanner.l"
+#line 67 "scanner.l"
 { return FINISHED; };
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 63 "scanner.l"
-{	lexical_error(); return ERROR; }
+#line 68 "scanner.l"
+{ lexical_error(); return ERROR; }
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 64 "scanner.l"
+#line 69 "scanner.l"
 ECHO;
 	YY_BREAK
-#line 941 "lex.yy.c"
+#line 946 "lex.yy.c"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -1940,7 +1945,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 64 "scanner.l"
+#line 69 "scanner.l"
 
 
 token_t get_token(void) {
@@ -1965,7 +1970,7 @@ token_t get_token(void) {
 void lexical_error() {
 	
 	strcat(token_str, yytext);
-	printf("ERRO LEXICO: %s | Linha: %d\n", token_str, line_num);
+	printf("\n\n(!) ERRO LEXICO: %s | Linha: %d\n", token_str, line_num);
 	exit(-1);
 }
 

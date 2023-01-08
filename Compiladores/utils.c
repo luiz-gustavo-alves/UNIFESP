@@ -28,6 +28,10 @@ void lexical_analysis(char *fileName, FILE *input_file) {
 	while (!lineFinished) {
 		
 		if (fgets(lexems, LINE_LEN, read_file) == NULL) break;
+		while (lexems[1] == '\n') {
+			
+			if (fgets(lexems, LINE_LEN, read_file) == NULL) break;
+		}
 		
 		int current_line_num = line_num;
 		if (line_num == 0) current_line_num++;
@@ -45,8 +49,8 @@ void lexical_analysis(char *fileName, FILE *input_file) {
 		}
 		free(token_name);
 		
-		while (newToken) {
-			
+		while (token != FINISHED) {
+	
 			token = get_token();
 			token_name = get_token_name(token);
 			
@@ -113,6 +117,8 @@ char *get_token_name(token_t token) {
         case VOID: strcpy(token_name, "VOID"); break;
         case WHILE: strcpy(token_name, "WHILE"); break;
         case WHITESPACE: strcpy(token_name, "WHITESPACE"); break;
+
+		case FINISHED: strcpy(token_name, "FINISHED"); break;
 		default: strcpy(token_name, "Invalid Token"); break;
     }
     return token_name;
