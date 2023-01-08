@@ -21,7 +21,7 @@
 %token ASSIGN EQUAL DIF LT GT LTE GTE PLUS MINUS TIMES SLASH
 %token OPARENT CPARENT OBRACKET CBRACKET OKEY CKEY SEMICOLON COMMA COMENT
 %token NEWLINE WHITESPACE
-%token FINISHED
+%token ERROR FINISHED
 
 %%
 program : list_decl { treeToReturn = $1; };
@@ -446,5 +446,4 @@ int yyerror(char *error_msg) {
     else fprintf(stdout,"ERRO SINTATICO %s (%s) - Linha: %d\n", token_name, yytext, line_num); 
 
     free(token_name);
-    exit(-1);
 }

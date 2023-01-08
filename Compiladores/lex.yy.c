@@ -362,18 +362,18 @@ struct yy_trans_info
 	};
 static const flex_int16_t yy_accept[57] =
     {   0,
-        0,    0,   33,   31,   29,   28,   31,   18,    5,   23,
-       19,    4,   15,   22,   27,   21,   13,    1,    9,   26,
-       16,    2,   26,   26,   26,   26,   26,   17,    3,   29,
-        6,   30,   27,   14,    8,   10,   26,   26,   11,   26,
-       26,   26,   26,   26,   12,   26,   26,   26,    7,   26,
-       24,   26,   26,   25,   20,    0
+        0,    0,   33,   31,   30,   28,   31,   18,    5,   23,
+       19,    4,   15,   22,   29,   21,   13,    1,    9,   27,
+       16,    2,   27,   27,   27,   27,   27,   17,    3,   30,
+        6,   26,   29,   14,    8,   10,   27,   27,   11,   27,
+       27,   27,   27,   27,   12,   27,   27,   27,    7,   27,
+       24,   27,   27,   25,   20,    0
     } ;
 
 static const YY_CHAR yy_ec[256] =
     {   0,
         1,    1,    1,    1,    1,    1,    1,    1,    2,    3,
-        1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+        1,    1,    2,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    2,    4,    1,    1,    1,    1,    1,    1,    5,
         6,    7,    8,    9,   10,    1,   11,   12,   12,   12,
@@ -478,9 +478,9 @@ char *yytext;
 #line 2 "scanner.l"
 	#include "utils.h"
 	
-	void lexical_error();
-	
 	char token_str[TOKEN_LEN];
+
+	void lexical_error();
 #line 485 "lex.yy.c"
 #line 486 "lex.yy.c"
 
@@ -699,10 +699,9 @@ YY_DECL
 		}
 
 	{
-#line 16 "scanner.l"
+#line 17 "scanner.l"
 
-
-#line 706 "lex.yy.c"
+#line 705 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -887,50 +886,51 @@ YY_RULE_SETUP
 case 26:
 YY_RULE_SETUP
 #line 43 "scanner.l"
-{ return ID; }
-	YY_BREAK
-case 27:
-YY_RULE_SETUP
-#line 44 "scanner.l"
-{ return NUM; }
-	YY_BREAK
-case 28:
-/* rule 28 can match eol */
-YY_RULE_SETUP
-#line 45 "scanner.l"
-{ line_num++; }
-	YY_BREAK
-case 29:
-YY_RULE_SETUP
-#line 46 "scanner.l"
-{}
-	YY_BREAK
-case 30:
-YY_RULE_SETUP
-#line 47 "scanner.l"
 {
             char current_char, previous_char;
 
             do 
 			{
-              current_char = input();
+            	current_char = input();
               
-              if(current_char == EOF) break;
-              if(current_char == '\n') line_num++;
-              if (previous_char == '*' && current_char == '/') break;
+              	if (current_char == EOF) exit(-1);
+              	if (current_char == '\n') line_num++;
               
-              else previous_char = current_char;
+				if (previous_char == '*' && current_char == '/') break;
+              	else previous_char = current_char;
+
             } while(1);
          }
 	YY_BREAK
-case 31:
+case 27:
+YY_RULE_SETUP
+#line 58 "scanner.l"
+{ strncpy(token_str, yytext, TOKEN_LEN); return ID; };
+	YY_BREAK
+case 28:
+/* rule 28 can match eol */
+YY_RULE_SETUP
+#line 59 "scanner.l"
+{ line_num++; };
+	YY_BREAK
+case 29:
+YY_RULE_SETUP
+#line 60 "scanner.l"
+{ strncpy(token_str, yytext, TOKEN_LEN); return NUM; };
+	YY_BREAK
+case 30:
 YY_RULE_SETUP
 #line 61 "scanner.l"
-{ void lexical_error(); }
+{ };
 	YY_BREAK
 case YY_STATE_EOF(INITIAL):
+#line 62 "scanner.l"
+{ return FINISHED; };
+	YY_BREAK
+case 31:
+YY_RULE_SETUP
 #line 63 "scanner.l"
-{ return FINISHED; }
+{	lexical_error(); return ERROR; }
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
@@ -1958,12 +1958,14 @@ token_t get_token(void) {
 
     current_token = yylex();
     strncpy(token_str, yytext, TOKEN_LEN);
+
     return current_token;
 }
 
 void lexical_error() {
 	
-	printf("ERRO LEXICO: %s - Linha: %d", yytext, line_num);
+	strcat(token_str, yytext);
+	printf("ERRO LEXICO: %s | Linha: %d\n", token_str, line_num);
 	exit(-1);
 }
 

@@ -1,20 +1,20 @@
 %{
 	#include "utils.h"
 	
-	void lexical_error();
-	
 	char token_str[TOKEN_LEN];
+
+	void lexical_error();
 %}
 
-DIGIT [0-9]
-NUMBER {DIGIT}+
 ALPHA [a-zA-Z]
+DIGIT [0-9]
 IDENTIFIER {ALPHA}({ALPHA}|{DIGIT})*
+NOT_IDENTIFIER {DIGIT}{ALPHA}
 NEWLINE \n
-WHITESPACE [ \t]+
+NUMBER {DIGIT}+
+WHITESPACE [ \t\r]+
 
 %%
-
 "="      { return ASSIGN; }
 "]"      { return CBRACKET; }
 "}"      { return CKEY;	}
@@ -40,27 +40,27 @@ WHITESPACE [ \t]+
 "*"      { return TIMES; }
 "void"   { return VOID; }
 "while"  { return WHILE; }
-{IDENTIFIER} { return ID; }
-{NUMBER} { return NUM; }
-{NEWLINE} { line_num++; }
-{WHITESPACE} {}
 "/*"     {
             char current_char, previous_char;
 
             do 
 			{
-              current_char = input();
+            	current_char = input();
               
-              if(current_char == EOF) break;
-              if(current_char == '\n') line_num++;
-              if (previous_char == '*' && current_char == '/') break;
+              	if (current_char == EOF) exit(-1);
+              	if (current_char == '\n') line_num++;
               
-              else previous_char = current_char;
+				if (previous_char == '*' && current_char == '/') break;
+              	else previous_char = current_char;
+
             } while(1);
          }
-. { void lexical_error(); }
-
-<<EOF>> { return FINISHED; }
+{IDENTIFIER} { strncpy(token_str, yytext, TOKEN_LEN); return ID; };
+{NEWLINE} { line_num++; };
+{NUMBER} { strncpy(token_str, yytext, TOKEN_LEN); return NUM; };
+{WHITESPACE} { };
+<<EOF>> { return FINISHED; };
+. {	lexical_error(); return ERROR; }
 %%
 
 token_t get_token(void) {
@@ -78,11 +78,13 @@ token_t get_token(void) {
 
     current_token = yylex();
     strncpy(token_str, yytext, TOKEN_LEN);
+
     return current_token;
 }
 
 void lexical_error() {
 	
-	printf("ERRO LEXICO: %s - Linha: %d", yytext, line_num);
+	strcat(token_str, yytext);
+	printf("ERRO LEXICO: %s | Linha: %d\n", token_str, line_num);
 	exit(-1);
 }

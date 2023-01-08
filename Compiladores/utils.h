@@ -14,10 +14,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define TOKEN_LEN 20
+#define TOKEN_LEN 100
 #define COMMENT_LEN 1024
-#define LINE_LEN 200
+#define LINE_LEN 100
 #define CHILD_NODES 3
+#define TAB_SIZE 4
 
 #ifndef YYPARSER
 #include "parse.tab.h"	
@@ -25,7 +26,6 @@
 
 extern FILE* input_file;
 extern char* yytext;
-extern int yylineno;
 extern char token_str[TOKEN_LEN];
 
 typedef int token_t;
@@ -96,7 +96,7 @@ TreeNode *init_tree_node(nodeKind node);
 TreeNode *create_decl_tree_node(declKind node);
 TreeNode *create_stmt_tree_node(stmtKind node);
 TreeNode *create_exp_tree_node(expKind node);
-//void print_syntax_tree(TreeNode *tree);
+void print_syntax_tree(TreeNode *tree);
 
 TreeNode* syntax_tree;
 

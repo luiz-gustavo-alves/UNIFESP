@@ -1,3 +1,4 @@
 flex scanner.l
 bison -d parse.y && gcc -c lex.yy.c
 gcc utils.c lex.yy.o parse.tab.c main.c -o main -lfl
+./main mdc.txt

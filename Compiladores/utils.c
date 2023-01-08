@@ -9,64 +9,58 @@
  
 #include "utils.h"
 
+int tab_tree = 0;
+
 void lexical_analysis(char *fileName, FILE *input_file) {
 	
-	printf("FASE 01: ANALISE LEXICA | GERACAO DOS TOKENS E LEXEMAS: \n");
+	printf("\n* * * * * FASE 01: ANALISE LEXICA | GERACAO DOS TOKENS E LEXEMAS * * * * *\n\n");
 	
 	FILE *read_file = fopen(fileName, "r");
+
+	/* Buffer para leitura de arquivo */
+	char lexems[LINE_LEN];
 	
-	token_t token;
-	char *token_name;
-	
-	/* Buffers para leitura de arquivo */
-	char current_line[LINE_LEN];
-	char text_line[LINE_LEN];
-	char temp_text_line[LINE_LEN];
-	
-	/* Flag de controle para leitura do arquivo */
+	/* Flags de controle para leitura dos tokens e lexemas */
+	int newToken = 1;
+	int firstToken = 0;
 	int lineFinished = 0;
 	
 	while (!lineFinished) {
 		
-		if (fgets(current_line, LINE_LEN, read_file) == NULL) break;
+		if (fgets(lexems, LINE_LEN, read_file) == NULL) break;
 		
-		if (current_line[0] == '\n') {
+		int current_line_num = line_num;
+		if (line_num == 0) current_line_num++;
+		
+		printf("Linha %d: ", current_line_num);
+		printf("%s", lexems);
+		
+		token_t token;
+		char *token_name = get_token_name(token);
+		
+		if (firstToken) {
 			
-			if(fgets(current_line, LINE_LEN, read_file) == NULL) break;
+			printf("%s ", token_name);	
+            firstToken = 0;
 		}
+		free(token_name);
 		
-		int current_line_number = line_num;
-		
-		if (line_num == 0) current_line_number++;
-		
-		sprintf(text_line, "\n%d: ", current_line_number);
-        sprintf(temp_text_line, "%s", current_line);
-        strcat(text_line, temp_text_line);
-        printf("%s", text_line);
-        memset(&text_line, 0, LINE_LEN);
-		
-		int newToken = 1;
 		while (newToken) {
 			
 			token = get_token();
 			token_name = get_token_name(token);
 			
-			if (token == FINISHED) {
+			if (token == FINISHED || line_num != current_line_num) {
+				
+				firstToken = 1;
 				free(token_name);
 				break;
 			}
 			
-			if (line_num > current_line_number) {
-				free(token_name);
-				break;
-			}
-			
-			sprintf(text_line, "%s ", token_name);
-            printf("%s", text_line);
-            memset(&text_line, 0, LINE_LEN);
-            free(token_name);		
+			printf("%s ", token_name);
+            free(token_name);
 		}
-		printf("\n");			
+		printf("\n\n");
 	}
 	fclose(read_file);
 }
@@ -75,10 +69,10 @@ void syntax_analysis(char *fileName, FILE *input_file) {
 	
 	FILE *read_file = fopen(fileName, "r");
 	
-	printf("FASE 02: ANALISE SINTATICA | GERACAO DA ARVORE SINTATICA: \n");
+	printf("\n* * * * * FASE 02: ANALISE SINTATICA | GERACAO DA ARVORE SINTATICA: * * * * *\n\n");
 	
 	syntax_tree = parse();
-	//print_syntax_tree(syntax_tree);
+	print_syntax_tree(syntax_tree);
 	
 	fclose(read_file);
 }
@@ -106,7 +100,7 @@ char *get_token_name(token_t token) {
         case LT: strcpy(token_name, "LT"); break;
         case LTE: strcpy(token_name, "LTE"); break;
         case MINUS: strcpy(token_name, "MINUS"); break;
-        case NEWLINE: strcpy(token_name, "NEWLINE"); break;
+        case NEWLINE: printf("\n"); break;
         case NUM: strcpy(token_name, "NUM"); break;
         case OBRACKET: strcpy(token_name, "OBRACKET"); break;
         case OKEY: strcpy(token_name, "OKEY"); break;
@@ -119,6 +113,7 @@ char *get_token_name(token_t token) {
         case VOID: strcpy(token_name, "VOID"); break;
         case WHILE: strcpy(token_name, "WHILE"); break;
         case WHITESPACE: strcpy(token_name, "WHITESPACE"); break;
+		default: strcpy(token_name, "Invalid Token"); break;
     }
     return token_name;
 }
@@ -126,7 +121,6 @@ char *get_token_name(token_t token) {
 void init_stack(Stack *stack) {
 	
 	stack = (Stack*)malloc(sizeof(Stack));
-	
 	stack->top = NULL;
 }
 
@@ -145,7 +139,6 @@ char *pop_stack(Stack *stack) {
 	
 	Stack *stack_old_top;
     char *name = NULL;
-    
     name = strdup(stack->top->name);
 
     stack_old_top = stack->top;
@@ -193,6 +186,68 @@ TreeNode *create_exp_tree_node(expKind kind) {
     return newNode;
 }
 
+void print_syntax_tree(TreeNode *tree) { 
+	
+	int i, j;
+	
+	tab_tree += TAB_SIZE;
+
+    while(tree != NULL) {
+	
+        for (i = 0; i < tab_tree; i++)
+            printf(" ");
+
+        if (tree->node_kind == exp_k) { 
+
+            switch (tree->kind.exp) {
+                case exp_id:
+	
+                    if (strcmp(tree->attr.name, "Void") == 0) printf("Void\n");
+                    else printf("Id: %s\n", tree->attr.name);
+                    break;
+
+                case exp_num: printf("Const: %d\n", tree->attr.value); break;
+                case exp_op: printf("Operator: %s\n", get_token_name(tree->attr.op)); break;
+            }
+        }
+        else if (tree->node_kind == stmt_k) { 
+            
+			switch (tree->kind.stmt) {
+	
+                case stmt_if: printf("If\n"); break;
+                case stmt_while: printf("While\n"); break;
+                case stmt_atrib: printf("Assign\n"); break;
+                case stmt_return: printf("Return\n"); break;
+                case stmt_func: printf("Function Call: %s\n", tree->attr.name); break;
+            }
+        }
+        else if (tree->node_kind == decl_k) {
+            
+			switch(tree->kind.decl) {
+	
+                case decl_kind:
+	
+                    if (tree->p_kind == Integer) printf("Integer\n");
+                    else if(tree->p_kind == Array) printf("Array\n");
+                    else printf("Void\n");
+                    break;
+
+                case decl_func:
+                    printf("Function: %s\n", tree->attr.name); break;
+
+                case decl_var:
+                    printf("Variable: %s\n", tree->attr.name); break;         
+            } 
+        } 
+
+        for(j = 0; j < CHILD_NODES; j++)
+            print_syntax_tree(tree->child[j]);
+
+        tree = tree->sibling;
+    }
+
+    tab_tree -= TAB_SIZE;
+}
 
 
 

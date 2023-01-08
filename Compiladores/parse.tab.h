@@ -79,7 +79,8 @@ extern int yydebug;
     COMENT = 285,
     NEWLINE = 286,
     WHITESPACE = 287,
-    FINISHED = 288
+    ERROR = 288,
+    FINISHED = 289
   };
 #endif
 
