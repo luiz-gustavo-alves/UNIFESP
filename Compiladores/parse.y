@@ -440,8 +440,9 @@ int yyerror(char *error_msg) {
 	
     char* token_name = get_token_name(yychar);
 
-    if (yychar == ID || yychar == NUM) fprintf(stdout, "ERRO SINTATICO %s - Linha : %d\n", token_name, line_num);
-    else  fprintf(stdout, "ERRO SINTATICO %s (%s) - Linha: %d\n", token_name, yytext, line_num); 
+    if (strcmp(token_name, "ID") == 0 || strcmp(token_name, "NUM") == 0) lexical_error();
+    else printf("\n\n(!) ERRO SINTATICO | Linha: %d | Token: %s \n", line_num, token_name);
 
+	syntax_err = 1; 
     free(token_name); 
 }

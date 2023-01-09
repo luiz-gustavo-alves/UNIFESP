@@ -21,8 +21,7 @@ int main(int argc, char *argv[]) {
 	
 	input_file = fopen(argv[1], "r");
 	
-	//lexical_analysis(argv[1], input_file);
-	syntax_analysis(argv[1], input_file);
+	lexical_analysis(argv[1], input_file);
 	
 	return 0;
 }

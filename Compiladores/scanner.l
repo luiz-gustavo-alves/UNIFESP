@@ -1,8 +1,13 @@
 %{
 	#include "utils.h"
 
-	void lexical_error();
-	char token_id[TOKEN_LEN], token_num[TOKEN_LEN], token_str[TOKEN_LEN];
+	#define CPY_TK strncpy(token_str, yytext, TOKEN_LEN);
+
+	char token_id[TOKEN_LEN]; 
+	char token_num[TOKEN_LEN];
+	char token_str[TOKEN_LEN];
+
+	int lexical_err;
 %}
 
 ALPHA [a-zA-Z]
@@ -14,31 +19,31 @@ NUMBER {DIGIT}+
 WHITESPACE [ \t\r]+
 
 %%
-"="      { return ASSIGN; }
-"]"      { return CBRACKET; }
-"}"      { return CKEY;	}
-","      { return COMMA; }
-")"      { return CPARENT; }	
-"!="     { return DIF; }
-"else"   { return ELSE; }
-"=="     { return EQUAL; }
-">"      { return GT; }
-">="     { return GTE; }
-"if"     { return IF; }
-"int"    { return INT; }
-"<"      { return LT; }
-"<="     { return LTE; }
-"-"      { return MINUS; }
-"["      { return OBRACKET; }
-"{"      { return OKEY; }
-"("      { return OPARENT; }
-"+"      { return PLUS; }
-"return" { return RETURN; }
-";"      { return SEMICOLON; }
-"/"      { return SLASH; }
-"*"      { return TIMES; }
-"void"   { return VOID; }
-"while"  { return WHILE; }
+"="      { CPY_TK  printf("Linha: %d | Token: ASSIGN | Lexema: %s \n", line_num, token_str); return ASSIGN; }
+"]"      { CPY_TK  printf("Linha: %d | Token: CBRACKET | Lexema: %s \n", line_num, token_str); return CBRACKET; }
+"}"      { CPY_TK  printf("Linha: %d | Token: CKEY | Lexema: %s \n", line_num, token_str); return CKEY;	}
+","      { CPY_TK  printf("Linha: %d | Token: COMMA | Lexema: %s \n", line_num, token_str); return COMMA; }
+")"      { CPY_TK  printf("Linha: %d | Token: CPARENT | Lexema: %s \n", line_num, token_str); return CPARENT; }	
+"!="     { CPY_TK  printf("Linha: %d | Token: DIF | Lexema: %s \n", line_num, token_str); return DIF; }
+"else"   { CPY_TK  printf("Linha: %d | Token: ELSE | Lexema: %s \n", line_num, token_str); return ELSE; }
+"=="     { CPY_TK  printf("Linha: %d | Token: EQUAL | Lexema: %s \n", line_num, token_str); return EQUAL; }
+">"      { CPY_TK  printf("Linha: %d | Token: GT | Lexema: %s \n", line_num, token_str); return GT; }
+">="     { CPY_TK  printf("Linha: %d | Token: GTE | Lexema: %s \n", line_num, token_str); return GTE; }
+"if"     { CPY_TK  printf("Linha: %d | Token: IF | Lexema: %s \n", line_num, token_str); return IF; }
+"int"    { CPY_TK  printf("Linha: %d | Token: INT | Lexema: %s \n", line_num, token_str); return INT; }
+"<"      { CPY_TK  printf("Linha: %d | Token: LT | Lexema: %s \n", line_num, token_str); return LT; }
+"<="     { CPY_TK  printf("Linha: %d | Token: LTE | Lexema: %s \n", line_num, token_str); return LTE; }
+"-"      { CPY_TK  printf("Linha: %d | Token: MINUS | Lexema: %s \n", line_num, token_str); return MINUS; }
+"["      { CPY_TK  printf("Linha: %d | Token: OBRACKET | Lexema: %s \n", line_num, token_str); return OBRACKET; }
+"{"      { CPY_TK  printf("Linha: %d | Token: OKEY | Lexema: %s \n", line_num, token_str); return OKEY; }
+"("      { CPY_TK  printf("Linha: %d | Token: OPARENT | Lexema: %s \n", line_num, token_str); return OPARENT; }
+"+"      { CPY_TK  printf("Linha: %d | Token: PLUS | Lexema: %s \n", line_num, token_str); return PLUS; }
+"return" { CPY_TK  printf("Linha: %d | Token: RETURN | Lexema: %s \n", line_num, token_str); return RETURN; }
+";"      { CPY_TK  printf("Linha: %d | Token: SEMICOLON | Lexema: %s \n", line_num, token_str); return SEMICOLON; }
+"/"      { CPY_TK  printf("Linha: %d | Token: SLASH | Lexema: %s \n", line_num, token_str); return SLASH; }
+"*"      { CPY_TK  printf("Linha: %d | Token: TIMES | Lexema: %s \n", line_num, token_str); return TIMES; }
+"void"   { CPY_TK  printf("Linha: %d | Token: VOID | Lexema: %s \n", line_num, token_str); return VOID; }
+"while"  { CPY_TK  printf("Linha: %d | Token: WHILE | Lexema: %s \n", line_num, token_str); return WHILE; }
 "/*"     {
             char current_char, previous_char;
 
@@ -59,12 +64,12 @@ WHITESPACE [ \t\r]+
 				lexical_error();
 			}
          }
-{IDENTIFIER} { strncpy(token_id, yytext, TOKEN_LEN); return ID; };
-{NEWLINE} { line_num++; };
-{NUMBER} { strncpy(token_num, yytext, TOKEN_LEN); return NUM; };
+{IDENTIFIER} { strncpy(token_id, yytext, TOKEN_LEN); printf("Linha: %d | Token: ID | Lexema: %s \n", line_num, token_id); return ID; };
+{NEWLINE} { printf("\n"); line_num++; };
+{NUMBER} { strncpy(token_num, yytext, TOKEN_LEN); printf("Linha: %d | Token: NUM | Lexema: %s \n", line_num, token_num); return NUM; };
 {WHITESPACE} { };
 <<EOF>> { return yytext[0]; };
-. { lexical_error(); return ERROR; }
+. { strncpy(token_str, yytext, TOKEN_LEN); lexical_error(); return ERROR; }
 %%
 
 token_t get_token(void) {
@@ -81,14 +86,15 @@ token_t get_token(void) {
     }
 
     current_token = yylex();
-    strncpy(token_str, yytext, TOKEN_LEN);
-
     return current_token;
 }
 
 void lexical_error() {
 	
-	strcat(token_str, yytext);
-	printf("\n\n(!) ERRO LEXICO: %s | Linha: %d\n", token_str, line_num);
+	strncpy(token_str, yytext, TOKEN_LEN);
+
+	printf("\n\n(!) ERRO LEXICO | Linha: %d | Lexema: %s \n", line_num, token_str);
+
+	lexical_err = 1;
 	exit(-1);
 }

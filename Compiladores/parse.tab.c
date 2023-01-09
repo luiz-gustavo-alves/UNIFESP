@@ -71,16 +71,16 @@
 	#define YYPARSER 
 	#include "utils.h"
   	#define YYSTYPE TreeNode*
-	
-	static int yylex();
-	int yyerror(char *error);
-	
+
 	char *attr_name, *var_name, *func_name;	
  	int cur_line_number, func_cur_line_number;
  	int firstFunc = 1;
   	
 	Stack func_stack;
    	TreeNode* treeToReturn;
+	
+	static int yylex();
+	int yyerror(char *error);
 
 #line 86 "parse.tab.c"
 
@@ -2387,10 +2387,13 @@ TreeNode *parse(void) {
 
 int yyerror(char *error_msg) {
 	
+	get_token();
+	
     char* token_name = get_token_name(yychar);
 
-    if (yychar == ID || yychar == NUM) fprintf(stdout,"ERRO SINTATICO %s - Linha : %d\n", token_name, line_num);
-    else  fprintf(stdout,"ERRO SINTATICO %s (%s) - Linha: %d\n", token_name, yytext, line_num); 
+    if (strcmp(token_name, "ID") == 0 || strcmp(token_name, "NUM") == 0) lexical_error();
+    else printf("\n\n(!) ERRO SINTATICO | Linha: %d | Token: %s \n", line_num, token_name);
 
+	syntax_err = 1; 
     free(token_name); 
 }

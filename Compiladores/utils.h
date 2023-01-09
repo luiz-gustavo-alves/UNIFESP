@@ -31,12 +31,16 @@ int line_num;
 
 char *get_token_name(token_t);
 token_t get_token();
+void lexical_error();
 
 char *string_copy(char *string);
 
 char token_id[TOKEN_LEN];
 char token_num[TOKEN_LEN];
 char token_str[TOKEN_LEN];
+
+int lexical_err;
+int syntax_err;
 
 /* Fases de Analise */
 void lexical_analysis(char *fileName, FILE *input);

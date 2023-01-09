@@ -477,14 +477,16 @@ char *yytext;
 #line 1 "scanner.l"
 #line 2 "scanner.l"
 	#include "utils.h"
-	
+
+	#define CPY_TK strncpy(token_str, yytext, TOKEN_LEN);
+
+	char token_id[TOKEN_LEN]; 
+	char token_num[TOKEN_LEN];
 	char token_str[TOKEN_LEN];
 
-	void lexical_error();
-
-	char token_id[TOKEN_LEN], token_num[TOKEN_LEN], token_str[TOKEN_LEN];
-#line 487 "lex.yy.c"
-#line 488 "lex.yy.c"
+	int lexical_err;
+#line 489 "lex.yy.c"
+#line 490 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -701,9 +703,9 @@ YY_DECL
 		}
 
 	{
-#line 19 "scanner.l"
+#line 21 "scanner.l"
 
-#line 707 "lex.yy.c"
+#line 709 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -762,132 +764,132 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 20 "scanner.l"
-{ return ASSIGN; }
+#line 22 "scanner.l"
+{ CPY_TK  printf("Linha: %d | Token: ASSIGN | Lexema: %s \n", line_num, token_str); return ASSIGN; }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 21 "scanner.l"
-{ return CBRACKET; }
+#line 23 "scanner.l"
+{ CPY_TK  printf("Linha: %d | Token: CBRACKET | Lexema: %s \n", line_num, token_str); return CBRACKET; }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 22 "scanner.l"
-{ return CKEY;	}
+#line 24 "scanner.l"
+{ CPY_TK  printf("Linha: %d | Token: CKEY | Lexema: %s \n", line_num, token_str); return CKEY;	}
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 23 "scanner.l"
-{ return COMMA; }
+#line 25 "scanner.l"
+{ CPY_TK  printf("Linha: %d | Token: COMMA | Lexema: %s \n", line_num, token_str); return COMMA; }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 24 "scanner.l"
-{ return CPARENT; }	
+#line 26 "scanner.l"
+{ CPY_TK  printf("Linha: %d | Token: CPARENT | Lexema: %s \n", line_num, token_str); return CPARENT; }	
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 25 "scanner.l"
-{ return DIF; }
+#line 27 "scanner.l"
+{ CPY_TK  printf("Linha: %d | Token: DIF | Lexema: %s \n", line_num, token_str); return DIF; }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 26 "scanner.l"
-{ return ELSE; }
+#line 28 "scanner.l"
+{ CPY_TK  printf("Linha: %d | Token: ELSE | Lexema: %s \n", line_num, token_str); return ELSE; }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 27 "scanner.l"
-{ return EQUAL; }
+#line 29 "scanner.l"
+{ CPY_TK  printf("Linha: %d | Token: EQUAL | Lexema: %s \n", line_num, token_str); return EQUAL; }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 28 "scanner.l"
-{ return GT; }
+#line 30 "scanner.l"
+{ CPY_TK  printf("Linha: %d | Token: GT | Lexema: %s \n", line_num, token_str); return GT; }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 29 "scanner.l"
-{ return GTE; }
+#line 31 "scanner.l"
+{ CPY_TK  printf("Linha: %d | Token: GTE | Lexema: %s \n", line_num, token_str); return GTE; }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 30 "scanner.l"
-{ return IF; }
+#line 32 "scanner.l"
+{ CPY_TK  printf("Linha: %d | Token: IF | Lexema: %s \n", line_num, token_str); return IF; }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 31 "scanner.l"
-{ return INT; }
+#line 33 "scanner.l"
+{ CPY_TK  printf("Linha: %d | Token: INT | Lexema: %s \n", line_num, token_str); return INT; }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 32 "scanner.l"
-{ return LT; }
+#line 34 "scanner.l"
+{ CPY_TK  printf("Linha: %d | Token: LT | Lexema: %s \n", line_num, token_str); return LT; }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 33 "scanner.l"
-{ return LTE; }
+#line 35 "scanner.l"
+{ CPY_TK  printf("Linha: %d | Token: LTE | Lexema: %s \n", line_num, token_str); return LTE; }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 34 "scanner.l"
-{ return MINUS; }
+#line 36 "scanner.l"
+{ CPY_TK  printf("Linha: %d | Token: MINUS | Lexema: %s \n", line_num, token_str); return MINUS; }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 35 "scanner.l"
-{ return OBRACKET; }
+#line 37 "scanner.l"
+{ CPY_TK  printf("Linha: %d | Token: OBRACKET | Lexema: %s \n", line_num, token_str); return OBRACKET; }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 36 "scanner.l"
-{ return OKEY; }
+#line 38 "scanner.l"
+{ CPY_TK  printf("Linha: %d | Token: OKEY | Lexema: %s \n", line_num, token_str); return OKEY; }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 37 "scanner.l"
-{ return OPARENT; }
+#line 39 "scanner.l"
+{ CPY_TK  printf("Linha: %d | Token: OPARENT | Lexema: %s \n", line_num, token_str); return OPARENT; }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 38 "scanner.l"
-{ return PLUS; }
+#line 40 "scanner.l"
+{ CPY_TK  printf("Linha: %d | Token: PLUS | Lexema: %s \n", line_num, token_str); return PLUS; }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 39 "scanner.l"
-{ return RETURN; }
+#line 41 "scanner.l"
+{ CPY_TK  printf("Linha: %d | Token: RETURN | Lexema: %s \n", line_num, token_str); return RETURN; }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 40 "scanner.l"
-{ return SEMICOLON; }
+#line 42 "scanner.l"
+{ CPY_TK  printf("Linha: %d | Token: SEMICOLON | Lexema: %s \n", line_num, token_str); return SEMICOLON; }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 41 "scanner.l"
-{ return SLASH; }
+#line 43 "scanner.l"
+{ CPY_TK  printf("Linha: %d | Token: SLASH | Lexema: %s \n", line_num, token_str); return SLASH; }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 42 "scanner.l"
-{ return TIMES; }
+#line 44 "scanner.l"
+{ CPY_TK  printf("Linha: %d | Token: TIMES | Lexema: %s \n", line_num, token_str); return TIMES; }
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 43 "scanner.l"
-{ return VOID; }
+#line 45 "scanner.l"
+{ CPY_TK  printf("Linha: %d | Token: VOID | Lexema: %s \n", line_num, token_str); return VOID; }
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 44 "scanner.l"
-{ return WHILE; }
+#line 46 "scanner.l"
+{ CPY_TK  printf("Linha: %d | Token: WHILE | Lexema: %s \n", line_num, token_str); return WHILE; }
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 45 "scanner.l"
+#line 47 "scanner.l"
 {
             char current_char, previous_char;
 
@@ -911,40 +913,40 @@ YY_RULE_SETUP
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 65 "scanner.l"
-{ strncpy(token_id, yytext, TOKEN_LEN); return ID; };
+#line 67 "scanner.l"
+{ strncpy(token_id, yytext, TOKEN_LEN); printf("Linha: %d | Token: ID | Lexema: %s \n", line_num, token_id); return ID; };
 	YY_BREAK
 case 28:
 /* rule 28 can match eol */
 YY_RULE_SETUP
-#line 66 "scanner.l"
-{ line_num++; };
+#line 68 "scanner.l"
+{ printf("\n"); line_num++; };
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 67 "scanner.l"
-{ strncpy(token_num, yytext, TOKEN_LEN); return NUM; };
+#line 69 "scanner.l"
+{ strncpy(token_num, yytext, TOKEN_LEN); printf("Linha: %d | Token: NUM | Lexema: %s \n", line_num, token_num); return NUM; };
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 68 "scanner.l"
+#line 70 "scanner.l"
 { };
 	YY_BREAK
 case YY_STATE_EOF(INITIAL):
-#line 69 "scanner.l"
+#line 71 "scanner.l"
 { return yytext[0]; };
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 70 "scanner.l"
-{ lexical_error(); return ERROR; }
+#line 72 "scanner.l"
+{ strncpy(token_str, yytext, TOKEN_LEN); lexical_error(); return ERROR; }
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 71 "scanner.l"
+#line 73 "scanner.l"
 ECHO;
 	YY_BREAK
-#line 948 "lex.yy.c"
+#line 950 "lex.yy.c"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -1947,7 +1949,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 71 "scanner.l"
+#line 73 "scanner.l"
 
 
 token_t get_token(void) {
@@ -1964,15 +1966,16 @@ token_t get_token(void) {
     }
 
     current_token = yylex();
-    strncpy(token_str, yytext, TOKEN_LEN);
-
     return current_token;
 }
 
 void lexical_error() {
 	
-	strcat(token_str, yytext);
-	printf("\n\n(!) ERRO LEXICO: %s | Linha: %d\n", token_str, line_num);
+	strncpy(token_str, yytext, TOKEN_LEN);
+
+	printf("\n\n(!) ERRO LEXICO | Linha: %d | Lexema: %s \n", line_num, token_str);
+
+	lexical_err = 1;
 	exit(-1);
 }
 

@@ -11,74 +11,25 @@
 
 int tab_tree = 0;
 
-void lexical_analysis(char *fileName, FILE *input_file) {
-	
-	printf("\n* * * * * FASE 01: ANALISE LEXICA | GERACAO DOS TOKENS E LEXEMAS * * * * *\n\n");
-	
-	FILE *read_file = fopen(fileName, "r");
-
-	/* Buffer para leitura de arquivo */
-	char lexems[LINE_LEN];
-	
-	/* Flags de controle para leitura dos tokens e lexemas */
-	int newToken = 1;
-	int firstToken = 0;
-	int lineFinished = 0;
-	
-	while (!lineFinished) {
-		
-		if (fgets(lexems, LINE_LEN, read_file) == NULL) break;
-		while (lexems[1] == '\n') {
-			
-			if (fgets(lexems, LINE_LEN, read_file) == NULL) break;
-		}
-		
-		int current_line_num = line_num;
-		if (line_num == 0) current_line_num++;
-		
-		printf("Linha %d: ", current_line_num);
-		printf("%s", lexems);
-		
-		token_t token;
-		char *token_name = get_token_name(token);
-		
-		if (firstToken) {
-			
-			printf("%s ", token_name);	
-            firstToken = 0;
-		}
-		free(token_name);
-		
-		while (newToken) {
-	
-			token = get_token();
-			token_name = get_token_name(token);
-			
-			if (token == 0 || line_num != current_line_num) {
-				
-				firstToken = 1;
-				free(token_name);
-				break;
-			}
-
-			printf("%s ", token_name);
-            free(token_name);
-		}
-		printf("\n\n");
-	}
-	fclose(read_file);
-}
-
 void syntax_analysis(char *fileName, FILE *input_file) {
 	
 	FILE *read_file = fopen(fileName, "r");
 	
-	printf("\n* * * * * FASE 02: ANALISE SINTATICA | GERACAO DA ARVORE SINTATICA: * * * * *\n\n");
-	
 	syntax_tree = parse();
-	print_syntax_tree(syntax_tree);
+
+	if (!lexical_err && !syntax_err) {
+		
+		printf("\n\n* * * * * FASE (2): ANALISE SINTATICA | GERACAO DA ARVORE SINTATICA: * * * * *\n\n");
+		print_syntax_tree(syntax_tree);
+	}
 	
 	fclose(read_file);
+}
+
+void lexical_analysis(char *fileName, FILE *input_file) {
+	
+	printf("\n* * * * * FASE (1): ANALISE LEXICA | GERACAO DOS TOKENS E LEXEMAS * * * * *\n\n");
+	syntax_analysis(fileName, input_file);
 }
 
 char *get_token_name(token_t token) {
@@ -118,7 +69,7 @@ char *get_token_name(token_t token) {
         case WHILE: strcpy(token_name, "WHILE"); break;
         case WHITESPACE: strcpy(token_name, "WHITESPACE"); break;
 
-		default: strcpy(token_name, "Invalid Token"); break;
+		default: strcpy(token_name, "ERROR"); break;
     }
     return token_name;
 }
