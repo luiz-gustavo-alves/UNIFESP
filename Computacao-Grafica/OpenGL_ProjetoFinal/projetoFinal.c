@@ -14,6 +14,7 @@
 
 #include "corpoHumano.h"
 #include "cenario.h"
+#include "textura.h"
 
 /* Tamanho da janela */
 #define WINDOW_WIDTH 700
@@ -23,14 +24,13 @@
 #define MAX_ZOOM_IN 30
 #define PI 3.141592
 
-
-/* Rotacao da camera */
+/* Parametros da camera */
 float cameraX, cameraY, cameraZ;
 float aspectRatio       = 0.0;
-float vision            = 45.0;
-float cameraRadius      = 100.0f;
-float theta             = 0.35f;
-float alpha             = 0.0f;
+float fov               = 45.0;
+float cameraRadius      = 130.0;
+float theta             = 0.35;
+float alpha             = 0.0;
 
 /* Opcoes de menu e animacao */
 int optUser = -1;
@@ -38,6 +38,10 @@ int optAnimation = -1;
 int resetFlag = 0;
 int animationFlag = 0;
 
+/* Definicao dos parametros de luz */
+float lightAmbient[]  = {0.2, 0.2, 0.2, 1.0};
+float lightDiffuse[]  = {0.3, 0.3, 0.3, 1.0};
+float lightSpecular[] = {0.3, 0.3, 0.3, 1.0};
 
 /* Definicao dos eixos de rotacao a serem modificados pelo usuario */
 typedef struct {
@@ -53,21 +57,28 @@ Rotation rotate;
 /* Junta atual do corpo humano */
 Animation *currentJoint;
 
-void initLightning() {
+/* Reposiciona a fonte de luz */
+void updateLightningPosition() {
 
-    /* Definicao dos parametros de luz */
-    float lightAmbient[]  = {0.3, 0.3, 0.3, 1.0};
-    float lightDiffuse[]  = {0.4, 0.4, 0.4, 1.0};
-    float lightSpecular[] = {0.4, 0.4, 0.4, 1.0};
-
-    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, lightAmbient);
+    float light0_position[] = {cameraX, cameraY, cameraZ, 1.0};
+    float light1_position[] = {-cameraX, -cameraY, -cameraZ, 1.0};
 
     glLightfv(GL_LIGHT0, GL_AMBIENT, lightAmbient);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, lightDiffuse);
     glLightfv(GL_LIGHT0, GL_SPECULAR, lightSpecular);
+    glLightfv(GL_LIGHT0, GL_POSITION, light0_position);
 
-    /* Definicao dos parametros de luz dos materiais (objetos) */
+    glLightfv(GL_LIGHT1, GL_AMBIENT, lightAmbient);
+    glLightfv(GL_LIGHT1, GL_DIFFUSE, lightDiffuse);
+    glLightfv(GL_LIGHT1, GL_SPECULAR, lightSpecular);
+    glLightfv(GL_LIGHT1, GL_POSITION, light1_position);
+}
+
+void initLightning() {
+
+    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, lightAmbient);
     glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+    updateLightningPosition();
 }
 
 void init() {
@@ -77,19 +88,15 @@ void init() {
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
+    glEnable(GL_LIGHT1);
     glEnable(GL_COLOR_MATERIAL);
     glShadeModel(GL_SMOOTH);
 
     initBodyQuadrics();
     initScenarioQuadrics();
     initLightning();
-}
 
-/* Define e posiciona a fonte de luz */
-void updateLightningPosition() {
-
-    float lightPosition[] = {alpha, theta, cameraZ, 1.0};
-    glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
+    loadTexture("floor.bmp", 0);
 }
 
 void updateCamera() {
@@ -97,7 +104,7 @@ void updateCamera() {
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
 
-    gluPerspective(vision, aspectRatio, 1, 1000);
+    gluPerspective(fov, aspectRatio, 1, 1000);
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
@@ -105,8 +112,6 @@ void updateCamera() {
     cameraX = sin(alpha) * cos(theta) * cameraRadius;
     cameraY = sin(theta) * cameraRadius;
     cameraZ = cos(alpha) * cos(theta) * cameraRadius;
-
-    //printf("x: %f |  y: %f  |  z: %f  |  THETA: %f  ALPHA: %f\n", cameraX, cameraY, cameraZ, theta, alpha);
 
     gluLookAt(cameraX, cameraY, cameraZ, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
     updateLightningPosition();
@@ -120,8 +125,8 @@ void reshape(int w, int h) {
 
     aspectRatio = (float) w / (float) h;
 
-    if (w >= h) glOrtho(-10.0 * aspectRatio, 10.0 * aspectRatio, -10.0, 10.0, -10.0, 10.0);
-    else glOrtho(-10.0, 10.0, -10.0 / aspectRatio, 10.0 / aspectRatio, -10.0, 10.0);
+    if (w >= h) glOrtho(-15.0 * aspectRatio, 15.0 * aspectRatio, -15.0, 15.0, -15.0, 15.0);
+    else glOrtho(-15.0, 15.0, -15.0 / aspectRatio, 15.0 / aspectRatio, -15.0, 15.0);
 
     glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -256,7 +261,7 @@ void keyboard(unsigned char key, int x, int y) {
         case 'z':
         case 'Z':
 
-            if (optUser < 0 || (animationFlag || resetFlag)) return;
+            if (optUser < 0 || (animationFlag || resetFlag || checkIfHasEquipment())) return;
 
             if (key == 'x' || key == 'X') rotate.keyPressed = 'x';
             else if (key == 'y' || key == 'Y') rotate.keyPressed = 'y';
@@ -270,7 +275,7 @@ void keyboard(unsigned char key, int x, int y) {
 
                     if (rotate.keyPressed == 'x') *rotate.axis[0] += 2.0;
                     else if (rotate.keyPressed == 'y') *rotate.axis[1] += 2.0;
-                    else *rotate.axis[2] += 2.0;
+                    else if (rotate.keyPressed == 'z') *rotate.axis[2] += 2.0;
                 }
             }
             else {
@@ -281,10 +286,9 @@ void keyboard(unsigned char key, int x, int y) {
 
                     if (rotate.keyPressed == 'x') *rotate.axis[0] -= 2.0;
                     else if (rotate.keyPressed == 'y') *rotate.axis[1] -= 2.0;
-                    else *rotate.axis[2] -= 2.0;
+                    else if (rotate.keyPressed == 'z') *rotate.axis[2] -= 2.0;
                 }
             }
-            printf("x: %f | y: %f | z: %f\n", *rotate.axis[0], *rotate.axis[1], *rotate.axis[2]);
             break;
 
         case '+':
@@ -369,39 +373,42 @@ int resetJointsAngle() {
         }
     }
 
-    if (numResetedJoints == NUM_JOINTS) resetFlag = 0;
+    if (numResetedJoints == NUM_JOINTS) {
+        resetFlag = 0;
+        optUser = -1;
+    }
 }
 
 void idleFunc() {
 
-    if (resetFlag && (optAnimation < 0 || optUser >= 0)) {
+    if ((resetFlag && !checkIfHasEquipment()) && (optAnimation < 0 || (checkIfAnimationEnded() && optUser >= 0))) resetJointsAngle();
 
-        resetJointsAngle();
-        optAnimation = -1;
-        animationFlag = 0;
+    if (animationFlag) {
+
+        if (checkIfAnimationEnded() && optUser >= 0) resetFlag = 1;
+        else {
+
+            updateAnimation(optAnimation, resetFlag, optUser);
+            kinematics(optAnimation, resetFlag, optUser);
+
+            if (checkIfAnimationEnded()) {
+                animationFlag = 0;
+                optAnimation = -1;
+            }
+        }
     }
-
-    switch (optAnimation) {
-
-        case 0:
-
-            optAnimation = kinematics(optAnimation, resetFlag, optUser);
-            if (optAnimation == -1) animationFlag = 0;
-            break;
-    }
-
     glutPostRedisplay();
 }
 
 int main(int argc, char *argv[]) {
 
-    int subUserMenu, aquecimento, reset;
+    int subUserMenu, aquecimento, halteres, reset;
 
     glutInit(&argc,argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
     glutInitWindowPosition(0, 0);
     glutInitWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT);
-    glutCreateWindow("Projeto Final - Computação Gráfica");
+    glutCreateWindow("Maratona da Fisioterapia - Projeto Final - Computacao Grafica");
 
     init();
 
@@ -425,17 +432,30 @@ int main(int argc, char *argv[]) {
 
     aquecimento = glutCreateMenu(animationMenu);
 
-            glutAddMenuEntry(" Alongamento Pernas ", 0);
-            glutAddMenuEntry(" Alongamento Bracos ", 1);
-            glutAddMenuEntry(" Agachamento ", 2);
-            glutAddMenuEntry(" Polichinelo ", 3);
-            glutAddMenuEntry(" Todos ", 4);
+        glutAddMenuEntry(" Alongamento Quadriceps ", 0);
+        glutAddMenuEntry(" Alongamento Pescoco ", 1);
+        glutAddMenuEntry(" Flexao Lateral Tronco ", 2);
+        glutAddMenuEntry(" Agachamento ", 3);
+        glutAddMenuEntry(" Polichinelo ", 4);
+        glutAddMenuEntry(" Todos ", 5);
+
+    halteres = glutCreateMenu(animationMenu);
+
+        glutAddMenuEntry(" Pegar Equipamento ", 6);
+        glutAddMenuEntry(" Rosca Alternada ", 7);
+        glutAddMenuEntry(" Rosca Simultanea ", 8);
+        glutAddMenuEntry(" Elevacao Frontal ", 9);
+        glutAddMenuEntry(" Elevacao Lateral", 10);
+        glutAddMenuEntry(" Afundo ", 11);
+        glutAddMenuEntry(" Todos ", 12);
+        glutAddMenuEntry(" Devolver Equipamento ", 13);
 
     reset = glutCreateMenu(resetMenu);
 
     glutAddMenuEntry(" Resetar ", 1);
-    glutAddSubMenu(" Movimentacao ", subUserMenu);
-    glutAddSubMenu(" Aquecimento ", aquecimento);
+    glutAddSubMenu(" Movimentacao Individual ", subUserMenu);
+    glutAddSubMenu(" Exercicios - Aquecimento ", aquecimento);
+    glutAddSubMenu(" Exercicios - Halteres ", halteres);
 
 	glutAttachMenu(GLUT_RIGHT_BUTTON);
 

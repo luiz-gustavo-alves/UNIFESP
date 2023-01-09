@@ -13,6 +13,7 @@
 #include "fractal.h"
 #include "animacao.h"
 #include "paleteCores.h"
+#include "textura.h"
 
 #define SLICES  10
 #define STACKS  10
@@ -91,15 +92,23 @@ void drawWalls() {
 /* Desenha chao da sala */
 void drawFloor() {
 
-    glColor3fv(saddlebrown.color);
-    glBegin(GL_QUADS);
+    glPushMatrix();
 
-        glVertex3f(-roomSize, -humanWidth,  roomSize);
-        glVertex3f( roomSize, -humanWidth,  roomSize);
-        glVertex3f( roomSize, -humanWidth, -roomSize);
-        glVertex3f(-roomSize, -humanWidth, -roomSize);
+        glEnable(GL_TEXTURE_2D);
+        glBindTexture(GL_TEXTURE_2D, texture_id[0]);
 
-    glEnd();
+        glBegin(GL_QUADS);
+
+            glVertex3f(-roomSize, -humanWidth,  roomSize);
+            glVertex3f( roomSize, -humanWidth,  roomSize);
+            glVertex3f( roomSize, -humanWidth, -roomSize);
+            glVertex3f(-roomSize, -humanWidth, -roomSize);
+
+        glEnd();
+
+        glDisable(GL_TEXTURE_2D);
+
+    glPopMatrix();
 }
 
 void drawSofa() {
@@ -151,198 +160,142 @@ void drawSofa() {
     glPopMatrix();
 }
 
-void drawStretcher() {
+/* Desenha rack para sala */
+void drawTVRack() {
 
     glPushMatrix();
 
-        glTranslatef(2.0, -shelfSize * 1.65, -roomSize + (shelfSize * 2.0));
+        glScalef(0.8, 0.8, 1.0);
         glRotatef(90, 0.0, 1.0, 0.0);
-        glScalef(0.7, 0.5, 1.8);
+        glTranslatef(0, -2.5, 10.0);
 
-        glColor3fv(lightskyblue.color);
+        glBegin(GL_QUADS);
 
+            glColor3fv(sienna.color);
+
+            /* Parte traseira do rack */
+            glVertex3f( rackSize + wallSize - 1.0,  humanWidth * 0.5, roomSize - 0.5);
+            glVertex3f(-rackSize - wallSize + 1.0,  humanWidth * 0.5, roomSize - 0.5);
+            glVertex3f(-rackSize - wallSize + 1.0, -humanWidth,       roomSize - 0.5);
+            glVertex3f( rackSize + wallSize - 1.0, -humanWidth,       roomSize - 0.5);
+
+            /* Parte esquerda do rack */
+            glVertex3f(-rackSize - wallSize + 1.0, -humanWidth,       roomSize - 5.0);
+            glVertex3f(-rackSize - wallSize + 1.0,  humanWidth * 0.5, roomSize - 5.0);
+            glVertex3f(-rackSize - wallSize + 1.0,  humanWidth * 0.5, roomSize);
+            glVertex3f(-rackSize - wallSize + 1.0, -humanWidth,       roomSize);
+
+            /* Parte direita do rack */
+            glVertex3f(rackSize + wallSize - 1.0, -humanWidth,         roomSize - 5.0);
+            glVertex3f(rackSize + wallSize - 1.0, -humanWidth,         roomSize);
+            glVertex3f(rackSize + wallSize - 1.0,  humanWidth * 0.5,   roomSize);
+            glVertex3f(rackSize + wallSize - 1.0,  humanWidth * 0.5,   roomSize - 5.0);
+
+            /* Parte superior do rack */
+            glVertex3f(-rackSize - wallSize + 1.0,  humanWidth * 0.5, roomSize);
+            glVertex3f( rackSize + wallSize - 1.0,  humanWidth * 0.5, roomSize);
+            glVertex3f( rackSize + wallSize - 1.0,  humanWidth * 0.5, roomSize - 5);
+            glVertex3f(-rackSize - wallSize + 1.0,  humanWidth * 0.5, roomSize - 5);
+
+        glEnd();
+
+        glColor3fv(oldlace.color);
         glPushMatrix();
 
-            glTranslatef(0.0, shelfSize * 1.75, 0.0);
-            glScalef(6.0, 1.0, 5.0);
+            glScalef(0.3, 1.25, 1.0);
+            glTranslatef(-rackSize * 2.30, -2.0, -5.0);
 
-            /* Desenha maca */
-            glutSolidCube(3.5);
+            glBegin(GL_QUADS);
+
+                /* Parte frontal esquerdo do rack */
+                glVertex3f( rackSize + wallSize - 1.0, -humanWidth * 0.6, roomSize);
+                glVertex3f( rackSize + wallSize - 1.0,  humanWidth * 0.6, roomSize);
+                glVertex3f(-rackSize - wallSize + 1.0,  humanWidth * 0.6, roomSize);
+                glVertex3f(-rackSize - wallSize + 1.0, -humanWidth * 0.6, roomSize);
+
+            glEnd();
 
         glPopMatrix();
 
         glPushMatrix();
 
-            glTranslatef(0.0, shelfSize * 2.5, -shelfSize - 2.0);
-            glScalef(6.0, 1.0, 1.0);
+            glScalef(0.3, 1.25, 1.0);
+            glTranslatef(rackSize * 2.30, -2.0, -5.0);
 
-            /* Desenha travesseiro */
-            glutSolidCube(3.5);
+            glBegin(GL_QUADS);
+
+                /* Parte frontal direito do rack */
+                glVertex3f( rackSize + wallSize - 1.0, -humanWidth * 0.6, roomSize);
+                glVertex3f( rackSize + wallSize - 1.0,  humanWidth * 0.6, roomSize);
+                glVertex3f(-rackSize - wallSize + 1.0,  humanWidth * 0.6, roomSize);
+                glVertex3f(-rackSize - wallSize + 1.0, -humanWidth * 0.6, roomSize);
+
+            glEnd();
 
         glPopMatrix();
 
-        glScalef(0.75, 5.0, 1.0);
-        glColor3fv(burlywood.color);
+        glPushMatrix();
+
+            glScalef(0.39, 0.6, 1.0);
+            glTranslatef(0.0, -11.0, -5.0);
+
+            glBegin(GL_QUADS);
+
+                /* Parte frontal central do rack */
+                glVertex3f( rackSize + wallSize - 1.0, -humanWidth * 0.6, roomSize);
+                glVertex3f( rackSize + wallSize - 1.0,  humanWidth * 0.6, roomSize);
+                glVertex3f(-rackSize - wallSize + 1.0,  humanWidth * 0.6, roomSize);
+                glVertex3f(-rackSize - wallSize + 1.0, -humanWidth * 0.6, roomSize);
+
+            glEnd();
+
+        glPopMatrix();
 
         glPushMatrix();
 
-            glTranslatef(-shelfSize * 2.25, 0.5, -shelfSize * 1.5);
+            glScalef(0.95, 0.6, 1.0);
+            glTranslatef(0.0, -10.5, -0.5);
 
-            /* Desenha suporte superior esquerdo da maca */
-            glutSolidCube(2);
-            glTranslatef(0.0, 0.0, shelfSize * 3);
+            glBegin(GL_QUADS);
 
-            /* Desenha suporte inferior esquerdo da maca */
-            glutSolidCube(2);
-            glTranslatef(shelfSize * 4.5, 0.0, 0.0);
+                /* Parte frontal superior do rack */
+                glVertex3f(-rackSize - wallSize + 1.0,  humanWidth * 0.5, roomSize);
+                glVertex3f( rackSize + wallSize - 1.0,  humanWidth * 0.5, roomSize);
+                glVertex3f( rackSize + wallSize - 1.0,  humanWidth * 0.5, roomSize - 4.5);
+                glVertex3f(-rackSize - wallSize + 1.0,  humanWidth * 0.5, roomSize - 4.5);
 
-            /* Desenha suporte inferior direito da maca */
-            glutSolidCube(2);
-            glTranslatef(0.0, 0.0, -shelfSize * 3);
-
-            /* Desenha suporte superior direito da maca */
-            glutSolidCube(2);
+            glEnd();
 
         glPopMatrix();
 
     glPopMatrix();
-}
 
-/* Desenha rack para sala */
-void drawTVRack() {
+    /* Desenha Puxadores */
+    glPushMatrix();
 
-    if (!CAMERA_RIGHT_DIRECTION) {
+        glColor3fv(sienna.color);
+        glScalef(0.5, 1.0, 1.0);
+        glTranslatef(roomSize * 1.8, -1.0, 0.0);
 
         glPushMatrix();
 
-            glRotatef(90, 0.0, 1.0, 0.0);
+            glTranslatef(0.0, 0.0, -rackSize / 1.5);
 
-            glBegin(GL_QUADS);
-
-                glColor3fv(sienna.color);
-
-                /* Parte traseira do rack */
-                glVertex3f( rackSize + wallSize - 1.0,  humanWidth * 0.5, roomSize - 0.5);
-                glVertex3f(-rackSize - wallSize + 1.0,  humanWidth * 0.5, roomSize - 0.5);
-                glVertex3f(-rackSize - wallSize + 1.0, -humanWidth,       roomSize - 0.5);
-                glVertex3f( rackSize + wallSize - 1.0, -humanWidth,       roomSize - 0.5);
-
-                /* Parte esquerda do rack */
-                glVertex3f(-rackSize - wallSize + 1.0, -humanWidth,       roomSize - 5.0);
-                glVertex3f(-rackSize - wallSize + 1.0,  humanWidth * 0.5, roomSize - 5.0);
-                glVertex3f(-rackSize - wallSize + 1.0,  humanWidth * 0.5, roomSize);
-                glVertex3f(-rackSize - wallSize + 1.0, -humanWidth,       roomSize);
-
-                /* Parte direita do rack */
-                glVertex3f(rackSize + wallSize - 1.0, -humanWidth,         roomSize - 5.0);
-                glVertex3f(rackSize + wallSize - 1.0, -humanWidth,         roomSize);
-                glVertex3f(rackSize + wallSize - 1.0,  humanWidth * 0.5,   roomSize);
-                glVertex3f(rackSize + wallSize - 1.0,  humanWidth * 0.5,   roomSize - 5.0);
-
-                /* Parte superior do rack */
-                glVertex3f(-rackSize - wallSize + 1.0,  humanWidth * 0.5, roomSize);
-                glVertex3f( rackSize + wallSize - 1.0,  humanWidth * 0.5, roomSize);
-                glVertex3f( rackSize + wallSize - 1.0,  humanWidth * 0.5, roomSize - 5);
-                glVertex3f(-rackSize - wallSize + 1.0,  humanWidth * 0.5, roomSize - 5);
-
-            glEnd();
-
-            glColor3fv(oldlace.color);
-            glPushMatrix();
-
-                glScalef(0.3, 1.25, 1.0);
-                glTranslatef(-rackSize * 2.30, -2.0, -5.0);
-
-                glBegin(GL_QUADS);
-
-                    /* Parte frontal esquerdo do rack */
-                    glVertex3f( rackSize + wallSize - 1.0, -humanWidth * 0.6, roomSize);
-                    glVertex3f( rackSize + wallSize - 1.0,  humanWidth * 0.6, roomSize);
-                    glVertex3f(-rackSize - wallSize + 1.0,  humanWidth * 0.6, roomSize);
-                    glVertex3f(-rackSize - wallSize + 1.0, -humanWidth * 0.6, roomSize);
-
-                glEnd();
-
-            glPopMatrix();
-
-            glPushMatrix();
-
-                glScalef(0.3, 1.25, 1.0);
-                glTranslatef(rackSize * 2.30, -2.0, -5.0);
-
-                glBegin(GL_QUADS);
-
-                    /* Parte frontal direito do rack */
-                    glVertex3f( rackSize + wallSize - 1.0, -humanWidth * 0.6, roomSize);
-                    glVertex3f( rackSize + wallSize - 1.0,  humanWidth * 0.6, roomSize);
-                    glVertex3f(-rackSize - wallSize + 1.0,  humanWidth * 0.6, roomSize);
-                    glVertex3f(-rackSize - wallSize + 1.0, -humanWidth * 0.6, roomSize);
-
-                glEnd();
-
-            glPopMatrix();
-
-            glPushMatrix();
-
-                glScalef(0.39, 0.6, 1.0);
-                glTranslatef(0.0, -11.0, -5.0);
-
-                glBegin(GL_QUADS);
-
-                    /* Parte frontal central do rack */
-                    glVertex3f( rackSize + wallSize - 1.0, -humanWidth * 0.6, roomSize);
-                    glVertex3f( rackSize + wallSize - 1.0,  humanWidth * 0.6, roomSize);
-                    glVertex3f(-rackSize - wallSize + 1.0,  humanWidth * 0.6, roomSize);
-                    glVertex3f(-rackSize - wallSize + 1.0, -humanWidth * 0.6, roomSize);
-
-                glEnd();
-
-            glPopMatrix();
-
-            glPushMatrix();
-
-                glScalef(0.95, 0.6, 1.0);
-                glTranslatef(0.0, -10.5, -0.5);
-
-                glBegin(GL_QUADS);
-
-                    /* Parte frontal superior do rack */
-                    glVertex3f(-rackSize - wallSize + 1.0,  humanWidth * 0.5, roomSize);
-                    glVertex3f( rackSize + wallSize - 1.0,  humanWidth * 0.5, roomSize);
-                    glVertex3f( rackSize + wallSize - 1.0,  humanWidth * 0.5, roomSize - 4.5);
-                    glVertex3f(-rackSize - wallSize + 1.0,  humanWidth * 0.5, roomSize - 4.5);
-
-                glEnd();
-
-            glPopMatrix();
+            /* Desenha puxador esquerdo */
+            gluSphere(quad, 0.75, SLICES, STACKS);
 
         glPopMatrix();
 
         glPushMatrix();
 
-            glColor3fv(sienna.color);
-            glScalef(0.5, 1.0, 1.0);
+            glTranslatef(0.0, 0.0, rackSize / 1.5);
 
-            glPushMatrix();
-
-                glTranslatef(roomSize * 1.75, 1.0, -rackSize / 1.5);
-
-                /* Desenha puxador esquerdo */
-                gluSphere(quad, 0.75, SLICES, STACKS);
-
-            glPopMatrix();
-
-            glPushMatrix();
-
-                glTranslatef(roomSize * 1.75, 1.0, rackSize / 1.5);
-
-                /* Desenha puxador direito */
-                gluSphere(quad, 0.75, SLICES, STACKS);
-
-            glPopMatrix();
+            /* Desenha puxador direito */
+            gluSphere(quad, 0.75, SLICES, STACKS);
 
         glPopMatrix();
-    }
+
+    glPopMatrix();
 }
 
 /* Desenha movel */
@@ -394,7 +347,8 @@ void drawWindow() {
 
         glPushMatrix();
 
-            glTranslatef(-windowSize + 1.5, windowSize + 2.5, 0.5);
+            glScalef(0.9, 0.9, 1.0);
+            glTranslatef(-windowSize + 1.5, windowSize * 1.5, 0.5);
 
             glPushMatrix();
 
@@ -495,28 +449,35 @@ void drawDoor() {
 
     if (!CAMERA_FRONT_DIRECTION) {
 
-        glBegin(GL_QUADS);
-
-            glColor3fv(sienna.color);
-
-            /* Desenha porta */
-            glVertex3f( doorSize + wallSize - 1.0,  humanWidth * 2.0, roomSize - 0.4);
-            glVertex3f(-doorSize - wallSize + 1.0,  humanWidth * 2.0, roomSize - 0.4);
-            glVertex3f(-doorSize - wallSize + 1.0, -humanWidth,       roomSize - 0.4);
-            glVertex3f( doorSize + wallSize - 1.0, -humanWidth,       roomSize - 0.4);
-
-        glEnd();
-
         glPushMatrix();
 
-            glRotatef(90, 0.0, 1.0, 0.0);
-            glScalef(0.5, 1.0, 1.0);
-            glTranslatef(-roomSize * 1.95, doorSize / 2, 5.5);
+            glScalef(0.8, 0.8, 1.0);
+            glTranslatef(0.0, -2.5, 0.0);
 
-            glColor3fv(burlywood.color);
+            glBegin(GL_QUADS);
 
-            /* Desenha macaneta */
-            gluSphere(quad, 1.0, SLICES, STACKS);
+                glColor3fv(sienna.color);
+
+                /* Desenha porta */
+                glVertex3f( doorSize + wallSize - 1.0,  humanWidth * 2.0, roomSize - 0.4);
+                glVertex3f(-doorSize - wallSize + 1.0,  humanWidth * 2.0, roomSize - 0.4);
+                glVertex3f(-doorSize - wallSize + 1.0, -humanWidth,       roomSize - 0.4);
+                glVertex3f( doorSize + wallSize - 1.0, -humanWidth,       roomSize - 0.4);
+
+            glEnd();
+
+            glPushMatrix();
+
+                glRotatef(90, 0.0, 1.0, 0.0);
+                glScalef(0.5, 1.0, 1.0);
+                glTranslatef(-roomSize * 1.95, doorSize / 2, 5.5);
+
+                glColor3fv(burlywood.color);
+
+                /* Desenha macaneta */
+                gluSphere(quad, 1.0, SLICES, STACKS);
+
+            glPopMatrix();
 
         glPopMatrix();
    }
@@ -530,7 +491,7 @@ void drawMat() {
         glTranslatef(1.5, 0.0, 0.0);
         glRotatef(-90, 0.0, 1.0, 0.0);
 
-        glColor3fv(lightskyblue.color);
+        glColor3fv(royalblue.color);
         glBegin(GL_QUADS);
 
             glVertex3f(-matSize, -humanWidth + 0.1,  matSize * 2);
@@ -598,7 +559,7 @@ void drawRemoteController() {
 
     glPushMatrix();
 
-        glTranslatef(-roomSize + 8.0, 1.0, roomSize / 1.5);
+        glTranslatef(-roomSize + 8.0, 0.8, roomSize / 1.5);
         glRotatef(45, 0.0, 1.0, 0.0);
 
         glPushMatrix();
@@ -662,7 +623,7 @@ void drawTableLamp() {
 
     glPushMatrix();
 
-        glTranslatef(-roomSize + 6.0, 1.25, roomSize / 1.25);
+        glTranslatef(-roomSize + 6.0, 0.8, roomSize / 1.25);
 
         glPushMatrix();
 
@@ -703,79 +664,80 @@ void drawTableLamp() {
 /* Desenha caixa de som */
 void drawSpeakers() {
 
-    if (!CAMERA_RIGHT_DIRECTION) {
+    glPushMatrix();
 
-         glPushMatrix();
+        glScalef(0.8, 0.8, 1.0);
+        glTranslatef(10, -2.5, 0.0);
+
+        glPushMatrix();
+
+            glColor3fv(dimgray.color);
+            glScalef(1.25, 2.0, 1.0);
+            glTranslatef(roomSize - 9.75, 4.0, 0.0);
 
             glPushMatrix();
 
-                glColor3fv(dimgray.color);
-                glScalef(1.25, 2.0, 1.0);
+                glTranslatef(0.0, 0.0, rackSize - 2.0);
 
-                glPushMatrix();
-
-                    glTranslatef(roomSize - 9.75, 4.0, rackSize - 2.0);
-
-                    /* Desenha caixa de som esquerda */
-                    glutSolidCube(3);
-
-                glPopMatrix();
-
-                glPushMatrix();
-
-                    glTranslatef(roomSize - 9.75, 4.0, -rackSize + 2.0);
-
-                    /* Desenha caixa de som direita */
-                    glutSolidCube(3);
-
-                glPopMatrix();
+                /* Desenha caixa de som esquerda */
+                glutSolidCube(3);
 
             glPopMatrix();
 
             glPushMatrix();
 
-                glScalef(0.5, 1.0, 1.0);
-                glColor3fv(silver.color);
+                glTranslatef(0.0, 0.0, -rackSize + 2.0);
 
-                glPushMatrix();
-
-                    glTranslatef(roomSize * 1.80, rackSize / 2.15, rackSize - 2.0);
-
-                    /* Desenha speaker superior direito */
-                    gluSphere(quad, 1.0, SLICES, STACKS);
-
-                    glTranslatef(0.0, -2.5, 0.0);
-
-                    /* Desenha speaker inferior direito */
-                    gluSphere(quad, 1.2, SLICES, STACKS);
-
-                glPopMatrix();
-
-                glPushMatrix();
-
-                    glTranslatef(roomSize * 1.80, rackSize / 2.15, -rackSize + 2.0);
-
-                    /* Desenha speaker superior esquerdo */
-                    gluSphere(quad, 1.0, SLICES, STACKS);
-
-                    glTranslatef(0.0, -2.5, 0.0);
-
-                    /* Desenha speaker inferior esquerdo */
-                    gluSphere(quad, 1.2, SLICES, STACKS);
-
-                glPopMatrix();
+                /* Desenha caixa de som direita */
+                glutSolidCube(3);
 
             glPopMatrix();
 
         glPopMatrix();
-    }
+
+        glPushMatrix();
+
+            glScalef(0.5, 1.0, 1.0);
+            glColor3fv(silver.color);
+
+            glPushMatrix();
+
+                glTranslatef(roomSize * 1.80, rackSize / 2.15, rackSize - 2.0);
+
+                /* Desenha speaker superior direito */
+                gluSphere(quad, 1.0, SLICES, STACKS);
+
+                glTranslatef(0.0, -2.5, 0.0);
+
+                /* Desenha speaker inferior direito */
+                gluSphere(quad, 1.2, SLICES, STACKS);
+
+            glPopMatrix();
+
+            glPushMatrix();
+
+                glTranslatef(roomSize * 1.80, rackSize / 2.15, -rackSize + 2.0);
+
+                /* Desenha speaker superior esquerdo */
+                gluSphere(quad, 1.0, SLICES, STACKS);
+
+                glTranslatef(0.0, -2.5, 0.0);
+
+                /* Desenha speaker inferior esquerdo */
+                gluSphere(quad, 1.2, SLICES, STACKS);
+
+            glPopMatrix();
+
+        glPopMatrix();
+
+    glPopMatrix();
 }
 
 void drawFlowerPot() {
 
     glPushMatrix();
 
-        glTranslatef(-0.8, 0.0, -3.0);
+        glTranslatef(-0.8, -0.5, -3.0);
 
         glPushMatrix();
 
@@ -806,63 +768,6 @@ void drawFlowerPot() {
         glPopMatrix();
 
     glPopMatrix();
-}
-
-void drawPaintingFrame() {
-
-    if (!CAMERA_LEFT_DIRECTION) {
-
-        glPushMatrix();
-
-            glTranslatef(0.0, -2.0, 0.0);
-
-            glPushMatrix();
-
-                glScalef(0.25, 0.30, 1.0);
-                glTranslatef(-roomSize * 3.75, roomSize * 1.5, 0.0);
-
-                glBegin(GL_QUADS);
-
-                    glColor3fv(sienna.color);
-
-                    /* Desenha quadro de pintura */
-                    glVertex3f(-paintingSize - wallSize + 1.0, -humanWidth,     -paintingSize);
-                    glVertex3f(-paintingSize - wallSize + 1.0, -humanWidth,      paintingSize);
-                    glVertex3f(-paintingSize - wallSize + 1.0,  humanWidth * 2,  paintingSize);
-                    glVertex3f(-paintingSize - wallSize + 1.0,  humanWidth * 2, -paintingSize);
-
-                glEnd();
-
-                glScalef(0.9, 1.25, 0.9);
-                glTranslatef(0.0, 4.0, 0.0);
-
-                glBegin(GL_QUADS);
-
-                    glColor3fv(black.color);
-
-                    /* Desenha borda de pintura */
-                    glVertex3f(-paintingSize - wallSize + 1.0, -humanWidth, -paintingSize);
-                    glVertex3f(-paintingSize - wallSize + 1.0, -humanWidth,  paintingSize);
-                    glVertex3f(-paintingSize - wallSize + 1.0,  humanWidth,  paintingSize);
-                    glVertex3f(-paintingSize - wallSize + 1.0,  humanWidth, -paintingSize);
-
-                glEnd();
-
-            glPopMatrix();
-
-            glPushMatrix();
-
-                glRotatef(-90, 0.0, 1.0, 0.0);
-                glScalef(6.0, 6.0, 1.0);
-                glTranslatef(0.0, 3.25, roomSize - 1.20);
-
-                /* Desenha Triangulo de Sierpinski (fractal) */
-                buildSierpinskiTriangle(2);
-
-            glPopMatrix();
-
-        glPopMatrix();
-    }
 }
 
 /* Desenha halteres (peso) */
@@ -935,8 +840,13 @@ void drawDumbbellRack() {
             glRotatef(leftDumbbellRot.rotation[1], 0.0, 1.0, 0.0);
             glRotatef(leftDumbbellRot.rotation[2], 0.0, 0.0, 1.0);
 
-            /* Desenha haltere da mao esquerda */
-            drawDumbbell();
+            glPushMatrix();
+
+                glTranslatef(-2.0, 5.0, -1.0);
+                /* Desenha haltere da mao esquerda */
+                drawDumbbell();
+
+            glPopMatrix();
 
         glPopMatrix();
 
@@ -948,8 +858,14 @@ void drawDumbbellRack() {
             glRotatef(rightDumbbellRot.rotation[1], 0.0, 1.0, 0.0);
             glRotatef(rightDumbbellRot.rotation[2], 0.0, 0.0, 1.0);
 
-            /* Desenha haltere da mao direita */
-            drawDumbbell();
+            glPushMatrix();
+
+                glTranslatef(-2.0, 1.0, -1.0);
+
+                /* Desenha haltere da mao direita */
+                drawDumbbell();
+
+            glPopMatrix();
 
         glPopMatrix();
 
@@ -963,7 +879,6 @@ void drawFurniture() {
     drawSofa();
     drawTVRack();
     drawStool();
-    drawStretcher();
 }
 
 /* Desenha todos os objetos */
@@ -977,7 +892,6 @@ void drawObjects() {
     drawFlowerPot();
     drawSpeakers();
     drawTableLamp();
-    drawPaintingFrame();
 }
 
 /* Desenha todo o cenario */
