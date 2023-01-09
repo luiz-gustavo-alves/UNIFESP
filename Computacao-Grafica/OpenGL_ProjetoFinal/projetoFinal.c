@@ -61,13 +61,12 @@ Animation *currentJoint;
 void updateLightningPosition() {
 
     float light0_position[] = {cameraX, cameraY, cameraZ, 1.0};
+    float light1_position[] = {-cameraX, -cameraY, -cameraZ, 1.0};
 
     glLightfv(GL_LIGHT0, GL_AMBIENT, lightAmbient);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, lightDiffuse);
     glLightfv(GL_LIGHT0, GL_SPECULAR, lightSpecular);
     glLightfv(GL_LIGHT0, GL_POSITION, light0_position);
-
-    float light1_position[] = {-cameraX, -cameraY, -cameraZ, 1.0};
 
     glLightfv(GL_LIGHT1, GL_AMBIENT, lightAmbient);
     glLightfv(GL_LIGHT1, GL_DIFFUSE, lightDiffuse);
@@ -78,10 +77,7 @@ void updateLightningPosition() {
 void initLightning() {
 
     glLightModelfv(GL_LIGHT_MODEL_AMBIENT, lightAmbient);
-
-    /* Definicao dos parametros de luz dos materiais (objetos) */
     glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-
     updateLightningPosition();
 }
 
@@ -129,8 +125,8 @@ void reshape(int w, int h) {
 
     aspectRatio = (float) w / (float) h;
 
-    if (w >= h) glOrtho(-10.0 * aspectRatio, 10.0 * aspectRatio, -10.0, 10.0, -10.0, 10.0);
-    else glOrtho(-10.0, 10.0, -10.0 / aspectRatio, 10.0 / aspectRatio, -10.0, 10.0);
+    if (w >= h) glOrtho(-15.0 * aspectRatio, 15.0 * aspectRatio, -15.0, 15.0, -15.0, 15.0);
+    else glOrtho(-15.0, 15.0, -15.0 / aspectRatio, 15.0 / aspectRatio, -15.0, 15.0);
 
     glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -436,7 +432,7 @@ int main(int argc, char *argv[]) {
 
     aquecimento = glutCreateMenu(animationMenu);
 
-        glutAddMenuEntry(" Alongamento Pernas ", 0);
+        glutAddMenuEntry(" Alongamento Quadriceps ", 0);
         glutAddMenuEntry(" Alongamento Pescoco ", 1);
         glutAddMenuEntry(" Flexao Lateral Tronco ", 2);
         glutAddMenuEntry(" Agachamento ", 3);

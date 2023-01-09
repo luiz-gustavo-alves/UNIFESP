@@ -57,17 +57,17 @@ typedef struct AnimationLst {
 } AnimationLst;
 
 /* Juntas (articulacoes) do corpo humano */
-Animation   neckJoint =           {{0.0, 0.0, 0.0}, {20.0, 20.0, 20.0},  {20.0, 20.0, 20.0}},  /*  Juntas do pescoco            */
-            leftShoulderJoint =   {{0.0, 0.0, 0.0}, {200.0, 0.0, 160.0}, {60.0, 0.0, 10.0}},   /*  Juntas do ombro esquerdo     */
-            rightShoulderJoint =  {{0.0, 0.0, 0.0}, {200.0, 0.0, 10.0},  {60.0, 0.0, 160.0}},  /*  Juntas do ombro direito      */
-            leftElbowJoint =      {{0.0, 0.0, 0.0}, {140.0, 0.0, 0.0},   {0.0, 0.0, 60.0}},    /*  Juntas do cotovelo esquerdo  */
-            rightElbowJoint =     {{0.0, 0.0, 0.0}, {140.0, 0.0, 60.0},  {0.0, 0.0, 0.0}},     /*  Juntas do cotovelo direito   */
-            leftHipJoint =        {{0.0, 0.0, 0.0}, {70.0, 0.0, 40.0},   {50.0, 0.0, 40.0}},   /*  Juntas do quadril esquerdo   */
-            rightHipJoint =       {{0.0, 0.0, 0.0}, {70.0, 0.0, 40.0},   {50.0, 0.0, 40.0}},   /*  Juntas do quadril direito    */
-            leftKneeJoint =       {{0.0, 0.0, 0.0}, {0.0, 0.0, 0.0},     {140.0, 0.0, 0.0}},   /*  Juntas do joelho esquerdo    */
-            rightKneeJoint =      {{0.0, 0.0, 0.0}, {0.0, 0.0, 0.0},     {140.0, 0.0, 0.0}},   /*  Juntas do joelho direito     */
-            torsoJoint =          {{0.0, 0.0, 0.0}},                                           /*  Juntas do torso              */
-            waistJoint =          {{0.0, 0.0, 0.0}};                                           /*  Juntas do quadril            */
+Animation   neckJoint =           {{0.0, 0.0, 0.0}, {20.0, 20.0, 20.0},  {20.0, 20.0, 20.0}},  /*  Juntas do pescoco           */
+            leftShoulderJoint =   {{0.0, 0.0, 0.0}, {170.0, 0.0, 110.0}, {60.0, 0.0, 10.0}},   /* Juntas do ombro esquerdo     */
+            rightShoulderJoint =  {{0.0, 0.0, 0.0}, {170.0, 0.0, 10.0},   {60.0, 0.0, 110.0}}, /* Juntas do ombro direito      */
+            leftElbowJoint =      {{0.0, 0.0, 0.0}, {0.0, 0.0, 0.0},     {0.0, 0.0, 110.0}},   /* Juntas do cotovelo esquerdo  */
+            rightElbowJoint =     {{0.0, 0.0, 0.0}, {0.0, 0.0, 110.0},   {0.0, 0.0, 0.0}},     /* Juntas do cotovelo direito   */
+            leftHipJoint =        {{0.0, 0.0, 0.0}, {70.0, 0.0, 40.0},   {50.0, 0.0, 40.0}},   /*  Juntas do quadril esquerdo  */
+            rightHipJoint =       {{0.0, 0.0, 0.0}, {70.0, 0.0, 40.0},   {50.0, 0.0, 40.0}},   /*  Juntas do quadril direito   */
+            leftKneeJoint =       {{0.0, 0.0, 0.0}, {0.0, 0.0, 0.0},     {140.0, 0.0, 0.0}},   /*  Juntas do joelho esquerdo   */
+            rightKneeJoint =      {{0.0, 0.0, 0.0}, {0.0, 0.0, 0.0},     {140.0, 0.0, 0.0}},   /*  Juntas do joelho direito    */
+            torsoJoint =          {{0.0, 0.0, 0.0}},                                           /*  Juntas do torso             */
+            waistJoint =          {{0.0, 0.0, 0.0}};                                           /*  Juntas do quadril           */
 
 /* Definindo Rotacao do corpo humano e dos halteres que serao utilizados durante o exercicio */
 Animation   leftDumbbellRot  = {{0.0, 0.0, 0.0}},
@@ -555,7 +555,7 @@ void returnEquipment(int animationCycle) {
     if (animationCycle < 3 || animationCycle > 5 && animationCycle < 8) walkingAnimation();
 }
 
-/* Exercicios - Aquecimento (Alongamento Pernas) */
+/* Exercicios - Aquecimento (Alongamento Quadriceps) */
 void leftLegExercise(int animationCycle) {
 
     timer += 0.01;
@@ -570,7 +570,7 @@ void leftLegExercise(int animationCycle) {
         if (leftKneeJoint.rotation[0] < 106) leftKneeJoint.rotation[0] += STEP * 1.5;
     }
 
-    /* Resetar animacao segurando perna */
+    /* Resetar animacao */
     else if (animationCycle == 2) {
 
         if (leftShoulderJoint.rotation[0] < 25 && leftShoulderJoint.rotation[2] > 0)
@@ -585,7 +585,7 @@ void leftLegExercise(int animationCycle) {
     }
 }
 
-/* Exercicios - Aquecimento (Alongamento Pernas) */
+/* Exercicios - Aquecimento (Alongamento Quadriceps) */
 void rightLegExercise(int animationCycle) {
 
     timer += 0.01;
@@ -600,7 +600,7 @@ void rightLegExercise(int animationCycle) {
         if (rightKneeJoint.rotation[0] < 106) rightKneeJoint.rotation[0] += STEP * 1.5;
     }
 
-    /* Resetar animacao segurando perna */
+    /* Resetar animacao */
     else if (animationCycle == 2) {
 
         if (rightShoulderJoint.rotation[0] <= 25 && rightShoulderJoint.rotation[2] < 0)
@@ -1157,10 +1157,9 @@ void inverseKinematics(int optAnimation, int resetFlag, int optUser) {
 
     switch (headNode->animationId) {
 
-        /* Alongamento pernas */
+        /* Alongamento quadriceps */
         case 0:
 
-            /* Alongamento perna esquerda */
             if (timer < 30) {
 
                 leftLegExercise(2);
@@ -1174,7 +1173,6 @@ void inverseKinematics(int optAnimation, int resetFlag, int optUser) {
                 }
             }
 
-            /* Alongamento perna direita */
             else {
 
                 rightLegExercise(2);
@@ -1344,14 +1342,14 @@ void kinematics(int optAnimation, int resetFlag, int optUser) {
 
         switch (headNode->animationId) {
 
-            /* Alongamento pernas */
+            /* Alongamento Quadriceps */
             case 0:
 
-                /* Alongamento perna esquerda */
+                /* Segurar perna esquerda */
                 if (timer < 20) leftLegExercise(1);
                 else if (timer >= 20 && timer < 31) inverseKinematics(optAnimation, resetFlag, optUser);
 
-                /* Alongamento perna direita */
+                /* Segurar perna direita */
                 if (timer >= 30 && timer < 51) rightLegExercise(1);
                 else if (timer >= 51 && timer < 62) inverseKinematics(optAnimation, resetFlag, optUser);
 
