@@ -1,9 +1,5 @@
 # Demonstração
-<div align="center">
-  <a href="https://www.youtube.com/watch?v=HnEtkhV3gA4">
-      <img title="Youtube Video" width="800" height="450" src="https://github.com/luiz-gustavo-alves/UNIFESP/assets/114351018/a57edc5a-288b-427a-b900-45e5bebd3535"/>
-  </a>
-</div>
+[![Computer Graphics Final Project - Physiotherapy Exercises Humanoid Animation (OpenGL)](http://img.youtube.com/vi/HnEtkhV3gA4/0.jpg)](https://www.youtube.com/watch?v=HnEtkhV3gA4 "Computer Graphics Final Project - Physiotherapy Exercises Humanoid Animation (OpenGL)")
 
 
 ## Trabalho Final de Computação Gráfica 
