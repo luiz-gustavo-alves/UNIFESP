@@ -1,4 +1,7 @@
-# Instruções para executar o arquivo:
+# Demonstração
+https://github.com/luiz-gustavo-alves/UNIFESP/assets/114351018/30a819c6-ed15-4b0d-88c2-3cf4c166e489
+
+## Instruções para executar o arquivo:
 
 - Rodar o arquivo server.py em apenas UM terminal.
     - Fornecer o IP do servidor (EX: 127.0.0.1 - Localhost)
