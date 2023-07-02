@@ -10,7 +10,7 @@ import threading
 import tkinter
 import tkinter.scrolledtext
 
-PORT = 3001
+PORT = 3000
 
 prime_num = 1021
 primitive_sqrt = 751
@@ -295,7 +295,7 @@ class Client:
                         nicknames = f"{message.split()[1]} {message.split()[2]} {message.split()[3]}"
                         content = message.split()[4]
                         decrypt_message = utils.RC4_decrypt(content, self.public_key)
-                        decrypt_message = f"{nicknames} {decrypt_message}"
+                        decrypt_message = f"{nicknames} {decrypt_message}\n"
 
                 ## Decrypt messages using Secret Key (DM messages)
                 elif "SKEY" in message:
@@ -322,7 +322,7 @@ class Client:
                         crypted_message = message.split()[5]
     
                         decrypt_message = utils.RC4_decrypt(crypted_message, key)
-                        decrypt_message = f"{nicknames} {decrypt_message}"
+                        decrypt_message = f"{nicknames} {decrypt_message}\n"
 
                 elif "DH" in message:
 
@@ -347,7 +347,7 @@ class Client:
                     elif (algorithm == "RC4"):
 
                         decrypt_message = utils.RC4_decrypt(crypted_message, self.session_key_RC4)
-                        decrypt_message = f"{nicknames} {decrypt_message}"
+                        decrypt_message = f"{nicknames} {decrypt_message}\n"
 
                 ## Decrypt messages
                 if (decrypt):
