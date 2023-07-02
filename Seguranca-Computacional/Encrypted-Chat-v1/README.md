@@ -1,4 +1,8 @@
-# Instruções para executar o arquivo:
+# Demonstração
+https://github.com/luiz-gustavo-alves/UNIFESP/assets/114351018/c63a7010-a532-4a03-ada6-ec3cb5f2dd5a
+
+
+## Instruções para executar o arquivo:
 
 - Rodar o arquivo server.py em apenas UM terminal.
     - Fornecer o IP do servidor (EX: 127.0.0.1 - Localhost)
@@ -6,7 +10,7 @@
 - Rodar o arquivo client.py em um ou mais terminais.
     - Fornecer o IP da máquina a ser conectada (EX: 127.0.0.1 - Localhost).
     - Fornecer o nome do usuário.
-    - NÃO APERTAR A TECLA ENTER AO ENVIAR ESSAS INFORMAÇÕES, CLIQUE APENAS EM OK PARA CONTINUAR (*)
+    - NÃO APERTAR A TECLA ENTER AO ENVIAR ESSAS INFORMAÇÕES, CLIQUE APENAS EM OK PARA CONTINUAR!!
 
 ## Instruções da utilização da interface gráfica
 
