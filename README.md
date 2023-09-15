@@ -3,6 +3,7 @@
 Projetos e códigos desenvolvidos durante a graduação do curso de Bacharelado em Ciência da Computação do ICT/Unifesp.
 
 - [[**Repositório**](/AED1)] - Algoritmos e Estrutura de Dados I (AED1).
+- [[**Repositório**](/Algoritmos-Bioinformatica)] - Algoritmos em Bioinformática.
 - [[**Repositório**](/Arquitetura-Organizacao-Computadores)] - Arquitetura e Organização de Computadores (AOC).
 - [[**Repositório**](/Computacao-Grafica)] - Computação Gráfica (CG).
 - [[**Repositório**](/Inteligencia-Artificial)] - Inteligência Artificial (IA).
