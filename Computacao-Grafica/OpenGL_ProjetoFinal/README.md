@@ -1,9 +1,12 @@
-# Demonstração
+# Demonstração (Youtube)
+<div align="center">
+  
 [![Computer Graphics Final Project - Physiotherapy Exercises Humanoid Animation (OpenGL)](http://img.youtube.com/vi/HnEtkhV3gA4/0.jpg)](https://www.youtube.com/watch?v=HnEtkhV3gA4 "Computer Graphics Final Project - Physiotherapy Exercises Humanoid Animation (OpenGL)")
+</div>
 
 
 ## Trabalho Final de Computação Gráfica 
-Projeto feito em linguagem C com utilização da bilbioteca OpenGL para renderização gráfica.
+Projeto feito em linguagem C com utilização da biblioteca OpenGL para renderização gráfica.
 
 O trabalho possibilita a criação de um ambiente de visualização tridimensional e interativo com usuário através do teclado e o menu de opções pré-estabelecidas.
 
