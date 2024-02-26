@@ -5,6 +5,7 @@ Projetos e códigos desenvolvidos durante a graduação do curso de Bacharelado 
 - [[**Repositório**](/AED1)] - Algoritmos e Estrutura de Dados I (AED1).
 - [[**Repositório**](/Algoritmos-Bioinformatica)] - Algoritmos em Bioinformática.
 - [[**Repositório**](/Arquitetura-Organizacao-Computadores)] - Arquitetura e Organização de Computadores (AOC).
+- [[**Reposítorio**](/Compiladores/)] - Compiladores.
 - [[**Repositório**](/Computacao-Grafica)] - Computação Gráfica (CG).
 - [[**Repositório**](/Inteligencia-Artificial)] - Inteligência Artificial (IA).
 - [[**Repositório**](/Probabilidade-Estatística)] - Probabilidade e Estatística.
