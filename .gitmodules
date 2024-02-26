@@ -1,0 +1,3 @@
+[submodule "Compiladores/CMINUS-compiler"]
+	path = Compiladores/CMINUS-compiler
+	url = https://github.com/luiz-gustavo-alves/CMINUS-compiler.git
